@@ -115,8 +115,8 @@ def start():
   root_node.Children.value = [root_monkey]
   graph.Root.value.Children.value.append(root_node)
 
-  #add_lights(graph, 2)
-  #setup_scene(graph, root_monkey, 1)
+  add_lights(graph, 2)
+  setup_scene(graph, root_monkey, 4)
 
   for i in range(9):
     root_node.Children.value.append(one_of_many)

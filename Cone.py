@@ -50,7 +50,7 @@ class Cone:
       box = loader.create_geometry_from_file(
         "box", 
         "data/objects/cube.obj",
-        "data/materials/Blue.gmd",
+        "data/materials/Red.gmd",
         avango.gua.LoaderFlags.DEFAULTS
       ) 
       box.Transform.value = avango.gua.make_trans_mat(0,-1,0)
@@ -127,7 +127,8 @@ class Cone:
           _max_radius = self.ChildrenCones_[i].Radius_
 
     # adjust the Radius
-    # self.Radius_ += _max_radius
+      self.Radius_ += _max_radius
+      #self.Radius_ *= 3 * (_max_radius/self.Radius_) * (1.0 /len(self.ChildrenCones_)) 
 
   def apply_layout(self, parent_radius = 0, root = False):
     if root:

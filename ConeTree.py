@@ -9,6 +9,7 @@ class ConeTree:
 
   ## Initialized with the scenegraph that is visualized
   def __init__(self, graph):
+    avango.gua.load_materials_from("data/materials")
     self.Input_graph_ = graph
     self.RootCone_ = Cone(graph.Root.value)
     self.CT_graph_  = avango.gua.nodes.SceneGraph(
@@ -16,6 +17,44 @@ class ConeTree:
     )
     self.layout()
 
+  def get_scene_node(self, CT_node):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the node
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set collapsed
+      if current.outNode_.geometry_ == CT_node:
+        return current.Input_node_
+      for child in current.ChildrenCones_:
+        cones.append(child)
+
+  def get_CT_node(self, scene_node):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the node
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set collapsed
+      if current.Input_node_ == scene_node:
+        return current.outNode_.geometry_
+      for child in current.ChildrenCones_:
+        cones.append(child)
+
+  def highlight_by_id(self, id, highlight):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the id
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.id_ == id :
+        #current.highlight(highlight)
+        print "Highlight: " + str(current.id_) + " : " + str(highlight)
+        #self.layout()
+        return True
+      for child in current.ChildrenCones_:
+        cones.append(child)
 
   def get_scenegraph(self):
     node = self.RootCone_.get_scenegraph()
@@ -50,7 +89,7 @@ class ConeTree:
   def collapse_by_scenenode(self, scene_node, collapsed):
     cones = []
     cones.append(self.RootCone_)
-    # search for the id
+    # search for the node
     while (not len(cones) == 0):
       current = cones.pop()
       # when found set collapsed
@@ -65,7 +104,7 @@ class ConeTree:
   def collapse_by_CTnode(self, CT_node, collapsed):
     cones = []
     cones.append(self.RootCone_)
-    # search for the id
+    # search for the node
     while (not len(cones) == 0):
       current = cones.pop()
       # when found set collapsed
@@ -76,6 +115,7 @@ class ConeTree:
         return True
       for child in current.ChildrenCones_:
         cones.append(child)
+
 
 
 def printscenegraph(scenegraph):
