@@ -9,11 +9,15 @@ import Node
 class Cone:
   id_counter_ = 0
 
-  def __init__(self, inNode):
-    # Radius of this cone
+  def __init__(self, inNode, level = 1):
+    # Radius of this cone for layout calculation, an one for the actual rendering
+    self.Renderd_Radius_ = 2
     self.Radius_ = 2
     # Angle this Cone has in its parent Cone
     self.Angle_ = 0
+    # Level and Depth
+    self.Level_ = level
+    self.Depth_ = 5 + (20.0 / self.Level_)
     # The Represented Scenegraph Node
     self.Input_node_ = inNode
     # The CT Node
@@ -27,10 +31,11 @@ class Cone:
     self.id_ = Cone.id_counter_
     # a flag to collaps at this cone
     self.collapsed_ = False
+    self.highlighted_ = False
 
     # build Children COnes
     for child in inNode.Children.value:
-      tmp_cone = Cone(child)
+      tmp_cone = Cone(child, self.Level_ + 1)
       self.ChildrenCones_.append(tmp_cone)
       self.Edges_.append(Edge.Edge(self.outNode_, tmp_cone.outNode_))
 
@@ -47,21 +52,34 @@ class Cone:
       self.outNode_.geometry_.Children.value = []
 
       loader = avango.gua.nodes.TriMeshLoader()
-      box = loader.create_geometry_from_file(
-        "box", 
-        "data/objects/cube.obj",
+      cone = loader.create_geometry_from_file(
+        "cone", 
+        "data/objects/cone.obj",
         "data/materials/Red.gmd",
         avango.gua.LoaderFlags.DEFAULTS
       ) 
-      box.Transform.value = avango.gua.make_trans_mat(0,-1,0)
-      self.outNode_.geometry_.Children.value.append(box)
+      cone.Transform.value = avango.gua.make_scale_mat(3)
+      self.outNode_.geometry_.Children.value.append(cone)
     else:
       self.outNode_.geometry_.Children.value = []
       for child in self.ChildrenCones_:
         child_node = child.outNode_.geometry_
         self.outNode_.geometry_.Children.value.append(child_node)
       for edge in self.Edges_:
-        self.outNode_.geometry_.Children.value.append(edge.geometry_)
+        self.outNode_.geometry_.Children.value.append(edge.geometry_)  
+
+  def highlight(self, highlight):
+    self.highlighted_ = highlight
+    if self.highlighted_:
+      self.outNode_.geometry_.Material.value = "data/materials/White.gmd"
+    else:
+      self.outNode_.geometry_.Material.value = "data/materials/Blue.gmd"      
+
+  def highlight_edge(self, edge_number, highlight):
+    if highlight:
+      self.Edges_[edge_number].geometry_.Material.value = "data/materials/Red.gmd"
+    else:
+      self.Edges_[edge_number].geometry_.Material.value = "data/materials/Grey.gmd"
 
 
   def get_scenegraph(self):
@@ -88,19 +106,32 @@ class Cone:
     for child in self.ChildrenCones_:
       child.print_cone(depth+1)
 
-  def layout(self):
-        
+  def make_disc(self):
+    loader = avango.gua.nodes.TriMeshLoader()
+    disc = loader.create_geometry_from_file(
+      "disc" + str(self.id_), 
+      "data/objects/disc.obj",
+      "data/materials/Red.gmd",
+      avango.gua.LoaderFlags.DEFAULTS
+    ) 
+    disc.Transform.value = avango.gua.make_trans_mat(0,-(self.Depth_ + 1),0) * avango.gua.make_scale_mat(self.Radius_)
+    self.outNode_.geometry_.Children.value.append(disc)
 
+  def layout(self):
     # if this cone has no Children, reset the Radius
     if self.is_leaf():
       self.Radius_ = 2
     else:
       
       # first call the function on the children, bottom up!
+      # also check if all childs are leaves, for placing the beautiful disc
+      preleaf = True
       for child in self.ChildrenCones_:
         child.layout()
-      # then commence with layout
+        if not child.is_leaf():
+          preleaf = False
 
+      # then commence with layout
       _circumference = 0
   
       for child in self.ChildrenCones_:
@@ -126,9 +157,13 @@ class Cone:
         if self.ChildrenCones_[i].Radius_ > _max_radius:
           _max_radius = self.ChildrenCones_[i].Radius_
 
-    # adjust the Radius
+      # adjust the Radius
       self.Radius_ += _max_radius
-      #self.Radius_ *= 3 * (_max_radius/self.Radius_) * (1.0 /len(self.ChildrenCones_)) 
+      self.Renderd_Radius_ = self.Radius_
+      #self.Radius_ *= 3 * (_max_radius/self.Radius_) * (30.0 /len(self.ChildrenCones_)) 
+
+      if preleaf:
+        self.make_disc()
 
   def apply_layout(self, parent_radius = 0, root = False):
     if root:
@@ -136,10 +171,10 @@ class Cone:
     else:
       self.outNode_.set_position(avango.gua.Vec3(
         math.cos(self.Angle_) * parent_radius,
-        -7,
+        -self.Depth_,
         math.sin(self.Angle_) * parent_radius))
     for child in self.ChildrenCones_:
-      child.apply_layout(parent_radius = self.Radius_)
+      child.apply_layout(parent_radius = self.Renderd_Radius_)
     for edge in self.Edges_:
       edge.refresh_position()
 

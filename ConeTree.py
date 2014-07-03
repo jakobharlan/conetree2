@@ -12,6 +12,8 @@ class ConeTree:
     avango.gua.load_materials_from("data/materials")
     self.Input_graph_ = graph
     self.RootCone_ = Cone(graph.Root.value)
+    self.FocusCone_ = self.RootCone_
+    self.FocusEdge_ = -1
     self.CT_graph_  = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
     )
@@ -41,21 +43,6 @@ class ConeTree:
       for child in current.ChildrenCones_:
         cones.append(child)
 
-  def highlight_by_id(self, id, highlight):
-    cones = []
-    cones.append(self.RootCone_)
-    # search for the id
-    while (not len(cones) == 0):
-      current = cones.pop()
-      # when found set highlighted
-      if current.id_ == id :
-        #current.highlight(highlight)
-        print "Highlight: " + str(current.id_) + " : " + str(highlight)
-        #self.layout()
-        return True
-      for child in current.ChildrenCones_:
-        cones.append(child)
-
   def get_scenegraph(self):
     node = self.RootCone_.get_scenegraph()
     self.CT_graph_.Root.value.Children.value = [node]
@@ -70,6 +57,85 @@ class ConeTree:
   def layout(self):
     self.RootCone_.layout()
     self.RootCone_.apply_layout(root = True)
+    self.FocusCone_.highlight(True)
+
+  # highlighting
+  def highlight_by_level(self, level, highlight):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the id
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.Level_ == level :
+        current.highlight(highlight)
+        print "Highlight: " + str(current.id_) + " : " + str(highlight)
+        #self.layout()
+      for child in current.ChildrenCones_:
+        cones.append(child)
+
+  def highlight_by_id(self, id, highlight):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the id
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.id_ == id :
+        current.highlight(highlight)
+        print "Highlight: " + str(current.id_) + " : " + str(highlight)
+        #self.layout()
+        return True
+      for child in current.ChildrenCones_:
+        cones.append(child)
+    return False
+        
+  def highlight_by_scenenode(self, scenenode, highlight):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the id
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.Input_node_ == scenenode :
+        current.highlight(highlight)
+        print "Highlight: " + str(current.id_) + " : " + str(highlight)
+        #self.layout()
+        return True
+      for child in current.ChildrenCones_:
+        cones.append(child) 
+    return False
+               
+  def highlight_by_CT_node(self, CT_node, highlight):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the id
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.outNode_.geometry_ == CT_node :
+        current.highlight(highlight)
+        print "Highlight: " + str(current.id_) + " : " + str(highlight)
+        #self.layout()
+        return True
+      for child in current.ChildrenCones_:
+        cones.append(child)
+    return False
+
+  # collapsing
+  def collapse_by_level(self, level, collapse):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the id
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.Level_ == level :
+        current.collapse(collapse)
+        print "Collapsed: " + str(current.id_) + " : " + str(collapse)
+        #self.layout()
+      for child in current.ChildrenCones_:
+        cones.append(child)
 
   def collapse_by_id(self, id, collapsed):
     cones = []
@@ -85,23 +151,25 @@ class ConeTree:
         return True
       for child in current.ChildrenCones_:
         cones.append(child)
-  
-  def collapse_by_scenenode(self, scene_node, collapsed):
+    return False
+
+  def collapse_by_scenenode(self, scenenode, collapsed):
     cones = []
     cones.append(self.RootCone_)
     # search for the node
     while (not len(cones) == 0):
       current = cones.pop()
       # when found set collapsed
-      if current.Input_node_ == scene_node :
+      if current.Input_node_ == scenenode :
         current.collapse(collapsed)
         print "Collapsed Node: " + str(current.id_) + " : " + str(collapsed)
         self.layout()
         return True
       for child in current.ChildrenCones_:
         cones.append(child)
+    return False
 
-  def collapse_by_CTnode(self, CT_node, collapsed):
+  def collapse_by_CT_node(self, CT_node, collapsed):
     cones = []
     cones.append(self.RootCone_)
     # search for the node
@@ -115,6 +183,36 @@ class ConeTree:
         return True
       for child in current.ChildrenCones_:
         cones.append(child)
+    return False
+
+  # deal with focus
+  def focus_next_edge(self):
+    if not self.FocusEdge_ == -1:
+      self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+    self.FocusEdge_ += 1
+    if self.FocusEdge_ == len(self.FocusCone_.Edges_):
+      self.FocusEdge_ = 0
+    self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+
+  def focus_prev_edge(self):
+    if self.FocusEdge_ == -1:
+      self.FocusEdge_ = len(self.FocusCone_.Edges_) - 1
+    else:
+      self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+      self.FocusEdge_ -= 1
+      if self.FocusEdge_ == -1:
+        self.FocusEdge_ = len(self.FocusCone_.Edges_) - 1
+
+    self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+
+  def go_deep_at_focus(self):
+    if not self.FocusEdge_ == -1:
+      # reset focusi
+      self.FocusCone_.highlight(0)
+      self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+      # set new focus
+      self.FocusCone_ = self.FocusCone_.ChildrenCones_[self.FocusEdge_]
+      self.FocusCone_.highlight(1)
 
 
 

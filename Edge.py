@@ -43,4 +43,4 @@ def calc_transform_connection(START_VEC, END_VEC):
   _rotation_mat = get_rotation_between_vectors(avango.gua.Vec3(0, 0, -1), _vec)
 
   # build the complete matrix
-  return avango.gua.make_trans_mat(_center) * _rotation_mat * avango.gua.make_scale_mat(0.03, 0.03, _scale)
+  return avango.gua.make_trans_mat(_center) * _rotation_mat * avango.gua.make_scale_mat(0.1, 0.1, _scale)
