@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from ConeTree import *
+from Controller import *
 
 import examples_common.navigator
 import avango
@@ -144,6 +145,9 @@ def start():
   )
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
+
+  conetree_controller = Controller()
+  conetree_controller.MyConstructor(conetree)
 
 
   ## Viewing Cone Tree Visualization ----------------------
