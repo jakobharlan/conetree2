@@ -155,12 +155,12 @@ def start():
     Name = "screen",
     Width = 1.6/2,
     Height = 0.9,
-    Transform = avango.gua.make_trans_mat(0.0, -5, 50)
+    Transform = avango.gua.make_trans_mat(0.0, -5, 300)
   )
 
   eye2 = avango.gua.nodes.TransformNode(
     Name = "eye",
-    Transform = avango.gua.make_trans_mat(0.0, 0.0, 2.5)
+    Transform = avango.gua.make_trans_mat(0.0, 0.0, 2.0)
   )
 
   screen2.Children.value = [eye2]

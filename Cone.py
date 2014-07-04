@@ -9,7 +9,7 @@ import Node
 class Cone:
   id_counter_ = 0
 
-  def __init__(self, inNode, level = 1):
+  def __init__(self, inNode, parent, level = 1):
     # Radius of this cone for layout calculation, an one for the actual rendering
     self.Renderd_Radius_ = 2
     self.Radius_ = 2
@@ -22,6 +22,8 @@ class Cone:
     self.Input_node_ = inNode
     # The CT Node
     self.outNode_ = Node.Node()
+    # Link back up to the Parent
+    self.Parent_ = parent
     # List for the Children Cones
     self.ChildrenCones_ = []
     # List for the Edges
@@ -33,9 +35,9 @@ class Cone:
     self.collapsed_ = False
     self.highlighted_ = False
 
-    # build Children COnes
+    # build Children Cones
     for child in inNode.Children.value:
-      tmp_cone = Cone(child, self.Level_ + 1)
+      tmp_cone = Cone(child, self, self.Level_ + 1)
       self.ChildrenCones_.append(tmp_cone)
       self.Edges_.append(Edge.Edge(self.outNode_, tmp_cone.outNode_))
 
@@ -58,7 +60,7 @@ class Cone:
         "data/materials/Red.gmd",
         avango.gua.LoaderFlags.DEFAULTS
       ) 
-      cone.Transform.value = avango.gua.make_scale_mat(3)
+      cone.Transform.value = avango.gua.make_scale_mat(2)
       self.outNode_.geometry_.Children.value.append(cone)
     else:
       self.outNode_.geometry_.Children.value = []
@@ -77,7 +79,7 @@ class Cone:
 
   def highlight_edge(self, edge_number, highlight):
     if highlight:
-      self.Edges_[edge_number].geometry_.Material.value = "data/materials/Red.gmd"
+      self.Edges_[edge_number].geometry_.Material.value = "data/materials/White.gmd"
     else:
       self.Edges_[edge_number].geometry_.Material.value = "data/materials/Grey.gmd"
 
@@ -111,7 +113,7 @@ class Cone:
     disc = loader.create_geometry_from_file(
       "disc" + str(self.id_), 
       "data/objects/disc.obj",
-      "data/materials/Red.gmd",
+      "data/materials/Grey.gmd",
       avango.gua.LoaderFlags.DEFAULTS
     ) 
     disc.Transform.value = avango.gua.make_trans_mat(0,-(self.Depth_ + 1),0) * avango.gua.make_scale_mat(self.Radius_)

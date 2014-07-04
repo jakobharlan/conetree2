@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+from Controller import *
 from ConeTree import *
 
 import examples_common.navigator
@@ -99,30 +99,11 @@ def start():
     avango.gua.LoaderFlags.DEFAULTS
   )
 
-  one_of_many = loader.create_geometry_from_file(
-    "one_of_many",
-    "data/objects/monkey.obj",
-    "data/materials/Stones.gmd",
-    avango.gua.LoaderFlags.DEFAULTS
-  )
-  
-  one_of_many_lights = avango.gua.nodes.PointLightNode(
-    Name = "one_of_many_lights",
-    Color = avango.gua.Color(1, 1, 1),
-    Transform = avango.gua.make_identity_mat()
-  )
-  
   root_node.Children.value = [root_monkey]
   graph.Root.value.Children.value.append(root_node)
 
   add_lights(graph, 2)
   setup_scene(graph, root_monkey, 4)
-
-  for i in range(9):
-    root_node.Children.value.append(one_of_many)
-
-  for i in range(10):
-    root_monkey.Children.value.append(one_of_many_lights)
 
   ## Viewing Setup Scene ---------------------------------
   screen = avango.gua.nodes.ScreenNode(
@@ -182,6 +163,8 @@ def start():
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
 
+  conetree_controller = Controller()
+  conetree_controller.MyConstructor(conetree)
 
   ## Viewing Cone Tree Visualization ----------------------
   screen2 = avango.gua.nodes.ScreenNode(
