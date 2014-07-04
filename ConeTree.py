@@ -224,7 +224,8 @@ class ConeTree:
   def level_up(self):
     if not self.FocusCone_.Parent_ == "ROOT":
       self.FocusCone_.highlight(0)
-      self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+      if not self.FocusEdge_ == -1:
+        self.FocusCone_.highlight_edge(self.FocusEdge_,0)
       self.FocusEdge_ = -1
       self.FocusCone_ = self.FocusCone_.Parent_
       self.FocusCone_.highlight(1)
