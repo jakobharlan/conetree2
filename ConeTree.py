@@ -89,7 +89,7 @@ class ConeTree:
       for child in current.ChildrenCones_:
         cones.append(child)
     return False
-        
+
   def highlight_by_scenenode(self, scenenode, highlight):
     cones = []
     cones.append(self.RootCone_)
@@ -103,9 +103,9 @@ class ConeTree:
         #self.layout()
         return True
       for child in current.ChildrenCones_:
-        cones.append(child) 
+        cones.append(child)
     return False
-               
+
   def highlight_by_CT_node(self, CT_node, highlight):
     cones = []
     cones.append(self.RootCone_)
@@ -224,7 +224,9 @@ class ConeTree:
   def level_up(self):
     if not self.FocusCone_.Parent_ == "ROOT":
       self.FocusCone_.highlight(0)
-      self.FocusCone_  = self.FocusCone_.Parent_
+      self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+      self.FocusEdge_ = -1
+      self.FocusCone_ = self.FocusCone_.Parent_
       self.FocusCone_.highlight(1)
 
 
@@ -244,11 +246,11 @@ def printhelper(node):
     printelement(tmp)
     for child in tmp[0].Children.value:
       stack.append((child,tmp[1]+1))
-  
+
 def printelement(nodetupel):
   for i in range(0, nodetupel[1]):
     print(" "),
-  print nodetupel[0].Name.value + "   " 
-  #print nodetupel[0]  
+  print nodetupel[0].Name.value + "   "
+  #print nodetupel[0]
   #print nodetupel[0].Transform.value
 
