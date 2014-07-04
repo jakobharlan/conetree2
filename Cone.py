@@ -45,11 +45,15 @@ class Cone:
 
 
   def is_leaf(self):
-    if len(self.ChildrenCones_)  == 0:
-      return True
-    if self.collapsed_:
+    if (len(self.ChildrenCones_)  == 0) or self.collapsed_:
       return True
     return False
+
+  def is_pre_leaf(self):
+    for child in self.ChildrenCones_:
+      if not child.is_leaf():
+        return False
+    return True
 
   def collapse(self, collapsed):
     self.collapsed_ = collapsed
@@ -67,13 +71,14 @@ class Cone:
       self.outNode_.geometry_.Children.value.append(cone)
     else:
       self.outNode_.geometry_.Children.value = []
+
       for child in self.ChildrenCones_:
         child_node = child.outNode_.geometry_
         self.outNode_.geometry_.Children.value.append(child_node)
       for edge in self.Edges_:
         self.outNode_.geometry_.Children.value.append(edge.geometry_)
 
-  def highlight(self, highlight):
+  def highlight(self, highlight):  # todo fix the weird one time cone in root bug
     self.highlighted_ = highlight
     if self.highlighted_:
       self.outNode_.geometry_.Material.value = "data/materials/White.gmd"
@@ -124,7 +129,8 @@ class Cone:
   def update_disc(self):
     if  self.disc_== None:
       self.make_disc()
-
+    if not (self.disc_ in self.outNode_.geometry_.Children.value):
+      self.outNode_.geometry_.Children.value.append(self.disc_)
     self.disc_.Transform.value = avango.gua.make_trans_mat(0,-(self.Depth_ + 1),0) * avango.gua.make_scale_mat(self.Radius_)
 
   def layout(self):
@@ -134,12 +140,8 @@ class Cone:
     else:
 
       # first call the function on the children, bottom up!
-      # also check if all childs are leaves, for placing the beautiful disc
-      preleaf = True
       for child in self.ChildrenCones_:
         child.layout()
-        if not child.is_leaf():
-          preleaf = False
 
       # then commence with layout
       _circumference = 0
@@ -172,8 +174,12 @@ class Cone:
       self.Renderd_Radius_ = self.Radius_
       #self.Radius_ *= 3 * (_max_radius/self.Radius_) * (30.0 /len(self.ChildrenCones_))
 
-      if preleaf:
+      # check if there should be a disc
+      if self.is_pre_leaf():
         self.update_disc()
+      else:
+        self.outNode_.geometry_.Children.value.remove(self.disc_)
+
 
   def apply_layout(self, parent_radius = 0, root = False):
     if root:
