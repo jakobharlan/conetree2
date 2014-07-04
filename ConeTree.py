@@ -208,7 +208,6 @@ class ConeTree:
         self.FocusEdge_ -= 1
         if self.FocusEdge_ == -1:
           self.FocusEdge_ = len(self.FocusCone_.Edges_) - 1
-      print self.FocusEdge_
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
 
   def go_deep_at_focus(self):
