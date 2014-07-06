@@ -20,7 +20,7 @@ def add_lights(graph, count):
 
     randdir = avango.gua.Vec3(
       random.random() * 2.0 - 1.0,
-      random.random() * 2.0 - 1.0,  
+      random.random() * 2.0 - 1.0,
       random.random() * 2.0 - 1.0
     )
 
@@ -102,8 +102,8 @@ def start():
   root_node.Children.value = [root_monkey]
   graph.Root.value.Children.value.append(root_node)
 
-  add_lights(graph, 2)
-  setup_scene(graph, root_monkey, 4)
+  add_lights(graph, 20)
+  setup_scene(graph, root_monkey, 3)
 
   ## Viewing Setup Scene ---------------------------------
   screen = avango.gua.nodes.ScreenNode(
@@ -199,7 +199,7 @@ def start():
     RightScreen = "/screen",
     SceneGraph = "ConeTree_Graph"
   )
-  
+
   ## Window Cone Tree Setup Visualization--------------------
   window2 = avango.gua.nodes.Window(
     Size = size,
@@ -233,7 +233,7 @@ def start():
 
   viewer = avango.gua.nodes.Viewer()
   viewer.Pipelines.value = [pipe, pipe2]
-  viewer.SceneGraphs.value = [graph, CT_graph]  
+  viewer.SceneGraphs.value = [graph, CT_graph]
 
   viewer.run()
 

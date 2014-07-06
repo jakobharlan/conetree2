@@ -4,6 +4,7 @@ import math
 
 import Edge
 import Node
+import ConeTree
 
 # Cone Class
 class Cone:
@@ -21,7 +22,7 @@ class Cone:
     # The Represented Scenegraph Node
     self.Input_node_ = inNode
     # The CT Node
-    self.outNode_ = Node.Node()
+    self.outNode_ = Node.Node(material = self.select_material())
     # Link back up to the Parent
     self.Parent_ = parent
     # List for the Children Cones
@@ -33,7 +34,7 @@ class Cone:
     # unique ID for every Cone
     Cone.id_counter_ += 1
     self.id_ = Cone.id_counter_
-    # a flag to collaps at this cone
+    # a flag to collapse / highlight  this cone
     self.collapsed_ = False
     self.highlighted_ = False
 
@@ -81,9 +82,9 @@ class Cone:
   def highlight(self, highlight):  # todo fix the weird one time cone in root bug
     self.highlighted_ = highlight
     if self.highlighted_:
-      self.outNode_.geometry_.Material.value = "data/materials/White.gmd"
+      self.outNode_.set_material("data/materials/White.gmd")
     else:
-      self.outNode_.geometry_.Material.value = "data/materials/Blue.gmd"
+      self.outNode_.reset_material()
 
   def highlight_edge(self, edge_number, highlight):
     if highlight:
@@ -120,7 +121,7 @@ class Cone:
     self.disc_ = loader.create_geometry_from_file(
       "disc" + str(self.id_),
       "data/objects/disc.obj",
-      "data/materials/Grey.gmd",
+      "data/materials/Grey1.gmd",
       avango.gua.LoaderFlags.DEFAULTS
     )
     self.outNode_.geometry_.Children.value.append(self.disc_)
@@ -170,9 +171,9 @@ class Cone:
           _max_radius = self.ChildrenCones_[i].Radius_
 
       # adjust the Radius
-      self.Radius_ += _max_radius
       self.Renderd_Radius_ = self.Radius_
-      #self.Radius_ *= 3 * (_max_radius/self.Radius_) * (30.0 /len(self.ChildrenCones_))
+      self.Radius_ += _max_radius
+      # self.Radius_ *= 3 * (_max_radius/self.Radius_) * (1.0 /len(self.ChildrenCones_))
 
       # check if there should be a disc
       if self.is_pre_leaf():
@@ -194,3 +195,39 @@ class Cone:
     for edge in self.Edges_:
       edge.refresh_position()
 
+  def reapply_material(self):
+    self.outNode_.set_material(self.select_material(), temporary = False)
+    for child in self.ChildrenCones_:
+      child.reapply_material()
+
+  # chooses a material, based on wich node is given
+  # or wich depth the node is at
+  def select_material(self):
+    if ConeTree.ConeTree.COLORMODE == "NODETYPE":
+      if type(self.Input_node_) == avango.gua._gua.TriMeshNode :
+        return "data/materials/Red.gmd"
+      if type(self.Input_node_) == avango.gua._gua.TransformNode :
+        return "data/materials/Blue.gmd"
+      if type(self.Input_node_) == avango.gua._gua.PointLightNode :
+        return "data/materials/Yellow.gmd"
+      if type(self.Input_node_) == avango.gua._gua.ScreenNode :
+        return "data/materials/Orange.gmd"
+
+    elif ConeTree.ConeTree.COLORMODE == "DEPTH":
+      if self.Level_ == 1 :
+        return "data/materials/Red.gmd"
+      if self.Level_ == 2 :
+        return "data/materials/Orange.gmd"
+      if self.Level_ == 3 :
+        return "data/materials/Yellow.gmd"
+      if self.Level_ == 4 :
+        return "data/materials/Green.gmd"
+      if self.Level_ == 5 :
+        return "data/materials/Cyan.gmd"
+      # if self.Level_ == 3 :
+      #   return "data/materials/Red.gmd"
+      return "data/materials/Blue.gmd"
+
+
+
+    return "data/materials/White.gmd"

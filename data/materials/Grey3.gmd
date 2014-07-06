@@ -3,8 +3,8 @@
 	"shading_model" : "SimplePhong.gsd",
 	"uniforms" :
 	{
-		"diffuse_color" : "(0.000  0.000  1.000)",
+		"diffuse_color" : "(0.300  0.300  0.300)",
 		"emit" : "0.2",
-		"shinyness" : "10"
+		"shinyness" : "3"
 	}
 }

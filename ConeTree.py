@@ -6,6 +6,7 @@ from Cone import *
 
 # ConeTree Class
 class ConeTree:
+  COLORMODE = "NODETYPE"
 
   ## Initialized with the scenegraph that is visualized
   def __init__(self, graph):
@@ -57,6 +58,19 @@ class ConeTree:
   def layout(self):
     self.RootCone_.layout()
     self.RootCone_.apply_layout(root = True)
+    self.FocusCone_.highlight(True)
+
+  def set_colormode(self, colormode = "NODETYPE", flip = False):
+    if flip:
+      if ConeTree.COLORMODE == "NODETYPE":
+        ConeTree.COLORMODE = "DEPTH"
+      else:
+        ConeTree.COLORMODE = "NODETYPE"
+    else:
+      ConeTree.COLORMODE = colormode
+
+  def reapply_materials(self):
+    self.RootCone_.reapply_material()
     self.FocusCone_.highlight(True)
 
   # highlighting
