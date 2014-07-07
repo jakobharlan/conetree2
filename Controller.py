@@ -117,11 +117,13 @@ class Controller(avango.script.Script):
     # Key PgDown for next level focus
     if self.Keyboard.KeyDown.value and not self.KeyDown:
       self.Conetree_.go_deep_at_focus()
+      self.Conetree_.set_camera_on_Focus()
     self.KeyDown = self.Keyboard.KeyDown.value
 
     # Key PgUp for next level focus
     if self.Keyboard.KeyUp.value and not self.KeyUp:
       self.Conetree_.level_up()
+      self.Conetree_.set_camera_on_Focus()
     self.KeyUp = self.Keyboard.KeyUp.value
 
     # Key C for collapse focused

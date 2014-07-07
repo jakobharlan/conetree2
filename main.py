@@ -212,7 +212,7 @@ def start():
   conetree_controller.MotionSpeed.value = 0.69
 
   screen2.Transform.connect_from(conetree_controller.OutTransform)
-  screen2.Transform.connect_from(conetree.OutTransform)
+  conetree_controller.StartLocation.connect_from(conetree.OutPosition)
 
   viewer = avango.gua.nodes.Viewer()
   viewer.Pipelines.value = [pipe, pipe2]

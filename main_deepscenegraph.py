@@ -223,14 +223,13 @@ def start():
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
 
-  navigator = examples_common.navigator.Navigator()
-  navigator.StartLocation.value = screen2.Transform.value.get_translate()
-  navigator.OutTransform.connect_from(screen2.Transform)
+  conetree_controller.StartLocation.value = screen2.Transform.value.get_translate()
 
-  navigator.RotationSpeed.value = 0.09
-  navigator.MotionSpeed.value = 0.69
+  conetree_controller.RotationSpeed.value = 0.09
+  conetree_controller.MotionSpeed.value = 0.69
 
-  screen2.Transform.connect_from(navigator.OutTransform)
+  screen2.Transform.connect_from(conetree_controller.OutTransform)
+  conetree_controller.StartLocation.connect_from(conetree.OutPosition)
 
   viewer = avango.gua.nodes.Viewer()
   viewer.Pipelines.value = [pipe, pipe2]
