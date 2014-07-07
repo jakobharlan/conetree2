@@ -19,6 +19,8 @@ class Controller(avango.script.Script):
   RotationSpeed = avango.SFFloat()
   MotionSpeed = avango.SFFloat()
 
+  InMatrix = avango.gua.SFMatrix4()
+
   StartLocation = avango.gua.SFVec3()
   StartRotation = avango.gua.SFVec2()
 
@@ -47,12 +49,18 @@ class Controller(avango.script.Script):
     self.KeyLeft = False
     self.KeyRight = False
     self.KeyC = False
+    self.KeyF = False
     self.KeyX = False
     self.KeyP = False
 
   def myConstructor(self, conetree):
     self.Conetree_ = conetree
 
+  @field_has_changed(InMatrix)
+  def set_location(self):
+    self.__location = self.InMatrix.value.get_translate()
+    self.__rot_x = 0.0
+    self.__rot_y = 0.0
 
   @field_has_changed(StartLocation)
   def reset_location(self):
@@ -117,14 +125,17 @@ class Controller(avango.script.Script):
     # Key PgDown for next level focus
     if self.Keyboard.KeyDown.value and not self.KeyDown:
       self.Conetree_.go_deep_at_focus()
-      self.Conetree_.set_camera_on_Focus()
     self.KeyDown = self.Keyboard.KeyDown.value
 
     # Key PgUp for next level focus
     if self.Keyboard.KeyUp.value and not self.KeyUp:
       self.Conetree_.level_up()
-      self.Conetree_.set_camera_on_Focus()
     self.KeyUp = self.Keyboard.KeyUp.value
+
+    # Key F for Camera Reset
+    if self.Keyboard.KeyF.value and not self.KeyF:
+      self.Conetree_.set_camera_on_Focus()
+    self.KeyF = self.Keyboard.KeyF.value
 
     # Key C for collapse focused
     if self.Keyboard.KeyC.value and not self.KeyC:

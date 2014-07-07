@@ -10,7 +10,7 @@ from Cone import *
 # ConeTree Class
 class ConeTree(avango.script.Script):
   COLORMODE = "NODETYPE"
-  OutPosition = avango.gua.SFVec3()
+  OutMatrix = avango.gua.SFMatrix4()
 
   ## Initialized with the scenegraph that is visualized
   def __init__(self):
@@ -81,7 +81,10 @@ class ConeTree(avango.script.Script):
     self.FocusCone_.highlight(True)
 
   def set_camera_on_Focus(self):
-    self.OutPosition.value = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()   + avango.gua.Vec3(0,0,150)
+    nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
+    distance = (self.FocusCone_.Renderd_Radius_ * 2 ) / (1.6/4) - 2
+    depth = - self.FocusCone_.Depth_ / 2
+    self.OutMatrix.value = avango.gua.make_trans_mat( nodePosition  + avango.gua.Vec3(0,depth,distance) )
 
   # highlighting
   def highlight_by_level(self, level, highlight):
