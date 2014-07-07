@@ -2,18 +2,25 @@ import avango
 import avango.gua
 import math
 
+import avango.script
+from avango.script import field_has_changed
+
 from Cone import *
 
 # ConeTree Class
-class ConeTree:
+class ConeTree(avango.script.Script):
   COLORMODE = "NODETYPE"
+  OutTransform = avango.gua.SFMatrix4()
 
   ## Initialized with the scenegraph that is visualized
-  def __init__(self, graph):
-    avango.gua.load_materials_from("data/materials")
+  def __init__(self):
+    self.super(ConeTree).__init__()
+
+  def myConstructor(self, graph):
     self.Input_graph_ = graph
     self.RootCone_ = Cone(graph.Root.value, "ROOT")
     self.FocusCone_ = self.RootCone_
+    avango.gua.load_materials_from("data/materials")
     self.FocusEdge_ = -1
     self.CT_graph_  = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
@@ -72,6 +79,9 @@ class ConeTree:
   def reapply_materials(self):
     self.RootCone_.reapply_material()
     self.FocusCone_.highlight(True)
+
+  def set_camera_on_Focus(self):
+    self.OutTransform.value = avango.gua.make_trans_mat(0.0, -5, 300)
 
   # highlighting
   def highlight_by_level(self, level, highlight):

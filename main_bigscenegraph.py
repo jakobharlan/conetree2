@@ -156,7 +156,8 @@ def start():
   renderer = avango.gua.create_renderer(pipe);
 
   ## create Cone Tree -----------------------------------
-  conetree = ConeTree(graph)
+  conetree = ConeTree()
+  conetree.myConstructor(graph)
   CT_graph = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
   )
@@ -164,7 +165,7 @@ def start():
   CT_graph.Root.value.Children.value.append(CT_root)
 
   conetree_controller = Controller()
-  conetree_controller.MyConstructor(conetree)
+  conetree_controller.myConstructor(conetree)
 
   ## Viewing Cone Tree Visualization ----------------------
   screen2 = avango.gua.nodes.ScreenNode(

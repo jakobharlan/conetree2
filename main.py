@@ -3,7 +3,6 @@
 from ConeTree import *
 from Controller import *
 
-import examples_common.navigator
 import avango
 import avango.gua
 import time
@@ -43,7 +42,7 @@ def start():
   root_node.Children.value.append(group_monkey)
   root_node.Children.value.append(group_light)
   root_node.Children.value.append(group_light_spheres)
-  
+
   # make a buitifull scene
   monkeys = []
   lights = []
@@ -139,7 +138,8 @@ def start():
   renderer = avango.gua.create_renderer(pipe);
 
   ## create Cone Tree -----------------------------------
-  conetree = ConeTree(graph)
+  conetree = ConeTree()
+  conetree.myConstructor(graph)
   CT_graph = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
   )
@@ -147,7 +147,7 @@ def start():
   CT_graph.Root.value.Children.value.append(CT_root)
 
   conetree_controller = Controller()
-  conetree_controller.MyConstructor(conetree)
+  conetree_controller.myConstructor(conetree)
 
 
   ## Viewing Cone Tree Visualization ----------------------
@@ -183,7 +183,7 @@ def start():
     RightScreen = "/screen",
     SceneGraph = "ConeTree_Graph"
   )
-  
+
   ## Window Cone Tree Setup Visualization--------------------
   window2 = avango.gua.nodes.Window(
     Size = size,
@@ -206,18 +206,17 @@ def start():
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
 
-  navigator = examples_common.navigator.Navigator()
-  navigator.StartLocation.value = screen2.Transform.value.get_translate()
-  navigator.OutTransform.connect_from(screen2.Transform)
+  conetree_controller.StartLocation.value = screen2.Transform.value.get_translate()
 
-  navigator.RotationSpeed.value = 0.09
-  navigator.MotionSpeed.value = 0.69
+  conetree_controller.RotationSpeed.value = 0.09
+  conetree_controller.MotionSpeed.value = 0.69
 
-  screen2.Transform.connect_from(navigator.OutTransform)
+  screen2.Transform.connect_from(conetree_controller.OutTransform)
+  screen2.Transform.connect_from(conetree.OutTransform)
 
   viewer = avango.gua.nodes.Viewer()
   viewer.Pipelines.value = [pipe, pipe2]
-  viewer.SceneGraphs.value = [graph, CT_graph]  
+  viewer.SceneGraphs.value = [graph, CT_graph]
 
   viewer.run()
 

@@ -122,7 +122,7 @@ class Cone:
     self.disc_ = loader.create_geometry_from_file(
       "disc" + str(self.id_),
       "data/objects/disc.obj",
-      "data/materials/Grey1.gmd",
+      "data/materials/DarkGrey.gmd",
       avango.gua.LoaderFlags.DEFAULTS
     )
     self.outNode_.geometry_.Children.value.append(self.disc_)
@@ -221,19 +221,20 @@ class Cone:
         return "data/materials/Orange.gmd"
 
     elif ConeTree.ConeTree.COLORMODE == "DEPTH":
-      if self.Level_ == 1 :
+      if self.Level_ % 7 == 1 :
         return "data/materials/Red.gmd"
-      if self.Level_ == 2 :
+      if self.Level_ % 7 == 2 :
         return "data/materials/Orange.gmd"
-      if self.Level_ == 3 :
+      if self.Level_ % 7 == 3 :
         return "data/materials/Yellow.gmd"
-      if self.Level_ == 4 :
+      if self.Level_ % 7 == 4 :
         return "data/materials/Green.gmd"
-      if self.Level_ == 5 :
+      if self.Level_ % 7 == 5 :
         return "data/materials/Cyan.gmd"
-      # if self.Level_ == 3 :
-      #   return "data/materials/Red.gmd"
-      return "data/materials/Blue.gmd"
+      if self.Level_ % 7 == 6 :
+        return "data/materials/Blue.gmd"
+      if self.Level_ % 7 == 0 :
+        return "data/materials/Violet.gmd"
 
 
 
