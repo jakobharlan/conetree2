@@ -85,6 +85,7 @@ class Cone:
       self.outNode_.set_material("data/materials/White.gmd")
     else:
       self.outNode_.reset_material()
+    self.outNode_.apply_position()
 
   def highlight_edge(self, edge_number, highlight):
     if highlight:
