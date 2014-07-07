@@ -79,7 +79,7 @@ class Cone:
       for edge in self.Edges_:
         self.outNode_.geometry_.Children.value.append(edge.geometry_)
 
-  def highlight(self, highlight):  # todo fix the weird one time cone in root bug
+  def highlight(self, highlight):
     self.highlighted_ = highlight
     if self.highlighted_:
       self.outNode_.set_material("data/materials/White.gmd")
@@ -133,7 +133,7 @@ class Cone:
       self.make_disc()
     if not (self.disc_ in self.outNode_.geometry_.Children.value):
       self.outNode_.geometry_.Children.value.append(self.disc_)
-    self.disc_.Transform.value = avango.gua.make_trans_mat(0,-(self.Depth_ + 1),0) * avango.gua.make_scale_mat(self.Radius_)
+    self.disc_.Transform.value = avango.gua.make_trans_mat(0,-(self.Depth_ + 1),0) * avango.gua.make_scale_mat(self.Radius_ * 0.75)
 
   def layout(self):
     # if this cone has no Children, reset the Radius
@@ -186,11 +186,17 @@ class Cone:
   def apply_layout(self, parent_radius = 0, root = False):
     if root:
       self.outNode_.set_position(avango.gua.Vec3(0,0,0))
+    elif self.is_leaf():
+      self.outNode_.set_position(avango.gua.Vec3(
+        math.cos(self.Angle_) * parent_radius * 0.75,
+        -self.Depth_,
+        math.sin(self.Angle_) * parent_radius * 0.75))
     else:
       self.outNode_.set_position(avango.gua.Vec3(
         math.cos(self.Angle_) * parent_radius,
         -self.Depth_,
         math.sin(self.Angle_) * parent_radius))
+
     for child in self.ChildrenCones_:
       child.apply_layout(parent_radius = self.Renderd_Radius_)
     for edge in self.Edges_:
