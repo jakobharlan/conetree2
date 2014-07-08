@@ -21,7 +21,7 @@ def add_lights(graph, count):
     randdir = avango.gua.Vec3(
       random.random() * 2.0 - 1.0,
       random.random() * 2.0 - 1.0,
-      random.random() * 2.0 - 1.0
+      random.random() * 4.0 - 1.0
     )
 
     randdir.normalize()

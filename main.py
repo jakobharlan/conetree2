@@ -38,10 +38,15 @@ def start():
     Name = "group_light_spheres",
   )
 
+  group_light_2 = avango.gua.nodes.TransformNode(
+    Name = "group_light_2",
+  )
+
   graph.Root.value.Children.value.append(root_node)
   root_node.Children.value.append(group_monkey)
   root_node.Children.value.append(group_light)
   root_node.Children.value.append(group_light_spheres)
+  group_light.Children.value.append(group_light_2)
 
   # make a buitifull scene
   monkeys = []
@@ -83,6 +88,8 @@ def start():
 
   for light in lights:
     group_light.Children.value.append(light)
+    group_light_2.Children.value.append(light)
+
 
   for lights_sphere in lights_spheres:
     group_light_spheres.Children.value.append(lights_sphere)
