@@ -90,19 +90,26 @@ class ConeTree(avango.script.Script):
 
   def set_camera_on_Focus(self):
     bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
+    nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
 
-    size_x = bb.Max.value.x - bb.Min.value.x
+    diff_x_left = nodePosition.x - bb.Min.value.x
+    diff_x_right = bb.Max.value.x - nodePosition.x
+
+    diff_y_left = nodePosition.y - bb.Min.value.y
+    diff_y_right = bb.Max.value.y - nodePosition.y
+
+    size_x = max(diff_x_left,diff_x_right) * 2
     size_y = bb.Max.value.y - bb.Min.value.y
+    size_z = bb.Max.value.z - bb.Min.value.z
 
     eye_from_screen = self.EyeTransform.value.get_translate().length()
 
     distance_x = ((eye_from_screen*size_x)/self.ScreenWidth.value) - eye_from_screen
     distance_y = ((eye_from_screen*size_y)/self.ScreenHeight.value) - eye_from_screen
 
-    distance = max(distance_x,distance_y)
+    distance = max(distance_x,distance_y) + 0.5 * size_z
 
     depth = - size_y / 2
-    nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
     self.OutMatrix.value = avango.gua.make_trans_mat( nodePosition  + avango.gua.Vec3(0,depth,distance) )
 
   # highlighting
