@@ -11,17 +11,25 @@ from Cone import *
 class ConeTree(avango.script.Script):
   COLORMODE = "NODETYPE"
   OutMatrix = avango.gua.SFMatrix4()
+  ScreenWidth = avango.SFFloat()
+  ScreenHeight = avango.SFFloat()
+  EyeTransform = avango.gua.SFMatrix4()
 
   ## Initialized with the scenegraph that is visualized
   def __init__(self):
     self.super(ConeTree).__init__()
 
-  def myConstructor(self, graph):
+  def myConstructor(self, graph, screen, eye):
     self.Input_graph_ = graph
     self.RootCone_ = Cone(graph.Root.value, "ROOT")
     self.FocusCone_ = self.RootCone_
     avango.gua.load_materials_from("data/materials")
     self.FocusEdge_ = -1
+
+    self.ScreenWidth.connect_from(screen.Width)
+    self.ScreenHeight.connect_from(screen.Height)
+    self.EyeTransform.connect_from(eye.Transform)
+
     self.CT_graph_  = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
     )
@@ -81,9 +89,20 @@ class ConeTree(avango.script.Script):
     self.FocusCone_.highlight(True)
 
   def set_camera_on_Focus(self):
+    bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
+
+    size_x = bb.Max.value.x - bb.Min.value.x
+    size_y = bb.Max.value.y - bb.Min.value.y
+
+    eye_from_screen = self.EyeTransform.value.get_translate().length()
+
+    distance_x = ((eye_from_screen*size_x)/self.ScreenWidth.value) - eye_from_screen
+    distance_y = ((eye_from_screen*size_y)/self.ScreenHeight.value) - eye_from_screen
+
+    distance = max(distance_x,distance_y)
+
+    depth = - size_y / 2
     nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
-    distance = (self.FocusCone_.Renderd_Radius_ * 2 ) / (1.6/4) - 2
-    depth = - self.FocusCone_.Depth_ / 2
     self.OutMatrix.value = avango.gua.make_trans_mat( nodePosition  + avango.gua.Vec3(0,depth,distance) )
 
   # highlighting

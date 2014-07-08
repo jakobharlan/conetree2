@@ -144,18 +144,6 @@ def start():
 
   renderer = avango.gua.create_renderer(pipe);
 
-  ## create Cone Tree -----------------------------------
-  conetree = ConeTree()
-  conetree.myConstructor(graph)
-  CT_graph = avango.gua.nodes.SceneGraph(
-      Name = "ConeTree_Graph"
-  )
-  CT_root = conetree.get_root()
-  CT_graph.Root.value.Children.value.append(CT_root)
-
-  conetree_controller = Controller()
-  conetree_controller.myConstructor(conetree)
-
 
   ## Viewing Cone Tree Visualization ----------------------
   screen2 = avango.gua.nodes.ScreenNode(
@@ -167,10 +155,24 @@ def start():
 
   eye2 = avango.gua.nodes.TransformNode(
     Name = "eye",
-    Transform = avango.gua.make_trans_mat(0.0, 0.0, 2.0)
+    Transform = avango.gua.make_trans_mat(0.0, 0.0, 1.0)
   )
 
   screen2.Children.value = [eye2]
+
+
+
+  ## create Cone Tree -----------------------------------
+  conetree = ConeTree()
+  conetree.myConstructor(graph, screen2, eye2)
+  CT_graph = avango.gua.nodes.SceneGraph(
+      Name = "ConeTree_Graph"
+  )
+  CT_root = conetree.get_root()
+  CT_graph.Root.value.Children.value.append(CT_root)
+
+  conetree_controller = Controller()
+  conetree_controller.myConstructor(conetree)
 
   CT_graph.Root.value.Children.value.append(screen2)
 
