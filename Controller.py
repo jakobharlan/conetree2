@@ -11,6 +11,11 @@ import time
 
 class Controller(avango.script.Script):
 
+
+  CAMERAMODE_FREE = 0
+  CAMERAMODE_FOLLOW_SMOOTH = 1
+  CAMERAMODE_COUNT = 2
+
   OutTransform = avango.gua.SFMatrix4()
 
   Mouse = device.MouseDevice()
@@ -44,6 +49,8 @@ class Controller(avango.script.Script):
 
     self.__last_time = -1
 
+    self.camera_mode = Controller.CAMERAMODE_FREE
+
     self.KeyUp = False
     self.KeyDown = False
     self.KeyLeft = False
@@ -70,6 +77,57 @@ class Controller(avango.script.Script):
   def reset_rotation(self):
     self.__rot_x = self.StartRotation.value.x
     self.__rot_y = self.StartRotation.value.y
+
+  def evaluate_CT_controll(self):
+    reset_camera_focus = False
+
+    # Key Left for next focus edge
+    if self.Keyboard.KeyLeft.value and not self.KeyLeft:
+      self.Conetree_.focus_prev_edge()
+    self.KeyLeft = self.Keyboard.KeyLeft.value
+
+    # Key Right for prev focus edge
+    if self.Keyboard.KeyRight.value and not self.KeyRight:
+      self.Conetree_.focus_next_edge()
+    self.KeyRight = self.Keyboard.KeyRight.value
+
+    # Key PgDown for next level focus
+    if self.Keyboard.KeyDown.value and not self.KeyDown:
+      self.Conetree_.go_deep_at_focus()
+      reset_camera_focus = True
+    self.KeyDown = self.Keyboard.KeyDown.value
+
+    # Key PgUp for next level focus
+    if self.Keyboard.KeyUp.value and not self.KeyUp:
+      self.Conetree_.level_up()
+      reset_camera_focus = True
+    self.KeyUp = self.Keyboard.KeyUp.value
+
+    # Key F for changing camera mode
+    if self.Keyboard.KeyF.value and not self.KeyF:
+      self.camera_mode = (self.camera_mode + 1) % Controller.CAMERAMODE_COUNT
+      print "Cameramode now: " + str(self.camera_mode)
+    self.KeyF = self.Keyboard.KeyF.value
+
+    # Key C for collapse focused
+    if self.Keyboard.KeyC.value and not self.KeyC:
+      self.Conetree_.flip_collapse_at_focus()
+      reset_camera_focus = True
+    self.KeyC = self.Keyboard.KeyC.value
+
+    # Key X for changing color mode
+    if self.Keyboard.KeyX.value and not self.KeyX:
+      self.Conetree_.set_colormode(flip = True)
+      self.Conetree_.reapply_materials()
+    self.KeyX = self.Keyboard.KeyX.value
+
+    # Key P for printing Cone Tree
+    if self.Keyboard.KeyP.value and not self.KeyP:
+      self.Conetree_.print_ConeTree()
+    self.KeyP = self.Keyboard.KeyP.value
+
+    if reset_camera_focus and self.camera_mode == Controller.CAMERAMODE_FOLLOW_SMOOTH:
+      self.Conetree_.set_camera_on_Focus()
 
   def evaluate(self):
 
@@ -111,44 +169,4 @@ class Controller(avango.script.Script):
 
       self.__last_time = time.time()
 
-
-    # Key Left for next focus edge
-    if self.Keyboard.KeyLeft.value and not self.KeyLeft:
-      self.Conetree_.focus_prev_edge()
-    self.KeyLeft = self.Keyboard.KeyLeft.value
-
-    # Key Right for prev focus edge
-    if self.Keyboard.KeyRight.value and not self.KeyRight:
-      self.Conetree_.focus_next_edge()
-    self.KeyRight = self.Keyboard.KeyRight.value
-
-    # Key PgDown for next level focus
-    if self.Keyboard.KeyDown.value and not self.KeyDown:
-      self.Conetree_.go_deep_at_focus()
-    self.KeyDown = self.Keyboard.KeyDown.value
-
-    # Key PgUp for next level focus
-    if self.Keyboard.KeyUp.value and not self.KeyUp:
-      self.Conetree_.level_up()
-    self.KeyUp = self.Keyboard.KeyUp.value
-
-    # Key F for Camera Reset
-    if self.Keyboard.KeyF.value and not self.KeyF:
-      self.Conetree_.set_camera_on_Focus()
-    self.KeyF = self.Keyboard.KeyF.value
-
-    # Key C for collapse focused
-    if self.Keyboard.KeyC.value and not self.KeyC:
-      self.Conetree_.flip_collapse_at_focus()
-    self.KeyC = self.Keyboard.KeyC.value
-
-    # Key X for changing color mode
-    if self.Keyboard.KeyX.value and not self.KeyX:
-      self.Conetree_.set_colormode(flip = True)
-      self.Conetree_.reapply_materials()
-    self.KeyX = self.Keyboard.KeyX.value
-
-    # Key P for printing Cone Tree
-    if self.Keyboard.KeyP.value and not self.KeyP:
-      self.Conetree_.print_ConeTree()
-    self.KeyP = self.Keyboard.KeyP.value
+    self.evaluate_CT_controll()
