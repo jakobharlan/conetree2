@@ -155,9 +155,26 @@ def start():
 
   renderer = avango.gua.create_renderer(pipe);
 
+  ## Viewing Cone Tree Visualization ----------------------
+  screen2 = avango.gua.nodes.ScreenNode(
+    Name = "screen",
+    Width = 1.6/2,
+    Height = 0.9,
+    Transform = avango.gua.make_trans_mat(0.0, -5, 300)
+  )
+
+  eye2 = avango.gua.nodes.TransformNode(
+    Name = "eye",
+    Transform = avango.gua.make_trans_mat(0.0, 0.0, 1.0)
+  )
+
+  screen2.Children.value = [eye2]
+
+
+
   ## create Cone Tree -----------------------------------
   conetree = ConeTree()
-  conetree.myConstructor(graph)
+  conetree.myConstructor(graph, screen2, eye2)
   CT_graph = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
   )
@@ -167,20 +184,7 @@ def start():
   conetree_controller = Controller()
   conetree_controller.myConstructor(conetree)
 
-  ## Viewing Cone Tree Visualization ----------------------
-  screen2 = avango.gua.nodes.ScreenNode(
-    Name = "screen",
-    Width = 1.6/2,
-    Height = 0.9,
-    Transform = avango.gua.make_trans_mat(0.0, -5, 50)
-  )
-
-  eye2 = avango.gua.nodes.TransformNode(
-    Name = "eye",
-    Transform = avango.gua.make_trans_mat(0.0, 0.0, 2.5)
-  )
-
-  screen2.Children.value = [eye2]
+  conetree_controller.InMatrix.value = avango.gua.make_trans_mat(0.0, -5, 300)
 
   CT_graph.Root.value.Children.value.append(screen2)
 
@@ -216,6 +220,7 @@ def start():
     LeftResolution = size,
     EnableFPSDisplay = True,
     EnableBackfaceCulling = False
+
   )
 
   renderer2 = avango.gua.create_renderer(pipe2);

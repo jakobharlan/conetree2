@@ -103,7 +103,7 @@ class Controller(avango.script.Script):
 
       target = avango.gua.make_trans_mat(self.__location) * rotation
 
-      smoothness = frame_time * 10.0
+      smoothness = frame_time * 3.0
 
       self.OutTransform.value = self.OutTransform.value * (1.0 - smoothness) + target * smoothness
 

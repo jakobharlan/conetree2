@@ -92,6 +92,9 @@ class ConeTree(avango.script.Script):
     bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
     nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
 
+    print bb.Min.value
+    print bb.Max.value
+
     diff_x_left = nodePosition.x - bb.Min.value.x
     diff_x_right = bb.Max.value.x - nodePosition.x
 
