@@ -132,7 +132,10 @@ class ConeTree(avango.script.Script):
 
   def update_label(self):
     if self.ShowLabel_:
-      self.Label_.sf_text.value = self.FocusCone_.Input_node_.Name.value
+      if self.FocusEdge_ == -1:
+        self.Label_.sf_text.value = self.FocusCone_.Input_node_.Name.value
+      else:
+        self.Label_.sf_text.value = self.FocusCone_.ChildrenCones_[self.FocusEdge_].Input_node_.Name.value
     else:
       self.Label_.sf_text.value = ""
 
@@ -276,6 +279,7 @@ class ConeTree(avango.script.Script):
       if self.FocusEdge_ == len(self.FocusCone_.Edges_):
         self.FocusEdge_ = 0
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+      self.update_label()
 
   def focus_prev_edge(self):
     if not self.FocusCone_.is_leaf():
@@ -287,6 +291,7 @@ class ConeTree(avango.script.Script):
         if self.FocusEdge_ == -1:
           self.FocusEdge_ = len(self.FocusCone_.Edges_) - 1
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+      self.update_label()
 
   def go_deep_at_focus(self):
     if not (self.FocusCone_.is_leaf() or self.FocusEdge_ == -1):
