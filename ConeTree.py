@@ -39,6 +39,10 @@ class ConeTree(avango.script.Script):
     )
     self.layout()
 
+    #initialize camera pos
+    self.CT_graph_.update_cache()
+    self.set_camera_on_Focus()
+
     #initialize label
     self.ShowLabel_ = True
     self.Label_ = TextField()
@@ -46,6 +50,7 @@ class ConeTree(avango.script.Script):
     self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.ScreenWidth.value/2 , (-self.ScreenHeight.value/2) + 0.07, 0)
                                       * avango.gua.make_scale_mat(self.ScreenHeight.value*0.07) )
     self.update_label()
+
 
   def get_scene_node(self, CT_node):
     cones = []
