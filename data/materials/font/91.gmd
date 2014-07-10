@@ -1,0 +1,10 @@
+
+{
+  "shading_model" : "../Text.gsd",
+  "uniforms" : 
+  {
+    "ascii_code" : "91",
+    "diffuse_color" : "(1.0  1.0  1.0)",
+    "diffuse_map" : "data/textures/Font.png"
+  }
+}

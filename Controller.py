@@ -121,6 +121,11 @@ class Controller(avango.script.Script):
       self.Conetree_.reapply_materials()
     self.KeyX = self.Keyboard.KeyX.value
 
+    # Key L for Label
+    if self.Keyboard.KeyL.value and not self.KeyL:
+      self.Conetree_.flip_showlabel()
+    self.KeyL = self.Keyboard.KeyL.value
+
     # Key P for printing Cone Tree
     if self.Keyboard.KeyP.value and not self.KeyP:
       self.Conetree_.print_ConeTree()

@@ -1,0 +1,46 @@
+
+{
+	"final_shading_stage" : 
+	{
+		"body" : "gua_color = color.rgb * color.a * diffuse_color;",
+		"functions" : "",
+		"outputs" : null,
+		"uniforms" : 
+		{
+			"diffuse_color" : "vec3"
+		}
+	},
+	"gbuffer_fragment_stage" : 
+	{
+		"body" : "gua_normal = my_normal;\ntexcoords = vec2(\n    mod(ascii_code, 16) / 16.0\n  , 1 - (ascii_code / 16 + 1) / 16.0\n) + my_texcoords / 16.0;\ncolor = texture2D(diffuse_map, texcoords);\nif (color.a < 0.5)\n  discard;",
+		"functions" : "",
+		"outputs" : 
+		{
+			"color" : "vec4",
+			"texcoords" : "vec2"
+		},
+		"uniforms" : 
+		{
+			"ascii_code" : "int",
+			"diffuse_map" : "sampler2D"
+		}
+	},
+	"gbuffer_vertex_stage" : 
+	{
+		"body" : "gua_position = gua_world_position;\nmy_normal = gua_world_normal;\nmy_texcoords = gua_texcoords;",
+		"functions" : "",
+		"outputs" : 
+		{
+			"my_normal" : "vec3",
+			"my_texcoords" : "vec2"
+		},
+		"uniforms" : null
+	},
+	"lbuffer_stage" : 
+	{
+		"body" : "",
+		"functions" : "",
+		"outputs" : null,
+		"uniforms" : null
+	}
+}

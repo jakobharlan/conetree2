@@ -6,6 +6,8 @@ import avango.script
 from avango.script import field_has_changed
 
 from Cone import *
+from Text import TextField
+
 
 # ConeTree Class
 class ConeTree(avango.script.Script):
@@ -24,16 +26,25 @@ class ConeTree(avango.script.Script):
     self.RootCone_ = Cone(graph.Root.value, "ROOT")
     self.FocusCone_ = self.RootCone_
     avango.gua.load_materials_from("data/materials")
+    avango.gua.load_materials_from("data/materials/font")
     self.FocusEdge_ = -1
 
     self.ScreenWidth.connect_from(screen.Width)
     self.ScreenHeight.connect_from(screen.Height)
     self.EyeTransform.connect_from(eye.Transform)
+    self.Screen = screen
 
     self.CT_graph_  = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
     )
     self.layout()
+
+    #initialize label
+    self.ShowLabel_ = True
+    self.Label_ = TextField()
+    self.Label_.my_constructor(self.Screen)
+    self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.ScreenWidth.value/2 , (-self.ScreenHeight.value/2) + 0.07, 0)
+                                      * avango.gua.make_scale_mat(self.ScreenHeight.value*0.07) )
 
   def get_scene_node(self, CT_node):
     cones = []
@@ -111,6 +122,18 @@ class ConeTree(avango.script.Script):
 
     depth = - size_y / 2
     self.OutMatrix.value = avango.gua.make_trans_mat( nodePosition  + avango.gua.Vec3(0,depth,distance) )
+
+  def flip_showlabel(self):
+    self.ShowLabel_ = not self.ShowLabel_
+    self.update_label()
+
+
+  def update_label(self):
+    if self.ShowLabel_:
+      self.Label_.sf_text.value = self.FocusCone_.Input_node_.Name.value
+    else:
+      self.Label_.sf_text.value = ""
+
 
   # highlighting
   def highlight_by_level(self, level, highlight):
@@ -272,6 +295,7 @@ class ConeTree(avango.script.Script):
       self.FocusCone_ = self.FocusCone_.ChildrenCones_[self.FocusEdge_]
       self.FocusCone_.highlight(1)
       self.FocusEdge_ = -1
+      self.update_label()
 
   def level_up(self):
     if not self.FocusCone_.Parent_ == "ROOT":
@@ -281,6 +305,7 @@ class ConeTree(avango.script.Script):
       self.FocusEdge_ = -1
       self.FocusCone_ = self.FocusCone_.Parent_
       self.FocusCone_.highlight(1)
+      self.update_label()
 
 
 
