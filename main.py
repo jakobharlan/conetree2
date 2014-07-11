@@ -121,7 +121,7 @@ def start():
 
 
   ## Window Setup Scene--------------------------------
-  size = avango.gua.Vec2ui(1920/2, 1920*9/16)
+  size = avango.gua.Vec2ui(2560/2, 2560*9/16)
   window = avango.gua.nodes.Window(
     Size = size,
     LeftResolution = size
