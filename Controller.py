@@ -50,7 +50,9 @@ class Controller(avango.script.Script):
     self.__last_time = -1
 
     self.camera_mode = Controller.CAMERAMODE_FREE
+    self.keyboard_controls = True
 
+    self.KeyF1 = False
     self.KeyUp = False
     self.KeyDown = False
     self.KeyLeft = False
@@ -131,47 +133,59 @@ class Controller(avango.script.Script):
       self.Conetree_.print_ConeTree()
     self.KeyP = self.Keyboard.KeyP.value
 
+    # if needed, redo the camera position
     if reset_camera_focus and self.camera_mode == Controller.CAMERAMODE_FOLLOW_SMOOTH:
       self.Conetree_.set_camera_on_Focus()
 
   def evaluate(self):
 
-    if self.__last_time != -1:
-      current_time = time.time()
-      frame_time = current_time - self.__last_time
-      self.__last_time = current_time
+    # Key to Toggle Keyboard Controls
+    if self.Keyboard.KeyF1.value and not self.KeyF1:
+      self.keyboard_controls = not self.keyboard_controls
+      if self.keyboard_controls:
+        print "Keyboard Controls On!"
+      else:
+        print "Keyboard Controls Off!"
+    self.KeyF1 = self.Keyboard.KeyF1.value
 
-      self.__rot_x -= self.__rel_rot_x.value
-      self.__rot_y -= self.__rel_rot_y.value
+    if self.keyboard_controls:
 
-      rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
-                 avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
+      if self.__last_time != -1:
+        current_time = time.time()
+        frame_time = current_time - self.__last_time
+        self.__last_time = current_time
+
+        self.__rot_x -= self.__rel_rot_x.value
+        self.__rot_y -= self.__rel_rot_y.value
+
+        rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
+                   avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
 
 
-      if self.Keyboard.KeyW.value:
-        self.__location += (rotation * \
-                           avango.gua.make_trans_mat(0.0, 0.0, -self.MotionSpeed.value)).get_translate()
+        if self.Keyboard.KeyW.value:
+          self.__location += (rotation * \
+                             avango.gua.make_trans_mat(0.0, 0.0, -self.MotionSpeed.value)).get_translate()
 
-      if self.Keyboard.KeyS.value:
-        self.__location += (rotation * \
-                           avango.gua.make_trans_mat(0.0, 0.0, self.MotionSpeed.value)).get_translate()
+        if self.Keyboard.KeyS.value:
+          self.__location += (rotation * \
+                             avango.gua.make_trans_mat(0.0, 0.0, self.MotionSpeed.value)).get_translate()
 
-      if self.Keyboard.KeyA.value:
-        self.__location += (rotation * \
-                           avango.gua.make_trans_mat(-self.MotionSpeed.value, 0.0, 0.0)).get_translate()
+        if self.Keyboard.KeyA.value:
+          self.__location += (rotation * \
+                             avango.gua.make_trans_mat(-self.MotionSpeed.value, 0.0, 0.0)).get_translate()
 
-      if self.Keyboard.KeyD.value:
-        self.__location += (rotation * \
-                           avango.gua.make_trans_mat(self.MotionSpeed.value, 0.0, 0.0)).get_translate()
+        if self.Keyboard.KeyD.value:
+          self.__location += (rotation * \
+                             avango.gua.make_trans_mat(self.MotionSpeed.value, 0.0, 0.0)).get_translate()
 
-      target = avango.gua.make_trans_mat(self.__location) * rotation
+        target = avango.gua.make_trans_mat(self.__location) * rotation
 
-      smoothness = frame_time * 3.0
+        smoothness = frame_time * 3.0
 
-      self.OutTransform.value = self.OutTransform.value * (1.0 - smoothness) + target * smoothness
+        self.OutTransform.value = self.OutTransform.value * (1.0 - smoothness) + target * smoothness
 
-    else:
+      else:
 
-      self.__last_time = time.time()
+        self.__last_time = time.time()
 
-    self.evaluate_CT_controll()
+      self.evaluate_CT_controll()

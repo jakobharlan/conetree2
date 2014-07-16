@@ -119,7 +119,7 @@ def init_keyboard():
 		keyboard.buttons[24] = "EV_KEY::KEY_N"
 		keyboard.buttons[25] = "EV_KEY::KEY_M"
 
-		keyboard.buttons[26] = "EV_KEY::KEY_1"
+		keyboard.buttons[26] = "EV_KEY::KEY_F1"
 		keyboard.buttons[27] = "EV_KEY::KEY_2"
 
 		keyboard.buttons[28] = "EV_KEY::KEY_UP"
