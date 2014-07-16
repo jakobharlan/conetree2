@@ -177,11 +177,11 @@ class KeyboardDevice(avango.script.Script):
     self.KeyN.value = self.device_sensor.Button24.value
     self.KeyM.value = self.device_sensor.Button25.value
 
-    self.KeyUp.value = self.device_sensor.Button26.value # PageUP !!
-    self.KeyDown.value = self.device_sensor.Button27.value # PageDown !!
+    self.Key1.value = self.device_sensor.Button26.value
+    self.Key2.value = self.device_sensor.Button27.value
 
-    self.Key1.value = self.device_sensor.Button28.value
-    self.Key2.value = self.device_sensor.Button29.value
+    self.KeyUp.value = self.device_sensor.Button28.value
+    self.KeyDown.value = self.device_sensor.Button29.value
     self.KeyLeft.value = self.device_sensor.Button30.value
     self.KeyRight.value = self.device_sensor.Button31.value
 

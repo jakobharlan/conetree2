@@ -119,11 +119,11 @@ def init_keyboard():
 		keyboard.buttons[24] = "EV_KEY::KEY_N"
 		keyboard.buttons[25] = "EV_KEY::KEY_M"
 
-		keyboard.buttons[26] = "EV_KEY::KEY_PAGEUP"
-		keyboard.buttons[27] = "EV_KEY::KEY_PAGEDOWN"
+		keyboard.buttons[26] = "EV_KEY::KEY_1"
+		keyboard.buttons[27] = "EV_KEY::KEY_2"
 
-		keyboard.buttons[28] = "EV_KEY::KEY_1"
-		keyboard.buttons[29] = "EV_KEY::KEY_2"
+		keyboard.buttons[28] = "EV_KEY::KEY_UP"
+		keyboard.buttons[29] = "EV_KEY::KEY_DOWN"
 		keyboard.buttons[30] = "EV_KEY::KEY_LEFT"
 		keyboard.buttons[31] = "EV_KEY::KEY_RIGHT"
 
@@ -160,10 +160,10 @@ def init_spheron():
 
 device_list = []
 
-init_pst_tracking()
-init_tuio_input()
+# init_pst_tracking()
+# init_tuio_input()
 init_mouse()
 init_keyboard()
-init_spheron()
+# init_spheron()
 
 avango.daemon.run(device_list)
