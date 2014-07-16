@@ -16,6 +16,8 @@ class Cone:
     self.Radius_ = 2
     # Angle this Cone has in its parent Cone
     self.Angle_ = 0
+    # Angle this Cone is turned
+    self.Rotation_ = 0
     # Level and Depth
     self.Level_ = level
     self.Depth_ = 5 + (20.0 / self.Level_)
@@ -85,7 +87,7 @@ class Cone:
       self.outNode_.set_material("data/materials/White.gmd")
     else:
       self.outNode_.reset_material()
-    self.outNode_.apply_position()
+    self.outNode_.apply_Transform()
 
   def highlight_edge(self, edge_number, highlight):
     if highlight:
@@ -196,6 +198,8 @@ class Cone:
         math.cos(self.Angle_) * parent_radius,
         -self.Depth_,
         math.sin(self.Angle_) * parent_radius))
+
+    self.outNode_.set_rotation(self.Rotation_)
 
     for child in self.ChildrenCones_:
       child.apply_layout(parent_radius = self.Renderd_Radius_)
