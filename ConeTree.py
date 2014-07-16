@@ -140,6 +140,22 @@ class ConeTree(avango.script.Script):
     else:
       self.Label_.sf_text.value = ""
 
+  # rotate
+  def rotate_by_id(self, id, angle):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the id
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.id_ == id :
+        current.rotate(angle)
+        print "Rotate: " + str(current.id_) + " : " + str(angle)
+        self.layout()
+        return True
+      for child in current.ChildrenCones_:
+        cones.append(child)
+    return False
 
   # highlighting
   def highlight_by_level(self, level, highlight):

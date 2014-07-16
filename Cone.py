@@ -81,6 +81,9 @@ class Cone:
       for edge in self.Edges_:
         self.outNode_.geometry_.Children.value.append(edge.geometry_)
 
+  def rotate(self, angle):
+    self.Rotation_ += angle
+
   def highlight(self, highlight):
     self.highlighted_ = highlight
     if self.highlighted_:

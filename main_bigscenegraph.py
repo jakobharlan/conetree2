@@ -99,11 +99,42 @@ def start():
     avango.gua.LoaderFlags.DEFAULTS
   )
 
-  root_node.Children.value = [root_monkey]
+  root_monkey2 = loader.create_geometry_from_file(
+    "root_ape2",
+    "data/objects/monkey.obj",
+    "data/materials/Stones.gmd",
+    avango.gua.LoaderFlags.DEFAULTS
+  )
+
+  root_monkey3 = loader.create_geometry_from_file(
+    "root_ape3",
+    "data/objects/monkey.obj",
+    "data/materials/Stones.gmd",
+    avango.gua.LoaderFlags.DEFAULTS
+  )
+
+  root_monkey4 = loader.create_geometry_from_file(
+    "root_ape4",
+    "data/objects/monkey.obj",
+    "data/materials/Stones.gmd",
+    avango.gua.LoaderFlags.DEFAULTS
+  )
+
+  root_monkey5 = loader.create_geometry_from_file(
+    "root_ape5",
+    "data/objects/monkey.obj",
+    "data/materials/Stones.gmd",
+    avango.gua.LoaderFlags.DEFAULTS
+  )
+  root_node.Children.value = [root_monkey, root_monkey2, root_monkey3, root_monkey4, root_monkey5]
   graph.Root.value.Children.value.append(root_node)
 
   add_lights(graph, 20)
-  setup_scene(graph, root_monkey, 4)
+  setup_scene(graph, root_monkey, 3)
+  setup_scene(graph, root_monkey2, 3)
+  setup_scene(graph, root_monkey3, 3)
+  setup_scene(graph, root_monkey4, 3)
+  setup_scene(graph, root_monkey5, 3)
 
   ## Viewing Setup Scene ---------------------------------
   screen = avango.gua.nodes.ScreenNode(
