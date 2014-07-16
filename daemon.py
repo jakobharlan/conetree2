@@ -158,12 +158,28 @@ def init_spheron():
 	else:
 		print "Spheron NOT found !"
 
+def init_oculus():
+	# create a station for each oculus
+	ovr_station_0 = avango.daemon.Station('oculus-0')
+	ovr_station_1 = avango.daemon.Station('oculus-1')
+	ovr_station_2 = avango.daemon.Station('oculus-2')
+
+	# create instance of Oculus
+	oculus = avango.daemon.Oculus()
+
+	# add stations
+	oculus.stations[0] = ovr_station_0
+	oculus.stations[1] = ovr_station_1
+	oculus.stations[2] = ovr_station_2
+	device_list.append(oculus)
+
 device_list = []
 
 # init_pst_tracking()
 # init_tuio_input()
 init_mouse()
 init_keyboard()
+init_oculus()
 # init_spheron()
 
 avango.daemon.run(device_list)
