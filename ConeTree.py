@@ -13,8 +13,6 @@ from Text import TextField
 class ConeTree(avango.script.Script):
   COLORMODE = "NODETYPE"
   OutMatrix = avango.gua.SFMatrix4()
-  ScreenWidth = avango.SFFloat()
-  ScreenHeight = avango.SFFloat()
   EyeTransform = avango.gua.SFMatrix4()
 
   ## Initialized with the scenegraph that is visualized
@@ -29,8 +27,6 @@ class ConeTree(avango.script.Script):
     avango.gua.load_materials_from("data/materials/font")
     self.FocusEdge_ = -1
 
-    self.ScreenWidth.connect_from(screen.Width)
-    self.ScreenHeight.connect_from(screen.Height)
     self.EyeTransform.connect_from(eye.Transform)
     self.Screen = screen
 
@@ -47,8 +43,8 @@ class ConeTree(avango.script.Script):
     self.ShowLabel_ = True
     self.Label_ = TextField()
     self.Label_.my_constructor(self.Screen)
-    self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.ScreenWidth.value/2 , (-self.ScreenHeight.value/2) + 0.07, 0)
-                                      * avango.gua.make_scale_mat(self.ScreenHeight.value*0.07) )
+    self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.Screen.Width.value/2 , (-self.Screen.Height.value/2) + 0.07, 0)
+                                      * avango.gua.make_scale_mat(self.Screen.Height.value*0.07) )
     self.update_label()
 
 
@@ -122,8 +118,8 @@ class ConeTree(avango.script.Script):
 
       eye_from_screen = self.EyeTransform.value.get_translate().length()
 
-      distance_x = ((eye_from_screen*size_x)/self.ScreenWidth.value) - eye_from_screen
-      distance_y = ((eye_from_screen*size_y)/self.ScreenHeight.value) - eye_from_screen
+      distance_x = ((eye_from_screen*size_x)/self.Screen.Width.value) - eye_from_screen
+      distance_y = ((eye_from_screen*size_y)/self.Screen.Height.value) - eye_from_screen
 
       distance = max(distance_x,distance_y) + 0.5 * size_z
 

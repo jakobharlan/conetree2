@@ -103,7 +103,7 @@ def start():
   graph.Root.value.Children.value.append(root_node)
 
   add_lights(graph, 20)
-  setup_scene(graph, root_monkey, 3)
+  setup_scene(graph, root_monkey, 4)
 
   ## Viewing Setup Scene ---------------------------------
   screen = avango.gua.nodes.ScreenNode(
@@ -202,7 +202,7 @@ def start():
     RightEye = "/screen/eye",
     LeftScreen = "/screen",
     RightScreen = "/screen",
-    SceneGraph = "ConeTree_Graph"
+    SceneGraph = "ConeTree_Graph",
   )
 
   ## Window Cone Tree Setup Visualization--------------------
@@ -214,12 +214,14 @@ def start():
   pipe2 = avango.gua.nodes.Pipeline(
     Camera = camera2,
     Window = window2,
-    EnableSsao = True,
+    EnableSsao = False,
     SsaoIntensity = 2.0,
     EnableFXAA = True,
     LeftResolution = size,
     EnableFPSDisplay = True,
-    EnableBackfaceCulling = False
+    EnableBackfaceCulling = True,
+    EnableFrustumCulling = True,
+    FarClip = 2000000.0
 
   )
 
