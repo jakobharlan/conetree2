@@ -184,7 +184,7 @@ def start():
     EnableFPSDisplay = True
   )
 
-  renderer = avango.gua.create_renderer(pipe);
+  #renderer = avango.gua.create_renderer(pipe);
 
   ## Viewing Cone Tree Visualization ----------------------
   screen2 = avango.gua.nodes.ScreenNode(
@@ -256,7 +256,48 @@ def start():
 
   )
 
-  renderer2 = avango.gua.create_renderer(pipe2);
+  # #renderer2 = avango.gua.create_renderer(pipe2);
+
+  # # Final Viewing setup!
+  # final_graph = avango.gua.nodes.SceneGraph(Name = "final_scenegraph")
+
+  # quad_left = avango.gua.nodes.TexturedQuadNode()
+
+  # final_screen = avango.gua.nodes.ScreenNode(
+  #   Name = "final_screen",
+  #   Width = 1.6,
+  #   Height = 0.9,
+  #   Transform = avango.gua.make_trans_mat(0.0, 0, 0)
+  # )
+
+  # final_eye = avango.gua.nodes.TransformNode(
+  #   Name = "final_eye",
+  #   Transform = avango.gua.make_trans_mat(0.0, 0.0, 1.0)
+  # )
+
+  # final_graph.Root.value.Children.value.append(final_screen)
+  # final_screen.Children.value = [final_eye]
+
+  # final_size = avango.gua.Vec2ui(2560, 2560*9/16)
+
+  # final_window = avango.gua.nodes.Window(
+  #   Size = final_size,
+  #   LeftResolution = final_size
+  # )
+
+  # final_pipe = avango.gua.nodes.Pipeline(
+  #     Camera = avango.gua.nodes.Camera(
+  #         LeftEye = "/final_screen/final_eye"
+  #       , RightEye = "/final_screen/final_eye"
+  #       , LeftScreen = "/final_screen"
+  #       , RightScreen = "/final_screen"
+  #       , SceneGraph = "final_scenegraph"
+  #     )
+  #   , Window = final_window
+  #   #, PreRenderPipelines = [prepipe]
+  #   , LeftResolution = final_size
+  # )
+
 
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
@@ -270,7 +311,9 @@ def start():
   conetree_controller.InMatrix.connect_from(conetree.OutMatrix)
 
   viewer = avango.gua.nodes.Viewer()
+  # viewer.Pipelines.value = [pipe, pipe2, final_pipe]
   viewer.Pipelines.value = [pipe, pipe2]
+  # viewer.SceneGraphs.value = [graph, CT_graph,final_graph]
   viewer.SceneGraphs.value = [graph, CT_graph]
 
   viewer.run()
