@@ -16,6 +16,34 @@ from examples_common.GuaVE import GuaVE
 size = avango.gua.Vec2ui(2560/2, 2560*9/16)
 
 
+class Picker(avango.script.Script):
+  SceneGraph = avango.gua.SFSceneGraph()
+  Ray        = avango.gua.SFRayNode()
+  Options    = avango.SFInt()
+  Mask       = avango.SFString()
+  Results    = avango.gua.MFPickResult()
+
+  def __init__(self):
+    self.super(Picker).__init__()
+    self.always_evaluate(True)
+
+    self.SceneGraph.value = avango.gua.nodes.SceneGraph()
+    self.Ray.value  = avango.gua.nodes.RayNode()
+    self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
+                         | avango.gua.PickingOptions.GET_TEXTURE_COORDS \
+                         | avango.gua.PickingOptions.GET_WORLD_NORMALS \
+                         | avango.gua.PickingOptions.INTERPOLATE_NORMALS \
+                         | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
+    self.Mask.value = ""
+
+  def evaluate(self):
+    results = self.SceneGraph.value.ray_test(self.Ray.value,
+                                             self.Options.value,
+                                             self.Mask.value)
+    self.Results.value = results.value
+
+
+
 
 def setup_scene(graph):
 
@@ -209,17 +237,28 @@ def start():
   )
 
   pipe2 = avango.gua.nodes.Pipeline(
-    Camera = camera2,
-    Window = window2,
-    EnableSsao = True,
-    SsaoIntensity = 2.0,
-    EnableFXAA = True,
-    LeftResolution = size,
-    EnableFPSDisplay = True,
-    EnableBackfaceCulling = False
+      Camera = camera2
+    , Window = window2
+    , EnableSsao = True
+    , SsaoIntensity = 2.0
+    , EnableFXAA = True
+    , LeftResolution = size
+    , EnableFPSDisplay = True
+    , EnableBackfaceCulling = False
+    , EnableRayDisplay = True
   )
 
-  renderer2 = avango.gua.create_renderer(pipe2);
+
+  # PICKING
+  pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
+  pick_ray.Transform.value = avango.gua.make_trans_mat(0.0, -0.45, 0.0) * \
+                             avango.gua.make_scale_mat(1.0, 1.0, 50.0)
+
+  screen2.Children.value.append(pick_ray)
+
+  picker = Picker()
+  picker.SceneGraph.value = CT_graph
+  picker.Ray.value = pick_ray
 
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
