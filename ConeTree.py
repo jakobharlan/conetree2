@@ -21,7 +21,7 @@ class ConeTree(avango.script.Script):
 
   def myConstructor(self, graph, screen, eye):
     self.Input_graph_ = graph
-    self.RootCone_ = Cone(graph.Root.value, "ROOT")
+    self.RootCone_ = Cone(graph.Root.value, None)
     self.FocusCone_ = self.RootCone_
     avango.gua.load_materials_from("data/materials")
     avango.gua.load_materials_from("data/materials/font")
@@ -172,6 +172,31 @@ class ConeTree(avango.script.Script):
       for child in current.ChildrenCones_:
         cones.append(child)
 
+  def highlight_path(self, selector, highlight = True):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the selector
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.id_ == selector or current.Input_node_ == selector or current.outNode_.geometry_ == selector:
+        # always hold a reference to the parent and current cone
+        parent = current.Parent_
+        while (not parent == None): # go up the ConeTree
+          current.highlight(highlight) # highlight the Nodes
+
+          for edge in parent.Edges_:
+            if edge.To_ == current.outNode_:  # look for the edge linking parent and current
+              edge.highlight(highlight) # highlight it
+
+          current = current.Parent_
+          parent = current.Parent_
+
+        current.highlight(highlight) # highlight also root
+        return True
+
+      for child in current.ChildrenCones_:
+        cones.append(child)
 
   def highlight_by_level(self, level, highlight):
     cones = []
@@ -258,7 +283,7 @@ class ConeTree(avango.script.Script):
       self.update_label()
 
   def level_up(self):
-    if not self.FocusCone_.Parent_ == "ROOT":
+    if not self.FocusCone_.Parent_ == None:
       self.FocusCone_.highlight(0)
       if not self.FocusEdge_ == -1:
         self.FocusCone_.highlight_edge(self.FocusEdge_,0)

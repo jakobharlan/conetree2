@@ -20,6 +20,11 @@ class Edge:
   def refresh_position(self):
     self.geometry_.Transform.value = calc_transform_connection(avango.gua.Vec3(0,0,0) , self.To_.position_)
 
+  def highlight(self, highlight):
+    if highlight:
+      self.geometry_.Material.value = "data/materials/White.gmd"
+    else:
+      self.geometry_.Material.value = "data/materials/Grey.gmd"
 
 
 def get_rotation_between_vectors(VEC1, VEC2):
