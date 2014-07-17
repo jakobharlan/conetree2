@@ -158,6 +158,21 @@ class ConeTree(avango.script.Script):
     return False
 
   # highlighting
+  def highlight(self, selector, highlight = True):
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the selector
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.id_ == selector or current.Input_node_ == selector or current.outNode_.geometry_ == selector:
+        current.highlight(highlight)
+        print "Highlight: " + str(current.id_) + " : " + str(highlight)
+
+      for child in current.ChildrenCones_:
+        cones.append(child)
+
+
   def highlight_by_level(self, level, highlight):
     cones = []
     cones.append(self.RootCone_)
@@ -172,56 +187,7 @@ class ConeTree(avango.script.Script):
       for child in current.ChildrenCones_:
         cones.append(child)
 
-  def highlight_by_id(self, id, highlight):
-    cones = []
-    cones.append(self.RootCone_)
-    # search for the id
-    while (not len(cones) == 0):
-      current = cones.pop()
-      # when found set highlighted
-      if current.id_ == id :
-        current.highlight(highlight)
-        print "Highlight: " + str(current.id_) + " : " + str(highlight)
-        #self.layout()
-        return True
-      for child in current.ChildrenCones_:
-        cones.append(child)
-    return False
-
-  def highlight_by_scenenode(self, scenenode, highlight):
-    cones = []
-    cones.append(self.RootCone_)
-    # search for the id
-    while (not len(cones) == 0):
-      current = cones.pop()
-      # when found set highlighted
-      if current.Input_node_ == scenenode :
-        current.highlight(highlight)
-        print "Highlight: " + str(current.id_) + " : " + str(highlight)
-        #self.layout()
-        return True
-      for child in current.ChildrenCones_:
-        cones.append(child)
-    return False
-
-  def highlight_by_CT_node(self, CT_node, highlight):
-    cones = []
-    cones.append(self.RootCone_)
-    # search for the id
-    while (not len(cones) == 0):
-      current = cones.pop()
-      # when found set highlighted
-      if current.outNode_.geometry_ == CT_node :
-        current.highlight(highlight)
-        print "Highlight: " + str(current.id_) + " : " + str(highlight)
-        #self.layout()
-        return True
-      for child in current.ChildrenCones_:
-        cones.append(child)
-    return False
-
   # collapsing
-
   def flip_collapse_at_focus(self):
     if self.FocusCone_.collapsed_:
       self.FocusCone_.collapse(False)
@@ -242,50 +208,20 @@ class ConeTree(avango.script.Script):
       for child in current.ChildrenCones_:
         cones.append(child)
 
-  def collapse_by_id(self, id, collapsed):
+  def collapse(self, selector, collapse = True):
     cones = []
     cones.append(self.RootCone_)
-    # search for the id
+    # search for the selector
     while (not len(cones) == 0):
       current = cones.pop()
-      # when found set collapsed
-      if current.id_ == id :
-        current.collapse(collapsed)
-        self.layout()
-        return True
-      for child in current.ChildrenCones_:
-        cones.append(child)
-    return False
+      # when found set highlighted
+      if current.id_ == selector or current.Input_node_ == selector or current.outNode_.geometry_ == selector:
+        current.collapse(collapse)
+        print "Collapsed: " + str(current.id_) + " : " + str(collapse)
 
-  def collapse_by_scenenode(self, scenenode, collapsed):
-    cones = []
-    cones.append(self.RootCone_)
-    # search for the node
-    while (not len(cones) == 0):
-      current = cones.pop()
-      # when found set collapsed
-      if current.Input_node_ == scenenode :
-        current.collapse(collapsed)
-        self.layout()
-        return True
       for child in current.ChildrenCones_:
         cones.append(child)
-    return False
 
-  def collapse_by_CT_node(self, CT_node, collapsed):
-    cones = []
-    cones.append(self.RootCone_)
-    # search for the node
-    while (not len(cones) == 0):
-      current = cones.pop()
-      # when found set collapsed
-      if current.outNode_.geometry_ == CT_node :
-        current.collapse(collapsed)
-        self.layout()
-        return True
-      for child in current.ChildrenCones_:
-        cones.append(child)
-    return False
 
   # deal with focus
   def focus_next_edge(self):
