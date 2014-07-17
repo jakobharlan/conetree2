@@ -12,12 +12,12 @@ from avango.script import field_has_changed
 
 from examples_common.GuaVE import GuaVE
 
-def start():
+## Parameters:
+size = avango.gua.Vec2ui(2560/2, 2560*9/16)
 
-  ##initializing scene -------------------
-  graph = avango.gua.nodes.SceneGraph(
-    Name = "big_scenegraph"
-  )
+
+
+def setup_scene(graph):
 
   loader = avango.gua.nodes.TriMeshLoader()
 
@@ -90,11 +90,12 @@ def start():
     group_light.Children.value.append(light)
     group_light_2.Children.value.append(light)
 
-
   for lights_sphere in lights_spheres:
     group_light_spheres.Children.value.append(lights_sphere)
 
-  ## Viewing Setup Scene ---------------------------------
+
+def viewing_setup_scene(graph):
+
   screen = avango.gua.nodes.ScreenNode(
     Name = "screen",
     Width = 1.6/2,
@@ -116,12 +117,10 @@ def start():
     RightEye = "/screen/eye",
     LeftScreen = "/screen",
     RightScreen = "/screen",
-    SceneGraph = "big_scenegraph"
+    SceneGraph = "scenegraph"
   )
 
 
-  ## Window Setup Scene--------------------------------
-  size = avango.gua.Vec2ui(2560/2, 2560*9/16)
   window = avango.gua.nodes.Window(
     Size = size,
     LeftResolution = size
@@ -142,8 +141,19 @@ def start():
     EnableFPSDisplay = True
   )
 
-  renderer = avango.gua.create_renderer(pipe);
+  return pipe
 
+
+def start():
+
+  ##initializing scene -------------------
+  graph = avango.gua.nodes.SceneGraph(
+    Name = "scenegraph"
+  )
+
+  setup_scene(graph)
+
+  pipe_scene = viewing_setup_scene(graph)
 
   ## Viewing Cone Tree Visualization ----------------------
   screen2 = avango.gua.nodes.ScreenNode(
@@ -223,8 +233,9 @@ def start():
   screen2.Transform.connect_from(conetree_controller.OutTransform)
   conetree_controller.InMatrix.connect_from(conetree.OutMatrix)
 
+
   viewer = avango.gua.nodes.Viewer()
-  viewer.Pipelines.value = [pipe, pipe2]
+  viewer.Pipelines.value = [pipe_scene, pipe2]
   viewer.SceneGraphs.value = [graph, CT_graph]
 
   viewer.run()
