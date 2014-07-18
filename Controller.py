@@ -8,13 +8,7 @@ import avango.gua
 import device
 import time
 
-
-class Controller(avango.script.Script):
-
-
-  CAMERAMODE_FREE = 0
-  CAMERAMODE_FOLLOW_SMOOTH = 1
-  CAMERAMODE_COUNT = 2
+class Navigator(avango.script.Script):
 
   OutTransform = avango.gua.SFMatrix4()
   OutTransform.value = avango.gua.make_identity_mat()
@@ -33,10 +27,8 @@ class Controller(avango.script.Script):
   __rel_rot_x = avango.SFFloat()
   __rel_rot_y = avango.SFFloat()
 
-  PickResults = avango.gua.MFPickResult()
-
   def __init__(self):
-    self.super(Controller).__init__()
+    self.super(Navigator).__init__()
     self.always_evaluate(True)
 
     self.__rot_x = 0.0
@@ -52,7 +44,6 @@ class Controller(avango.script.Script):
 
     self.__last_time = -1
 
-    self.camera_mode = Controller.CAMERAMODE_FREE
     self.keyboard_controls = True
 
     self.KeyF1 = False
@@ -60,10 +51,6 @@ class Controller(avango.script.Script):
     self.KeyDown = False
     self.KeyLeft = False
     self.KeyRight = False
-    self.KeyC = False
-    self.KeyF = False
-    self.KeyX = False
-    self.KeyP = False
 
   def myConstructor(self, conetree):
     self.Conetree_ = conetree
@@ -83,9 +70,85 @@ class Controller(avango.script.Script):
     self.__rot_x = self.StartRotation.value.x
     self.__rot_y = self.StartRotation.value.y
 
-  @field_has_changed(PickResults)
-  def update_pickresults(self):
-    print len(self.PickResults.value)
+  def evaluate(self):
+
+    # Key to Toggle Keyboard Controls
+    if self.Keyboard.KeyF1.value and not self.KeyF1:
+      self.keyboard_controls = not self.keyboard_controls
+      if self.keyboard_controls:
+        print "Navigator: Keyboard Controls On!"
+      else:
+        print "Navigator: Keyboard Controls Off!"
+    self.KeyF1 = self.Keyboard.KeyF1.value
+
+    if self.keyboard_controls:
+
+      if self.__last_time != -1:
+        current_time = time.time()
+        frame_time = current_time - self.__last_time
+        self.__last_time = current_time
+
+        self.__rot_x -= self.__rel_rot_x.value
+        self.__rot_y -= self.__rel_rot_y.value
+
+        rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
+                   avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
+
+
+        if self.Keyboard.KeyW.value:
+          self.__location += (rotation * \
+                             avango.gua.make_trans_mat(0.0, 0.0, -self.MotionSpeed.value)).get_translate()
+
+        if self.Keyboard.KeyS.value:
+          self.__location += (rotation * \
+                             avango.gua.make_trans_mat(0.0, 0.0, self.MotionSpeed.value)).get_translate()
+
+        if self.Keyboard.KeyA.value:
+          self.__location += (rotation * \
+                             avango.gua.make_trans_mat(-self.MotionSpeed.value, 0.0, 0.0)).get_translate()
+
+        if self.Keyboard.KeyD.value:
+          self.__location += (rotation * \
+                             avango.gua.make_trans_mat(self.MotionSpeed.value, 0.0, 0.0)).get_translate()
+
+        target = avango.gua.make_trans_mat(self.__location) * rotation
+
+        smoothness = frame_time * 3.0
+
+        self.OutTransform.value = self.OutTransform.value * (1.0 - smoothness) + target * smoothness
+
+      else:
+
+        self.__last_time = time.time()
+
+
+class KeyController(avango.script.Script):
+
+  CAMERAMODE_FREE = 0
+  CAMERAMODE_FOLLOW_SMOOTH = 1
+  CAMERAMODE_COUNT = 2
+
+  Keyboard = device.KeyboardDevice()
+
+  def __init__(self):
+    self.super(KeyController).__init__()
+    self.always_evaluate(True)
+
+    self.camera_mode = KeyController.CAMERAMODE_FREE
+    self.keyboard_controls = True
+
+    self.KeyF1 = False
+    self.KeyUp = False
+    self.KeyDown = False
+    self.KeyLeft = False
+    self.KeyRight = False
+    self.KeyC = False
+    self.KeyF = False
+    self.KeyX = False
+    self.KeyP = False
+
+  def myConstructor(self, conetree):
+    self.Conetree_ = conetree
 
   def evaluate_CT_controll(self):
     reset_camera_focus = False
@@ -156,43 +219,24 @@ class Controller(avango.script.Script):
     self.KeyF1 = self.Keyboard.KeyF1.value
 
     if self.keyboard_controls:
-
-      if self.__last_time != -1:
-        current_time = time.time()
-        frame_time = current_time - self.__last_time
-        self.__last_time = current_time
-
-        self.__rot_x -= self.__rel_rot_x.value
-        self.__rot_y -= self.__rel_rot_y.value
-
-        rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
-                   avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
-
-
-        if self.Keyboard.KeyW.value:
-          self.__location += (rotation * \
-                             avango.gua.make_trans_mat(0.0, 0.0, -self.MotionSpeed.value)).get_translate()
-
-        if self.Keyboard.KeyS.value:
-          self.__location += (rotation * \
-                             avango.gua.make_trans_mat(0.0, 0.0, self.MotionSpeed.value)).get_translate()
-
-        if self.Keyboard.KeyA.value:
-          self.__location += (rotation * \
-                             avango.gua.make_trans_mat(-self.MotionSpeed.value, 0.0, 0.0)).get_translate()
-
-        if self.Keyboard.KeyD.value:
-          self.__location += (rotation * \
-                             avango.gua.make_trans_mat(self.MotionSpeed.value, 0.0, 0.0)).get_translate()
-
-        target = avango.gua.make_trans_mat(self.__location) * rotation
-
-        smoothness = frame_time * 3.0
-
-        self.OutTransform.value = self.OutTransform.value * (1.0 - smoothness) + target * smoothness
-
-      else:
-
-        self.__last_time = time.time()
-
       self.evaluate_CT_controll()
+
+
+class PickController(avango.script.Script):
+
+  PickResults = avango.gua.MFPickResult()
+  OldPickResults = avango.gua.MFPickResult()
+
+  def __init__(self):
+    self.super(PickController).__init__()
+
+  def myConstructor(self, conetree):
+    self.Conetree_ = conetree
+
+  @field_has_changed(PickResults)
+  def update_pickresults(self):
+    for result in self.OldPickResults.value:
+      self.Conetree_.highlight_path(result.Object.value,0)
+    for result in self.PickResults.value:
+      self.Conetree_.highlight_path(result.Object.value,1)
+    self.OldPickResults.value = self.PickResults.value

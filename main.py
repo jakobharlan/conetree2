@@ -29,7 +29,8 @@ class Picker(avango.script.Script):
 
     self.SceneGraph.value = avango.gua.nodes.SceneGraph()
     self.Ray.value  = avango.gua.nodes.RayNode()
-    # self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
+    self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
+                       | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
 
     self.Mask.value = ""
 
@@ -204,8 +205,15 @@ def start():
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
 
-  conetree_controller = Controller()
+  conetree_controller = KeyController()
   conetree_controller.myConstructor(conetree)
+
+  conetree_navigator = Navigator()
+  conetree_navigator.myConstructor(conetree)
+
+  conetree_picker = PickController()
+  conetree_picker.myConstructor(conetree)
+
 
   CT_graph.Root.value.Children.value.append(screen2)
 
@@ -248,7 +256,7 @@ def start():
   # PICKING
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
   pick_ray.Transform.value = avango.gua.make_trans_mat(0.0, -0.45, 0.0) * \
-                             avango.gua.make_scale_mat(1.0, 1.0, 50.0)
+                             avango.gua.make_scale_mat(1.0, 1.0, 500.0)
 
   screen2.Children.value.append(pick_ray)
 
@@ -256,16 +264,15 @@ def start():
   picker.SceneGraph.value = CT_graph
   picker.Ray.value = pick_ray
 
-  conetree_controller.PickResults.connect_from(picker.Results)
+  conetree_picker.PickResults.connect_from(picker.Results)
 
+  conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
 
-  conetree_controller.StartLocation.value = screen2.Transform.value.get_translate()
+  conetree_navigator.RotationSpeed.value = 0.09
+  conetree_navigator.MotionSpeed.value = 0.69
 
-  conetree_controller.RotationSpeed.value = 0.09
-  conetree_controller.MotionSpeed.value = 0.69
-
-  screen2.Transform.connect_from(conetree_controller.OutTransform)
-  conetree_controller.InMatrix.connect_from(conetree.OutMatrix)
+  screen2.Transform.connect_from(conetree_navigator.OutTransform)
+  conetree_navigator.InMatrix.connect_from(conetree.OutMatrix)
 
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
