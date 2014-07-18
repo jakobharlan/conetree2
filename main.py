@@ -29,11 +29,8 @@ class Picker(avango.script.Script):
 
     self.SceneGraph.value = avango.gua.nodes.SceneGraph()
     self.Ray.value  = avango.gua.nodes.RayNode()
-    self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
-                         | avango.gua.PickingOptions.GET_TEXTURE_COORDS \
-                         | avango.gua.PickingOptions.GET_WORLD_NORMALS \
-                         | avango.gua.PickingOptions.INTERPOLATE_NORMALS \
-                         | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
+    # self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
+
     self.Mask.value = ""
 
   def evaluate(self):
@@ -41,7 +38,6 @@ class Picker(avango.script.Script):
                                              self.Options.value,
                                              self.Mask.value)
     self.Results.value = results.value
-
 
 
 
@@ -260,8 +256,8 @@ def start():
   picker.SceneGraph.value = CT_graph
   picker.Ray.value = pick_ray
 
-  guaVE = GuaVE()
-  guaVE.start(locals(), globals())
+  conetree_controller.PickResults.connect_from(picker.Results)
+
 
   conetree_controller.StartLocation.value = screen2.Transform.value.get_translate()
 
@@ -271,10 +267,16 @@ def start():
   screen2.Transform.connect_from(conetree_controller.OutTransform)
   conetree_controller.InMatrix.connect_from(conetree.OutMatrix)
 
+  guaVE = GuaVE()
+  guaVE.start(locals(), globals())
 
   viewer = avango.gua.nodes.Viewer()
-  viewer.Pipelines.value = [pipe_scene, pipe2]
-  viewer.SceneGraphs.value = [graph, CT_graph]
+
+  # viewer.Pipelines.value = [pipe_scene, pipe2]
+  # viewer.SceneGraphs.value = [graph, CT_graph]
+
+  viewer.Pipelines.value = [pipe2]
+  viewer.SceneGraphs.value = [CT_graph]
 
   viewer.run()
 

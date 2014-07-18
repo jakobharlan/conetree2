@@ -15,7 +15,7 @@ class Node:
       "sphere",
       "data/objects/sphere.obj",
       self.material_,
-      avango.gua.LoaderFlags.DEFAULTS
+      avango.gua.LoaderFlags.DEFAULTS | avango.gua.LoaderFlags.MAKE_PICKABLE
     )
     self.apply_Transform()
 

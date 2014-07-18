@@ -17,6 +17,7 @@ class Controller(avango.script.Script):
   CAMERAMODE_COUNT = 2
 
   OutTransform = avango.gua.SFMatrix4()
+  OutTransform.value = avango.gua.make_identity_mat()
 
   Mouse = device.MouseDevice()
   Keyboard = device.KeyboardDevice()
@@ -31,6 +32,8 @@ class Controller(avango.script.Script):
 
   __rel_rot_x = avango.SFFloat()
   __rel_rot_y = avango.SFFloat()
+
+  PickResults = avango.gua.MFPickResult()
 
   def __init__(self):
     self.super(Controller).__init__()
@@ -79,6 +82,10 @@ class Controller(avango.script.Script):
   def reset_rotation(self):
     self.__rot_x = self.StartRotation.value.x
     self.__rot_y = self.StartRotation.value.y
+
+  @field_has_changed(PickResults)
+  def update_pickresults(self):
+    print len(self.PickResults.value)
 
   def evaluate_CT_controll(self):
     reset_camera_focus = False
