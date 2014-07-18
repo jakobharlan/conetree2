@@ -12,6 +12,31 @@ from avango.script import field_has_changed
 
 from examples_common.GuaVE import GuaVE
 
+class Picker(avango.script.Script):
+  SceneGraph = avango.gua.SFSceneGraph()
+  Ray        = avango.gua.SFRayNode()
+  Options    = avango.SFInt()
+  Mask       = avango.SFString()
+  Results    = avango.gua.MFPickResult()
+
+  def __init__(self):
+    self.super(Picker).__init__()
+    self.always_evaluate(True)
+
+    self.SceneGraph.value = avango.gua.nodes.SceneGraph()
+    self.Ray.value  = avango.gua.nodes.RayNode()
+    self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
+                       | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
+
+    self.Mask.value = ""
+
+  def evaluate(self):
+    results = self.SceneGraph.value.ray_test(self.Ray.value,
+                                             self.Options.value,
+                                             self.Mask.value)
+    self.Results.value = results.value
+
+
 def add_lights(graph, count):
 
   loader = avango.gua.nodes.TriMeshLoader()
@@ -212,10 +237,14 @@ def start():
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
 
-  conetree_controller = Controller()
+  conetree_controller = KeyController()
   conetree_controller.myConstructor(conetree)
 
-  conetree_controller.InMatrix.value = avango.gua.make_trans_mat(0.0, -5, 300)
+  conetree_navigator = Navigator()
+  conetree_navigator.myConstructor(conetree)
+
+  conetree_picker = PickController()
+  conetree_picker.myConstructor(conetree)
 
   CT_graph.Root.value.Children.value.append(screen2)
 
@@ -243,17 +272,14 @@ def start():
   )
 
   pipe2 = avango.gua.nodes.Pipeline(
-    Camera = camera2,
-    Window = window2,
-    EnableSsao = False,
-    SsaoIntensity = 2.0,
-    EnableFXAA = True,
-    LeftResolution = size,
-    EnableFPSDisplay = True,
-    EnableBackfaceCulling = True,
-    EnableFrustumCulling = True,
-    FarClip = 2000000.0
-
+      Camera = camera2
+    , Window = window2
+    , EnableFXAA = True
+    , LeftResolution = size
+    , EnableFPSDisplay = True
+    , EnableBackfaceCulling = False
+    , EnableRayDisplay = True
+    , FarClip = 10000.0
   )
 
   # #renderer2 = avango.gua.create_renderer(pipe2);
@@ -299,16 +325,29 @@ def start():
   # )
 
 
+  # PICKING
+  pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
+  pick_ray.Transform.value = avango.gua.make_trans_mat(0.0, -0.45, 0.0) * \
+                             avango.gua.make_scale_mat(1.0, 1.0, 500.0)
+
+  screen2.Children.value.append(pick_ray)
+
+  picker = Picker()
+  picker.SceneGraph.value = CT_graph
+  picker.Ray.value = pick_ray
+
+  conetree_picker.PickResults.connect_from(picker.Results)
+
+  conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
+
+  conetree_navigator.RotationSpeed.value = 0.09
+  conetree_navigator.MotionSpeed.value = 0.69
+
+  screen2.Transform.connect_from(conetree_navigator.OutTransform)
+  conetree_navigator.InMatrix.connect_from(conetree.OutMatrix)
+
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
-
-  conetree_controller.StartLocation.value = screen2.Transform.value.get_translate()
-
-  conetree_controller.RotationSpeed.value = 0.09
-  conetree_controller.MotionSpeed.value = 0.69
-
-  screen2.Transform.connect_from(conetree_controller.OutTransform)
-  conetree_controller.InMatrix.connect_from(conetree.OutMatrix)
 
   viewer = avango.gua.nodes.Viewer()
   # viewer.Pipelines.value = [pipe, pipe2, final_pipe]
