@@ -158,7 +158,7 @@ class ConeTree(avango.script.Script):
     return False
 
   # highlighting
-  def highlight(self, selector, highlight = True):
+  def highlight(self, selector, highlight = True, path = False):
     cones = []
     cones.append(self.RootCone_)
     # search for the selector
@@ -166,34 +166,12 @@ class ConeTree(avango.script.Script):
       current = cones.pop()
       # when found set highlighted
       if current.id_ == selector or current.Input_node_ == selector or current.outNode_.geometry_ == selector:
-        current.highlight(highlight)
-        print "Highlight: " + str(current.id_) + " : " + str(highlight)
-
-      for child in current.ChildrenCones_:
-        cones.append(child)
-
-  def highlight_path(self, selector, highlight = True):
-    cones = []
-    cones.append(self.RootCone_)
-    # search for the selector
-    while (not len(cones) == 0):
-      current = cones.pop()
-      # when found set highlighted
-      if current.id_ == selector or current.Input_node_ == selector or current.outNode_.geometry_ == selector:
-        # always hold a reference to the parent and current cone
-        parent = current.Parent_
-        while (not parent == None): # go up the ConeTree
-          current.highlight(highlight) # highlight the Nodes
-
-          for edge in parent.Edges_:
-            if edge.To_ == current.outNode_:  # look for the edge linking parent and current
-              edge.highlight(highlight) # highlight it
-
-          current = current.Parent_
-          parent = current.Parent_
-
-        current.highlight(highlight) # highlight also root
-        return True
+        if path:
+          current.highlight_path(highlight)
+          print "Highlight path: " + str(current.id_) + " : " + str(highlight)
+        else:
+          current.highlight(highlight)
+          print "Highlight: " + str(current.id_) + " : " + str(highlight)
 
       for child in current.ChildrenCones_:
         cones.append(child)
@@ -249,6 +227,30 @@ class ConeTree(avango.script.Script):
 
 
   # deal with focus
+  def focus(self, selector):
+    # reset focusi
+    self.FocusCone_.highlight_path(0)
+    # self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+
+    cones = []
+    cones.append(self.RootCone_)
+    # search for the selector
+    while (not len(cones) == 0):
+      current = cones.pop()
+      # when found set highlighted
+      if current.id_ == selector or current.Input_node_ == selector or current.outNode_.geometry_ == selector:
+        # set new focus
+        self.FocusCone_ = current
+        self.FocusCone_.highlight_path(1)
+        self.FocusEdge_ = -1
+        self.update_label()
+
+        print "Focused: " + str(current.id_)
+        return True
+      for child in current.ChildrenCones_:
+        cones.append(child)
+    return False
+
   def focus_next_edge(self):
     if not self.FocusCone_.is_leaf():
       if not self.FocusEdge_ == -1:
@@ -274,22 +276,22 @@ class ConeTree(avango.script.Script):
   def go_deep_at_focus(self):
     if not (self.FocusCone_.is_leaf() or self.FocusEdge_ == -1):
       # reset focusi
-      self.FocusCone_.highlight(0)
+      self.FocusCone_.highlight_path(0)
       self.FocusCone_.highlight_edge(self.FocusEdge_,0)
       # set new focus
       self.FocusCone_ = self.FocusCone_.ChildrenCones_[self.FocusEdge_]
-      self.FocusCone_.highlight(1)
+      self.FocusCone_.highlight_path(1)
       self.FocusEdge_ = -1
       self.update_label()
 
   def level_up(self):
     if not self.FocusCone_.Parent_ == None:
-      self.FocusCone_.highlight(0)
+      self.FocusCone_.highlight_path(0)
       if not self.FocusEdge_ == -1:
         self.FocusCone_.highlight_edge(self.FocusEdge_,0)
       self.FocusEdge_ = -1
       self.FocusCone_ = self.FocusCone_.Parent_
-      self.FocusCone_.highlight(1)
+      self.FocusCone_.highlight_path(1)
       self.update_label()
 
 

@@ -243,8 +243,6 @@ def start():
   pipe2 = avango.gua.nodes.Pipeline(
       Camera = camera2
     , Window = window2
-    , EnableSsao = True
-    , SsaoIntensity = 2.0
     , EnableFXAA = True
     , LeftResolution = size
     , EnableFPSDisplay = True
@@ -279,11 +277,8 @@ def start():
 
   viewer = avango.gua.nodes.Viewer()
 
-  # viewer.Pipelines.value = [pipe_scene, pipe2]
-  # viewer.SceneGraphs.value = [graph, CT_graph]
-
-  viewer.Pipelines.value = [pipe2]
-  viewer.SceneGraphs.value = [CT_graph]
+  viewer.Pipelines.value = [pipe_scene, pipe2]
+  viewer.SceneGraphs.value = [graph, CT_graph]
 
   viewer.run()
 

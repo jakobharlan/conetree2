@@ -163,13 +163,13 @@ class KeyController(avango.script.Script):
       self.Conetree_.focus_next_edge()
     self.KeyRight = self.Keyboard.KeyRight.value
 
-    # Key PgDown for next level focus
+    # Key UP for next level focus
     if self.Keyboard.KeyDown.value and not self.KeyDown:
       self.Conetree_.go_deep_at_focus()
       reset_camera_focus = True
     self.KeyDown = self.Keyboard.KeyDown.value
 
-    # Key PgUp for next level focus
+    # Key Down for next level focus
     if self.Keyboard.KeyUp.value and not self.KeyUp:
       self.Conetree_.level_up()
       reset_camera_focus = True
@@ -177,7 +177,7 @@ class KeyController(avango.script.Script):
 
     # Key F for changing camera mode
     if self.Keyboard.KeyF.value and not self.KeyF:
-      self.camera_mode = (self.camera_mode + 1) % Controller.CAMERAMODE_COUNT
+      self.camera_mode = (self.camera_mode + 1) % KeyController.CAMERAMODE_COUNT
       print "Cameramode now: " + str(self.camera_mode)
     self.KeyF = self.Keyboard.KeyF.value
 
@@ -204,7 +204,7 @@ class KeyController(avango.script.Script):
     self.KeyP = self.Keyboard.KeyP.value
 
     # if needed, redo the camera position
-    if reset_camera_focus and self.camera_mode == Controller.CAMERAMODE_FOLLOW_SMOOTH:
+    if reset_camera_focus and self.camera_mode == KeyController.CAMERAMODE_FOLLOW_SMOOTH:
       self.Conetree_.set_camera_on_Focus()
 
   def evaluate(self):
@@ -235,8 +235,7 @@ class PickController(avango.script.Script):
 
   @field_has_changed(PickResults)
   def update_pickresults(self):
-    for result in self.OldPickResults.value:
-      self.Conetree_.highlight_path(result.Object.value,0)
     for result in self.PickResults.value:
-      self.Conetree_.highlight_path(result.Object.value,1)
+      self.Conetree_.focus(result.Object.value)
+
     self.OldPickResults.value = self.PickResults.value

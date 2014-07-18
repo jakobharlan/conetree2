@@ -92,6 +92,14 @@ class Cone:
       self.outNode_.reset_material()
     self.outNode_.apply_Transform()
 
+  def highlight_path(self, highlight):
+    self.highlight(highlight)
+    if not self.Parent_ == None:
+      for edge in self.Parent_.Edges_:
+        if edge.To_ == self.outNode_:  # look for the edge linking parent and this Cone
+          edge.highlight(highlight) # highlight it
+      self.Parent_.highlight_path(highlight)
+
   def highlight_edge(self, edge_number, highlight):
     if highlight:
       self.Edges_[edge_number].geometry_.Material.value = "data/materials/White.gmd"
