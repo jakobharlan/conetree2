@@ -245,7 +245,6 @@ class ConeTree(avango.script.Script):
         self.FocusEdge_ = -1
         self.update_label()
 
-        print "Focused: " + str(current.id_)
         return True
       for child in current.ChildrenCones_:
         cones.append(child)

@@ -16,30 +16,6 @@ from examples_common.GuaVE import GuaVE
 size = avango.gua.Vec2ui(2560/2, 2560*9/16)
 
 
-class Picker(avango.script.Script):
-  SceneGraph = avango.gua.SFSceneGraph()
-  Ray        = avango.gua.SFRayNode()
-  Options    = avango.SFInt()
-  Mask       = avango.SFString()
-  Results    = avango.gua.MFPickResult()
-
-  def __init__(self):
-    self.super(Picker).__init__()
-    self.always_evaluate(True)
-
-    self.SceneGraph.value = avango.gua.nodes.SceneGraph()
-    self.Ray.value  = avango.gua.nodes.RayNode()
-    self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
-                       | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
-
-    self.Mask.value = ""
-
-  def evaluate(self):
-    results = self.SceneGraph.value.ray_test(self.Ray.value,
-                                             self.Options.value,
-                                             self.Mask.value)
-    self.Results.value = results.value
-
 
 
 def setup_scene(graph):
@@ -258,11 +234,8 @@ def start():
 
   screen2.Children.value.append(pick_ray)
 
-  picker = Picker()
-  picker.SceneGraph.value = CT_graph
-  picker.Ray.value = pick_ray
-
-  conetree_picker.PickResults.connect_from(picker.Results)
+  conetree_picker.SceneGraph.value = CT_graph
+  conetree_picker.Ray.value = pick_ray
 
   conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
 

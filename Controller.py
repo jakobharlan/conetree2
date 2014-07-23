@@ -224,18 +224,33 @@ class KeyController(avango.script.Script):
 
 class PickController(avango.script.Script):
 
-  PickResults = avango.gua.MFPickResult()
-  OldPickResults = avango.gua.MFPickResult()
+  SceneGraph = avango.gua.SFSceneGraph()
+  Ray        = avango.gua.SFRayNode()
+  Options    = avango.SFInt()
+  Mask       = avango.SFString()
+  Results    = avango.gua.MFPickResult()
 
   def __init__(self):
     self.super(PickController).__init__()
+    self.always_evaluate(True)
+
+    self.SceneGraph.value = avango.gua.nodes.SceneGraph()
+    self.Ray.value  = avango.gua.nodes.RayNode()
+    self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
+                       | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
+
+    self.Mask.value = ""
 
   def myConstructor(self, conetree):
     self.Conetree_ = conetree
 
-  @field_has_changed(PickResults)
+  @field_has_changed(Results)
   def update_pickresults(self):
-    for result in self.PickResults.value:
+    for result in self.Results.value:
       self.Conetree_.focus(result.Object.value)
 
-    self.OldPickResults.value = self.PickResults.value
+  def evaluate(self):
+    results = self.SceneGraph.value.ray_test(self.Ray.value,
+                                             self.Options.value,
+                                             self.Mask.value)
+    self.Results.value = results.value
