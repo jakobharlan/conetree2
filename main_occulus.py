@@ -195,8 +195,14 @@ def start():
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
 
-  conetree_controller = Controller()
+  conetree_controller = KeyController()
   conetree_controller.myConstructor(conetree)
+
+  conetree_navigator = Navigator()
+  conetree_navigator.myConstructor(conetree)
+
+  conetree_picker = PickController()
+  conetree_picker.myConstructor(conetree)
 
   CT_graph.Root.value.Children.value.append(head)
 
@@ -231,14 +237,27 @@ def start():
   pipe_oc.LeftResolution.value = window_oc.LeftResolution.value
   pipe_oc.RightResolution.value = window_oc.RightResolution.value
   pipe_oc.EnableStereo.value = True
+  pipe_oc.EnableRayDisplay.value = True
+
+
+  # PICKING
+  pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
+  pick_ray.Transform.value = avango.gua.make_trans_mat(0.0, -0.45, 0.0) * \
+                             avango.gua.make_scale_mat(1.0, 1.0, 500.0)
+
+  head.Children.value.append(pick_ray)
+
+  conetree_picker.SceneGraph.value = CT_graph
+  conetree_picker.Ray.value = pick_ray
+
 
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
 
-  conetree_controller.StartLocation.value = head.Transform.value.get_translate()
+  conetree_navigator.StartLocation.value = head.Transform.value.get_translate()
 
-  conetree_controller.RotationSpeed.value = 0.09
-  conetree_controller.MotionSpeed.value = 0.69
+  conetree_navigator.RotationSpeed.value = 0.09
+  conetree_navigator.MotionSpeed.value = 0.69
 
   # connect oculus rotation to head node
   oculus_sensor = avango.daemon.nodes.DeviceSensor(DeviceService = avango.daemon.DeviceService())
@@ -246,11 +265,11 @@ def start():
 
   helper = ConetreeAndOculusMorphHelperClass()
 
-  helper.TransformIn.connect_from(conetree_controller.OutTransform)
+  helper.TransformIn.connect_from(conetree_navigator.OutTransform)
   helper.RotateIn.connect_from(oculus_sensor.Matrix)
   head.Transform.connect_from(helper.MatrixOut)
 
-  conetree_controller.InMatrix.connect_from(conetree.OutMatrix)
+  conetree_navigator.InMatrix.connect_from(conetree.OutMatrix)
 
   viewer = avango.gua.nodes.Viewer()
   viewer.Pipelines.value = [pipe_oc]
