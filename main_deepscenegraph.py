@@ -155,17 +155,6 @@ def start():
 
   renderer = avango.gua.create_renderer(pipe);
 
-  ## create Cone Tree -----------------------------------
-  conetree = ConeTree()
-  conetree.myConstructor(graph)
-  CT_graph = avango.gua.nodes.SceneGraph(
-      Name = "ConeTree_Graph"
-  )
-  CT_root = conetree.get_root()
-  CT_graph.Root.value.Children.value.append(CT_root)
-
-  conetree_controller = Controller()
-  conetree_controller.myConstructor(conetree)
 
   ## Viewing Cone Tree Visualization ----------------------
   screen2 = avango.gua.nodes.ScreenNode(
@@ -181,6 +170,25 @@ def start():
   )
 
   screen2.Children.value = [eye2]
+
+
+  ## create Cone Tree -----------------------------------
+  conetree = ConeTree()
+  conetree.myConstructor(graph, screen2, eye2)
+  CT_graph = avango.gua.nodes.SceneGraph(
+      Name = "ConeTree_Graph"
+  )
+  CT_root = conetree.get_root()
+  CT_graph.Root.value.Children.value.append(CT_root)
+
+  conetree_controller = KeyController()
+  conetree_controller.myConstructor(conetree)
+
+  conetree_navigator = Navigator()
+  conetree_navigator.myConstructor(conetree)
+
+  conetree_picker = PickController()
+  conetree_picker.myConstructor(conetree)
 
   CT_graph.Root.value.Children.value.append(screen2)
 
@@ -223,13 +231,13 @@ def start():
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
 
-  conetree_controller.StartLocation.value = screen2.Transform.value.get_translate()
+  conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
 
-  conetree_controller.RotationSpeed.value = 0.09
-  conetree_controller.MotionSpeed.value = 0.69
+  conetree_navigator.RotationSpeed.value = 0.09
+  conetree_navigator.MotionSpeed.value = 0.69
 
-  screen2.Transform.connect_from(conetree_controller.OutTransform)
-  conetree_controller.InMatrix.connect_from(conetree.OutMatrix)
+  screen2.Transform.connect_from(conetree_navigator.OutTransform)
+  conetree_navigator.InMatrix.connect_from(conetree.OutMatrix)
 
   viewer = avango.gua.nodes.Viewer()
   viewer.Pipelines.value = [pipe, pipe2]

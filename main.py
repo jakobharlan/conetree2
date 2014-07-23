@@ -190,7 +190,6 @@ def start():
   conetree_picker = PickController()
   conetree_picker.myConstructor(conetree)
 
-
   CT_graph.Root.value.Children.value.append(screen2)
 
   # Light for the Cone Tree
