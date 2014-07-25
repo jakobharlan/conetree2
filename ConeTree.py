@@ -19,16 +19,16 @@ class ConeTree(avango.script.Script):
   def __init__(self):
     self.super(ConeTree).__init__()
 
-  def myConstructor(self, graph, screen, eye):
+  def myConstructor(self, graph):
     self.Input_graph_ = graph
+    self.RootNode_ = avango.gua.nodes.TransformNode(
+      Name = "ConeTreeRoot",
+    )
     self.RootCone_ = Cone(graph.Root.value, None)
     self.FocusCone_ = self.RootCone_
     avango.gua.load_materials_from("data/materials")
     avango.gua.load_materials_from("data/materials/font")
     self.FocusEdge_ = -1
-
-    self.EyeTransform.connect_from(eye.Transform)
-    self.Screen = screen
 
     self.CT_graph_  = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
@@ -37,15 +37,15 @@ class ConeTree(avango.script.Script):
 
     #initialize camera pos
     self.CT_graph_.update_cache()
-    self.set_camera_on_Focus()
+    self.scale()
 
-    #initialize label
-    self.ShowLabel_ = True
-    self.Label_ = TextField()
-    self.Label_.my_constructor(self.Screen)
-    self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.Screen.Width.value/2 , (-self.Screen.Height.value/2) + 0.07, 0)
-                                      * avango.gua.make_scale_mat(self.Screen.Height.value*0.07) )
-    self.update_label()
+    # #initialize label
+    # self.ShowLabel_ = True
+    # self.Label_ = TextField()
+    # self.Label_.my_constructor(self.Screen)
+    # self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.Screen.Width.value/2 , (-self.Screen.Height.value/2) + 0.07, 0)
+    #                                   * avango.gua.make_scale_mat(self.Screen.Height.value*0.07) )
+    # self.update_label()
 
 
   def get_scene_node(self, CT_node):
@@ -78,7 +78,8 @@ class ConeTree(avango.script.Script):
     return self.CT_graph_
 
   def get_root(self):
-    return self.RootCone_.get_scenegraph()
+    self.RootNode_.Children.value = [self.RootCone_.get_scenegraph()]
+    return self.RootNode_
 
   def print_ConeTree(self):
     self.RootCone_.print_cone(0)
@@ -100,6 +101,35 @@ class ConeTree(avango.script.Script):
   def reapply_materials(self):
     self.RootCone_.reapply_material()
     self.FocusCone_.highlight(True)
+
+  def scale(self):
+    if not self.FocusCone_.is_leaf():
+      self.RootNode_.Transform.value = avango.gua.make_identity_mat()
+      self.CT_graph_.update_cache()
+      bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
+      # nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
+
+      bb_sides = (bb.Max.value.x - bb.Min.value.x
+                 ,bb.Max.value.y - bb.Min.value.y
+                 ,bb.Max.value.z - bb.Min.value.z)
+
+      scale = 1.0 / max(bb_sides)
+
+      print max(bb_sides)
+      print "Scale: " + str(scale)
+
+      self.RootNode_.Transform.value = avango.gua.make_scale_mat(scale)
+
+      # focus_position = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
+      # root_position = self.RootNode_.WorldTransform.value.get_translate()
+
+      # print "Scale: " + str(scale)
+      # print "focus_position: " + str(focus_position)
+      # print "root_position: " + str(root_position)
+
+      # offset = root_position - focus_position
+
+      # self.RootNode_.Transform.value = avango.gua.make_trans_mat(offset) * avango.gua.make_scale_mat(scale)
 
   def set_camera_on_Focus(self):
     if not self.FocusCone_.is_leaf():
@@ -126,19 +156,19 @@ class ConeTree(avango.script.Script):
       depth = - size_y / 2
       self.OutMatrix.value = avango.gua.make_trans_mat( nodePosition  + avango.gua.Vec3(0,depth,distance) )
 
-  def flip_showlabel(self):
-    self.ShowLabel_ = not self.ShowLabel_
-    self.update_label()
+  # def flip_showlabel(self):
+  #   self.ShowLabel_ = not self.ShowLabel_
+  #   self.update_label()
 
 
-  def update_label(self):
-    if self.ShowLabel_:
-      if self.FocusEdge_ == -1:
-        self.Label_.sf_text.value = self.FocusCone_.Input_node_.Name.value
-      else:
-        self.Label_.sf_text.value = self.FocusCone_.ChildrenCones_[self.FocusEdge_].Input_node_.Name.value
-    else:
-      self.Label_.sf_text.value = ""
+  # def update_label(self):
+  #   if self.ShowLabel_:
+  #     if self.FocusEdge_ == -1:
+  #       self.Label_.sf_text.value = self.FocusCone_.Input_node_.Name.value
+  #     else:
+  #       self.Label_.sf_text.value = self.FocusCone_.ChildrenCones_[self.FocusEdge_].Input_node_.Name.value
+  #   else:
+  #     self.Label_.sf_text.value = ""
 
   # rotate
   def rotate_by_id(self, id, angle):
@@ -243,7 +273,7 @@ class ConeTree(avango.script.Script):
         self.FocusCone_ = current
         self.FocusCone_.highlight_path(1)
         self.FocusEdge_ = -1
-        self.update_label()
+        # self.update_label()
 
         return True
       for child in current.ChildrenCones_:
@@ -258,7 +288,7 @@ class ConeTree(avango.script.Script):
       if self.FocusEdge_ == len(self.FocusCone_.Edges_):
         self.FocusEdge_ = 0
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
-      self.update_label()
+      # self.update_label()
 
   def focus_prev_edge(self):
     if not self.FocusCone_.is_leaf():
@@ -270,7 +300,7 @@ class ConeTree(avango.script.Script):
         if self.FocusEdge_ == -1:
           self.FocusEdge_ = len(self.FocusCone_.Edges_) - 1
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
-      self.update_label()
+      # self.update_label()
 
   def go_deep_at_focus(self):
     if not (self.FocusCone_.is_leaf() or self.FocusEdge_ == -1):
@@ -281,7 +311,7 @@ class ConeTree(avango.script.Script):
       self.FocusCone_ = self.FocusCone_.ChildrenCones_[self.FocusEdge_]
       self.FocusCone_.highlight_path(1)
       self.FocusEdge_ = -1
-      self.update_label()
+      # self.update_label()
 
   def level_up(self):
     if not self.FocusCone_.Parent_ == None:
@@ -291,7 +321,7 @@ class ConeTree(avango.script.Script):
       self.FocusEdge_ = -1
       self.FocusCone_ = self.FocusCone_.Parent_
       self.FocusCone_.highlight_path(1)
-      self.update_label()
+      # self.update_label()
 
 
 

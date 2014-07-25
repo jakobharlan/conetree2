@@ -166,8 +166,7 @@ def start():
   ##create Powerwall setup
   powerwall = LargePowerWall(CT_graph.Root.value)
 
-  # for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
-  for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1]]:
+  for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
     head, pipe = powerwall.create_user(CT_graph)
     pipe.BackgroundColor.value = avango.gua.Color(0.3, 0.3, 0.3)
 

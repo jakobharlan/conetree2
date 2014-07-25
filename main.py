@@ -146,6 +146,15 @@ def viewing_setup_scene(graph):
 
 
 def start():
+  # setup Reference
+  # loader = avango.gua.nodes.TriMeshLoader()
+  # reference_cube = loader.create_geometry_from_file(
+  #   "reference_cube",
+  #   "data/objects/cube.obj",
+  #   "data/materials/Grey.gmd",
+  #   avango.gua.LoaderFlags.DEFAULTS,
+  # )
+  # reference_cube.Transform.value = avango.gua.make_trans_mat(0,1,0)
 
   ##initializing scene -------------------
   graph = avango.gua.nodes.SceneGraph(
@@ -161,7 +170,7 @@ def start():
     Name = "screen",
     Width = 1.6/2,
     Height = 0.9,
-    Transform = avango.gua.make_trans_mat(0.0, -5, 300)
+    Transform = avango.gua.make_trans_mat(0.0, 0.0, 10)
   )
 
   eye2 = avango.gua.nodes.TransformNode(
@@ -174,12 +183,15 @@ def start():
 
   ## create Cone Tree -----------------------------------
   conetree = ConeTree()
-  conetree.myConstructor(graph, screen2, eye2)
+  conetree.myConstructor(graph)
   CT_graph = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
   )
+
+
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
+  # CT_graph.Root.value.Children.value.append(reference_cube)
 
   conetree_controller = KeyController()
   conetree_controller.myConstructor(conetree)
@@ -191,6 +203,7 @@ def start():
   conetree_picker.myConstructor(conetree)
 
   CT_graph.Root.value.Children.value.append(screen2)
+
 
   # Light for the Cone Tree
   sun = avango.gua.nodes.SunLightNode(
