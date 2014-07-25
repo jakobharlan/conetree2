@@ -5,7 +5,6 @@ from Controller import *
 from PowerWalls import *
 from Tracking import *
 
-
 import avango
 import avango.gua
 import time
@@ -17,7 +16,6 @@ from examples_common.GuaVE import GuaVE
 
 ## Parameters:
 size = avango.gua.Vec2ui(2560/2, 2560*9/16)
-
 
 class Printer(avango.script.Script):
   Matrix = avango.gua.SFMatrix4()
@@ -89,7 +87,7 @@ def setup_scene(graph):
   for i in range(len(monkeys)):
     monkeys[i].Transform.value = avango.gua.make_trans_mat(x, 0, 0)
     lights[i].Transform.value = avango.gua.make_trans_mat(x, 2, 0) * avango.gua.make_scale_mat(2)
-    lights_spheres[i].Transform.value = avango.gua.make_trans_mat(x, 1, 0) * avango.gua.make_scale_mat(0.15)
+    lights_spheres[i].Transform.value = avango.gua.make_trans_mat(x, 2, 0) * avango.gua.make_scale_mat(0.15)
     x += 1
 
   for monkey in monkeys:
@@ -151,6 +149,30 @@ def viewing_setup_scene(graph):
   )
 
   return pipe
+
+
+def get_rotation_between_vectors(VEC1, VEC2):
+
+  VEC1.normalize()
+  VEC2.normalize()
+
+  _angle = math.degrees(math.acos(VEC1.dot(VEC2)))
+  _axis = VEC1.cross(VEC2)
+
+  return avango.gua.make_rot_mat(_angle, _axis)
+
+def calc_transform_connection(START_VEC, END_VEC):
+
+  # calc the vector in between the two points, the resulting center of the line segment and the scaling needed to connect both points
+  _vec = avango.gua.Vec3( END_VEC.x - START_VEC.x, END_VEC.y - START_VEC.y, END_VEC.z - START_VEC.z)
+  _center = START_VEC + (_vec * 0.5)
+  _scale  = _vec.length()
+
+  # calc the rotation according negative z-axis
+  _rotation_mat = get_rotation_between_vectors(avango.gua.Vec3(0, 0, -1), _vec)
+
+  # build the complete matrix
+  return avango.gua.make_trans_mat(_center) * _rotation_mat * avango.gua.make_scale_mat(0.1, 0.1, _scale)
 
 
 def start():

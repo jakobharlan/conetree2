@@ -4,6 +4,34 @@ import avango.daemon
 import os
 import sys
 
+def init_august_pointer(ID, DEVICE_STATION_STRING):
+
+  _string = os.popen("/opt/avango/vr_application_lib/tools/list-ev -s | grep \"MOUSE USB MOUSE\" | sed -e \'s/\"//g\'  | cut -d\" \" -f4").read()
+  _string = _string.split()
+
+  if len(_string) > ID:
+
+    _string = _string[ID]
+
+    _pointer = avango.daemon.HIDInput()
+    _pointer.station = avango.daemon.Station(DEVICE_STATION_STRING) # create a station to propagate the input events
+    _pointer.device = _string
+    #_pointer.timeout = '15'
+
+    # map incoming events to station values
+    _pointer.buttons[0] = "EV_KEY::KEY_F5" # front button
+    #_pointer.buttons[0] = "EV_KEY::KEY_ESC" # front button
+    _pointer.buttons[1] = "EV_KEY::KEY_PAGEDOWN" # back button
+    _pointer.buttons[2] = "EV_KEY::KEY_PAGEUP" # center button
+
+    device_list.append(_pointer)
+    print 'August Pointer found at:', _string
+
+    os.system("xinput --set-prop keyboard:'MOUSE USB MOUSE' 'Device Enabled' 0") # disable X-forwarding of events
+
+  else:
+    print "August Pointer NOT found !"
+
 def init_dlp_wall_tracking():
 
   # create instance of DTrack
@@ -184,6 +212,7 @@ def init_oculus():
 device_list = []
 
 # init_tuio_input()
+init_august_pointer(0,"bluetooth-dlp-pointer1")
 init_dlp_wall_tracking()
 init_mouse()
 init_keyboard()

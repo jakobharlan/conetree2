@@ -4,6 +4,7 @@ import avango.script
 from avango.script import field_has_changed
 
 import avango.gua
+import BBVisualization
 
 import device
 import time
@@ -229,6 +230,7 @@ class PickController(avango.script.Script):
   Options    = avango.SFInt()
   Mask       = avango.SFString()
   Results    = avango.gua.MFPickResult()
+  BBNode     = avango.gua.SFNode()
 
   def __init__(self):
     self.super(PickController).__init__()
@@ -246,8 +248,20 @@ class PickController(avango.script.Script):
 
   @field_has_changed(Results)
   def update_pickresults(self):
-    for result in self.Results.value:
-      self.Conetree_.focus(result.Object.value)
+    if len(self.Results.value) > 0:
+      node = self.Results.value[0].Object.value
+      node = self.Conetree_.get_scene_node(node)
+
+      self.Conetree_.focus(node)
+
+      bbvisu = BBVisualization.BoundingBoxVisualization()
+      bbvisu.my_constructor(node, self.SceneGraph.value,"data/materials/White.gmd")
+
+      self.SceneGraph.value.Root.value.Children.value.remove(self.BBNode.value)
+
+      self.SceneGraph.value.Root.value.Children.value.append(bbvisu.edge_group)
+      self.BBNode.value = bbvisu.edge_group
+
 
   def evaluate(self):
     results = self.SceneGraph.value.ray_test(self.Ray.value,

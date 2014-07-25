@@ -83,6 +83,7 @@ class PowerWall:
       , RightResolution = self.window_size
       , Camera = camera
       , EnableStereo = True
+      , EnableFog = False
     )
 
 
