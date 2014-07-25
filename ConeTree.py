@@ -37,7 +37,7 @@ class ConeTree(avango.script.Script):
 
     #initialize camera pos
     self.CT_graph_.update_cache()
-    self.scale()
+    # self.scale()
 
     # #initialize label
     # self.ShowLabel_ = True

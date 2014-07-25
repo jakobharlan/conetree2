@@ -19,7 +19,12 @@ from examples_common.GuaVE import GuaVE
 size = avango.gua.Vec2ui(2560/2, 2560*9/16)
 
 
+class Printer(avango.script.Script):
+  Matrix = avango.gua.SFMatrix4()
 
+  @field_has_changed(Matrix)
+  def do(self):
+    print self.Matrix.value
 
 def setup_scene(graph):
 
@@ -27,7 +32,7 @@ def setup_scene(graph):
 
   root_node = avango.gua.nodes.TransformNode(
     Name = "Root",
-    Transform = avango.gua.make_scale_mat(0.2),
+    Transform =  avango.gua.make_trans_mat(0, 1.1, -2) * avango.gua.make_scale_mat(0.2)
   )
 
   group_monkey = avango.gua.nodes.TransformNode(
@@ -83,8 +88,8 @@ def setup_scene(graph):
   x = (len(monkeys) / 2) - len(monkeys)
   for i in range(len(monkeys)):
     monkeys[i].Transform.value = avango.gua.make_trans_mat(x, 0, 0)
-    lights[i].Transform.value = avango.gua.make_trans_mat(x, 1, 1) * avango.gua.make_scale_mat(3)
-    lights_spheres[i].Transform.value = avango.gua.make_trans_mat(x, 1, 1) * avango.gua.make_scale_mat(0.04)
+    lights[i].Transform.value = avango.gua.make_trans_mat(x, 2, 0) * avango.gua.make_scale_mat(2)
+    lights_spheres[i].Transform.value = avango.gua.make_trans_mat(x, 1, 0) * avango.gua.make_scale_mat(0.15)
     x += 1
 
   for monkey in monkeys:
@@ -155,48 +160,44 @@ def start():
     Name = "scenegraph"
   )
 
-  # setup_scene(graph)
+  setup_scene(graph)
 
-  # pipe_scene = viewing_setup_scene(graph)
-
-  CT_graph = avango.gua.nodes.SceneGraph(
-      Name = "ConeTree_Graph"
-  )
 
   ##create Powerwall setup
-  powerwall = LargePowerWall(CT_graph.Root.value)
-
+  powerwall = LargePowerWall(graph.Root.value)
+  avango.gua.create_texture("data/textures/skymap.jpg")
   for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
-    head, pipe = powerwall.create_user(CT_graph)
-    pipe.BackgroundColor.value = avango.gua.Color(0.3, 0.3, 0.3)
+    head, pipe = powerwall.create_user(graph)
+
+    pipe.BackgroundTexture.value = "data/textures/skymap.jpg"
+    pipe.BackgroundMode.value = avango.gua.BackgroundMode.SKYMAP_TEXTURE
+
+    pipe.EnableRayDisplay.value = True
 
     headtracking = TrackingReader()
     headtracking.set_target_name(target_name)
     head.Transform.connect_from(headtracking.MatrixOut)
 
 
-  fake_eye = avango.gua.nodes.TransformNode(
-    Name = "eye",
-    Transform = avango.gua.make_trans_mat(0.0, 1.0 , 0.0)
-    )
-
   ## create Cone Tree -----------------------------------
   conetree = ConeTree()
-  conetree.myConstructor(graph, powerwall.screen, fake_eye)
+  conetree.myConstructor(graph)
 
   CT_root = conetree.get_root()
-  CT_graph.Root.value.Children.value.append(CT_root)
 
-  conetree_controller = KeyController()
-  conetree_controller.myConstructor(conetree)
 
-  conetree_navigator = Navigator()
-  conetree_navigator.myConstructor(conetree)
+  CT_root.Transform.value = avango.gua.make_trans_mat(0,0.5,0) * avango.gua.make_scale_mat(1.0/110)
+  CubeProp = avango.gua.nodes.TransformNode( Name = "CubeProp")
+  CubeTracker = TrackingReader()
+  CubeTracker.set_target_name("tracking-cube")
+  CubeProp.Transform.connect_from(CubeTracker.MatrixOut)
+
+  graph.Root.value.Children.value.append(CubeProp)
+  CubeProp.Children.value.append(CT_root)
+
 
   conetree_picker = PickController()
   conetree_picker.myConstructor(conetree)
-
-
 
 
   # Light for the Cone Tree
@@ -206,28 +207,25 @@ def start():
     Transform = avango.gua.make_rot_mat(-80, 1, 0, 0)
   )
 
-  CT_graph.Root.value.Children.value.append(sun)
+  graph.Root.value.Children.value.append(sun)
 
 
 
 
   # PICKING
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
-  pick_ray.Transform.value = avango.gua.make_trans_mat(0.0, -0.45, 0.0) * \
-                             avango.gua.make_scale_mat(1.0, 1.0, 500.0)
+  pick_ray.Transform.value = avango.gua.make_scale_mat(0.3, 0.3, 0.1)
 
-  powerwall.screen.Children.value.append(pick_ray)
+  PointerProp = avango.gua.nodes.TransformNode( Name = "PointerProp")
+  PointerTracker = TrackingReader()
+  PointerTracker.set_target_name("tracking-dlp-pointer1")
+  PointerProp.Transform.connect_from(PointerTracker.MatrixOut)
 
-  conetree_picker.SceneGraph.value = CT_graph
+  PointerProp.Children.value.append(pick_ray)
+  graph.Root.value.Children.value.append(PointerProp)
+
+  conetree_picker.SceneGraph.value = graph
   conetree_picker.Ray.value = pick_ray
-
-  conetree_navigator.StartLocation.value = powerwall.screen.Transform.value.get_translate()
-
-  conetree_navigator.RotationSpeed.value = 0.09
-  conetree_navigator.MotionSpeed.value = 0.69
-
-  powerwall.screen.Transform.connect_from(conetree_navigator.OutTransform)
-  conetree_navigator.InMatrix.connect_from(conetree.OutMatrix)
 
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
@@ -235,7 +233,7 @@ def start():
   viewer = avango.gua.nodes.Viewer()
 
   viewer.Pipelines.value = [pipe for head, pipe in powerwall.users]
-  viewer.SceneGraphs.value = [CT_graph]
+  viewer.SceneGraphs.value = [graph]
 
   viewer.run()
 
