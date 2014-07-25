@@ -4,24 +4,32 @@ import avango.daemon
 import os
 import sys
 
-# functions
-def init_pst_tracking():
+def init_dlp_wall_tracking():
 
-	# create instance of DTrack
-	pst = avango.daemon.DTrack()
-	pst.port = "5000" # PST port
-	# pst.port = "5020" # PST port
+  # create instance of DTrack
+  _dtrack = avango.daemon.DTrack()
+  _dtrack.port = "5002" # ART port at LED wall
 
-	#pst.stations[1] = avango.daemon.Station('head')
-	#pst.stations[3] = avango.daemon.Station('torch')
-	#pst.stations[2] = avango.daemon.Station('prop')
-	pst.stations[3] = avango.daemon.Station('head1')
-	pst.stations[4] = avango.daemon.Station('head0')
-	pst.stations[1] = avango.daemon.Station('pen')
-	pst.stations[13] = avango.daemon.Station('lens')
+  # glasses
+  _dtrack.stations[1] = avango.daemon.Station('tracking-dlp-glasses-1')
+  #_dtrack.stations[9] = avango.daemon.Station('tracking-dlp-glasses-1')   # camera shutter
+  _dtrack.stations[2] = avango.daemon.Station('tracking-dlp-glasses-2')
+  _dtrack.stations[3] = avango.daemon.Station('tracking-dlp-glasses-3')
+  _dtrack.stations[4] = avango.daemon.Station('tracking-dlp-glasses-4')
+  _dtrack.stations[5] = avango.daemon.Station('tracking-dlp-glasses-5')
+  _dtrack.stations[6] = avango.daemon.Station('tracking-dlp-glasses-6')
 
-	device_list.append(pst)
-	print "PST Tracking started!"
+  # devices
+  _dtrack.stations[13] = avango.daemon.Station('tracking-cube')
+  _dtrack.stations[19] = avango.daemon.Station('tracking-new-spheron')     # new spheron device
+
+  _dtrack.stations[23] = avango.daemon.Station('tracking-dlp-pointer1')    # AUGUST1 pointer
+  _dtrack.stations[26] = avango.daemon.Station('tracking-portal-camera-32')   # portal camera 3.2
+  _dtrack.stations[25] = avango.daemon.Station('tracking-portal-camera-31')   # portal camera 3.1
+
+
+  device_list.append(_dtrack)
+  print "ART Tracking started at DLP WALL"
 
 # functions
 def init_tuio_input():
@@ -175,8 +183,8 @@ def init_oculus():
 
 device_list = []
 
-# init_pst_tracking()
 # init_tuio_input()
+init_dlp_wall_tracking()
 init_mouse()
 init_keyboard()
 init_oculus()
