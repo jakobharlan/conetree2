@@ -17,88 +17,89 @@ from examples_common.GuaVE import GuaVE
 ## Parameters:
 size = avango.gua.Vec2ui(2560/2, 2560*9/16)
 
-class Printer(avango.script.Script):
-  Matrix = avango.gua.SFMatrix4()
-
-  @field_has_changed(Matrix)
-  def do(self):
-    print self.Matrix.value
-
 def setup_scene(graph):
 
   loader = avango.gua.nodes.TriMeshLoader()
-
-  root_node = avango.gua.nodes.TransformNode(
-    Name = "Root",
-    Transform =  avango.gua.make_trans_mat(0, 1.1, -2) * avango.gua.make_scale_mat(0.2)
+  oil_rig = loader.create_geometry_from_file(
+    "Oil_rig_root"
+    ,"/opt/3d_models/trees/lindenTree/lindenTree.obj"
+    ,"data/materials/Grey.gmd"
+    ,avango.gua.LoaderFlags.DEFAULTS
   )
+  oil_rig.Transform.value = avango.gua.make_trans_mat(0, 1.1, -2)
+  graph.Root.value.Children.value.append(oil_rig)
 
-  group_monkey = avango.gua.nodes.TransformNode(
-    Name = "group_monkey",
-  )
+  # root_node = avango.gua.nodes.TransformNode(
+  #   Name = "Root",
+  #   Transform =  avango.gua.make_trans_mat(0, 1.1, -2) * avango.gua.make_scale_mat(0.2)
+  # )
 
-  group_light = avango.gua.nodes.TransformNode(
-    Name = "group_light",
-  )
+  # group_monkey = avango.gua.nodes.TransformNode(
+  #   Name = "group_monkey",
+  # )
 
-  group_light_spheres = avango.gua.nodes.TransformNode(
-    Name = "group_light_spheres",
-  )
+  # group_light = avango.gua.nodes.TransformNode(
+  #   Name = "group_light",
+  # )
 
-  group_light_2 = avango.gua.nodes.TransformNode(
-    Name = "group_light_2",
-  )
+  # group_light_spheres = avango.gua.nodes.TransformNode(
+  #   Name = "group_light_spheres",
+  # )
 
-  graph.Root.value.Children.value.append(root_node)
-  root_node.Children.value.append(group_monkey)
-  root_node.Children.value.append(group_light)
-  root_node.Children.value.append(group_light_spheres)
-  group_light.Children.value.append(group_light_2)
+  # group_light_2 = avango.gua.nodes.TransformNode(
+  #   Name = "group_light_2",
+  # )
 
-  # make a buitifull scene
-  monkeys = []
-  lights = []
-  lights_spheres = []
-  for i in range(16):
-    monkeys.append(
-                    loader.create_geometry_from_file(
-                    "ape" + str(i),
-                    "data/objects/monkey.obj",
-                    "data/materials/Stones.gmd",
-                    avango.gua.LoaderFlags.DEFAULTS)
-                  )
+  # graph.Root.value.Children.value.append(root_node)
+  # root_node.Children.value.append(group_monkey)
+  # root_node.Children.value.append(group_light)
+  # root_node.Children.value.append(group_light_spheres)
+  # group_light.Children.value.append(group_light_2)
 
-    lights.append(
-                    avango.gua.nodes.PointLightNode(
-                    Name = "light" + str(i),
-                    Color = avango.gua.Color(1, 1, 1))
-                  )
+  # # make a buitifull scene
+  # monkeys = []
+  # lights = []
+  # lights_spheres = []
+  # for i in range(16):
+  #   monkeys.append(
+  #                   loader.create_geometry_from_file(
+  #                   "ape" + str(i),
+  #                   "data/objects/monkey.obj",
+  #                   "data/materials/Stones.gmd",
+  #                   avango.gua.LoaderFlags.DEFAULTS)
+  #                 )
 
-    lights_spheres.append(
-                          loader.create_geometry_from_file(
-                          "sphere" + str(i),
-                          "data/objects/light_sphere.obj",
-                          "data/materials/White.gmd",
-                          avango.gua.LoaderFlags.DEFAULTS)
-    )
+  #   lights.append(
+  #                   avango.gua.nodes.PointLightNode(
+  #                   Name = "light" + str(i),
+  #                   Color = avango.gua.Color(1, 1, 1))
+  #                 )
+
+  #   lights_spheres.append(
+  #                         loader.create_geometry_from_file(
+  #                         "sphere" + str(i),
+  #                         "data/objects/light_sphere.obj",
+  #                         "data/materials/White.gmd",
+  #                         avango.gua.LoaderFlags.DEFAULTS)
+  #   )
 
 
-  x = (len(monkeys) / 2) - len(monkeys)
-  for i in range(len(monkeys)):
-    monkeys[i].Transform.value = avango.gua.make_trans_mat(x, 0, 0)
-    lights[i].Transform.value = avango.gua.make_trans_mat(x, 2, 0) * avango.gua.make_scale_mat(2)
-    lights_spheres[i].Transform.value = avango.gua.make_trans_mat(x, 2, 0) * avango.gua.make_scale_mat(0.15)
-    x += 1
+  # x = (len(monkeys) / 2) - len(monkeys)
+  # for i in range(len(monkeys)):
+  #   monkeys[i].Transform.value = avango.gua.make_trans_mat(x, 0, 0)
+  #   lights[i].Transform.value = avango.gua.make_trans_mat(x, 2, 0) * avango.gua.make_scale_mat(2)
+  #   lights_spheres[i].Transform.value = avango.gua.make_trans_mat(x, 2, 0) * avango.gua.make_scale_mat(0.15)
+  #   x += 1
 
-  for monkey in monkeys:
-    group_monkey.Children.value.append(monkey)
+  # for monkey in monkeys:
+  #   group_monkey.Children.value.append(monkey)
 
-  for light in lights:
-    group_light.Children.value.append(light)
-    group_light_2.Children.value.append(light)
+  # for light in lights:
+  #   group_light.Children.value.append(light)
+  #   group_light_2.Children.value.append(light)
 
-  for lights_sphere in lights_spheres:
-    group_light_spheres.Children.value.append(lights_sphere)
+  # for lights_sphere in lights_spheres:
+  #   group_light_spheres.Children.value.append(lights_sphere)
 
 
 def viewing_setup_scene(graph):
