@@ -179,7 +179,7 @@ def start():
       Name = "ConeTree_Graph"
   )
 
-
+  conetree.create_scenegraph_structure()
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
 

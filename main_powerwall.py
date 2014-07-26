@@ -206,6 +206,7 @@ def start():
   conetree = ConeTree()
   conetree.myConstructor(graph)
 
+  conetree.create_scenegraph_structure()
   CT_root = conetree.get_root()
 
 

@@ -30,13 +30,9 @@ class ConeTree(avango.script.Script):
     avango.gua.load_materials_from("data/materials/font")
     self.FocusEdge_ = -1
 
-    self.CT_graph_  = avango.gua.nodes.SceneGraph(
-      Name = "ConeTree_Graph"
-    )
     self.layout()
 
     #initialize camera pos
-    self.CT_graph_.update_cache()
     # self.scale()
 
     # #initialize label
@@ -72,13 +68,12 @@ class ConeTree(avango.script.Script):
       for child in current.ChildrenCones_:
         cones.append(child)
 
-  def get_scenegraph(self):
+  def create_scenegraph_structure(self):
     node = self.RootCone_.get_scenegraph()
-    self.CT_graph_.Root.value.Children.value = [node]
-    return self.CT_graph_
+    self.RootNode_.Children.value = [node]
+    return self.RootNode_
 
   def get_root(self):
-    self.RootNode_.Children.value = [self.RootCone_.get_scenegraph()]
     return self.RootNode_
 
   def print_ConeTree(self):
