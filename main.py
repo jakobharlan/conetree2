@@ -146,15 +146,6 @@ def viewing_setup_scene(graph):
 
 
 def start():
-  # setup Reference
-  # loader = avango.gua.nodes.TriMeshLoader()
-  # reference_cube = loader.create_geometry_from_file(
-  #   "reference_cube",
-  #   "data/objects/cube.obj",
-  #   "data/materials/Grey.gmd",
-  #   avango.gua.LoaderFlags.DEFAULTS,
-  # )
-  # reference_cube.Transform.value = avango.gua.make_trans_mat(0,1,0)
 
   ##initializing scene -------------------
   graph = avango.gua.nodes.SceneGraph(
@@ -191,7 +182,6 @@ def start():
 
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
-  # CT_graph.Root.value.Children.value.append(reference_cube)
 
   conetree_controller = KeyController()
   conetree_controller.myConstructor(conetree)
@@ -204,6 +194,25 @@ def start():
 
   CT_graph.Root.value.Children.value.append(screen2)
 
+  # setup Reference
+  loader = avango.gua.nodes.TriMeshLoader()
+  reference_cubes = []
+  for i in range(4):
+    reference_cubes.append( loader.create_geometry_from_file(
+      "reference_cube",
+      "data/objects/cube.obj",
+      "data/materials/Red.gmd",
+      avango.gua.LoaderFlags.DEFAULTS,
+    ))
+
+  reference_cubes[0].Transform.value = avango.gua.make_trans_mat(-1.5,-1.5 ,0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[1].Transform.value = avango.gua.make_trans_mat( 1.5,-1.5 ,0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[2].Transform.value = avango.gua.make_trans_mat(-1.5, 1.5 ,0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[3].Transform.value = avango.gua.make_trans_mat( 1.5, 1.5 ,0) * avango.gua.make_scale_mat(0.1)
+  CT_graph.Root.value.Children.value.append(reference_cubes[0])
+  CT_graph.Root.value.Children.value.append(reference_cubes[1])
+  CT_graph.Root.value.Children.value.append(reference_cubes[2])
+  CT_graph.Root.value.Children.value.append(reference_cubes[3])
 
   # Light for the Cone Tree
   sun = avango.gua.nodes.SunLightNode(
