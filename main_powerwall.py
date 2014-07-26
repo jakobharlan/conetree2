@@ -179,26 +179,26 @@ def start():
 
   loader = avango.gua.nodes.TriMeshLoader()
 
-  Scene = loader.create_geometry_from_file(
-    "Scene_root"
-    ,"/opt/3d_models/OIL_RIG_GUACAMOLE/oilrig.obj"
-    ,"data/materials/Grey.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS or avango.gua.LoaderFlags.NORMALIZE_SCALE
-  )
-  Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.01)
-  graph.Root.value.Children.value.append(Scene)
-
-  # OLD FASHION CITY
   # Scene = loader.create_geometry_from_file(
   #   "Scene_root"
-  #   ,"/opt/3d_models/architecture/old fashion town/old town block.obj"
+  #   ,"/opt/3d_models/vehicle/helicopter/1cced0f5e8d8ba6a79dc7b0fc833ea54/heli.obj"
   #   ,"data/materials/Grey.gmd"
   #   ,avango.gua.LoaderFlags.LOAD_MATERIALS or avango.gua.LoaderFlags.NORMALIZE_SCALE
   # )
-  # Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.015)
+  # Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.01)
   # graph.Root.value.Children.value.append(Scene)
 
-  # WEIMARER STADT MODELL
+  # # OLD FASHION CITY
+  Scene = loader.create_geometry_from_file(
+    "Scene_root"
+    ,"/opt/3d_models/architecture/old fashion town/old town block.obj"
+    ,"data/materials/Grey.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS or avango.gua.LoaderFlags.NORMALIZE_SCALE
+  )
+  Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.015)
+  graph.Root.value.Children.value.append(Scene)
+
+  # # WEIMARER STADT MODELL
   # Scene = loader.create_geometry_from_file(
   #   "Scene_root"
   #   ,"/opt/3d_models/architecture/weimar_geometry/weimar_stadtmodell_latest_version/weimar_stadtmodell_final.obj"
@@ -232,22 +232,23 @@ def start():
     head.Transform.connect_from(headtracking.MatrixOut)
 
 
-  ## create Cone Tree -----------------------------------
+  # create Cone Tree -----------------------------------
   conetree = ConeTree()
   conetree.myConstructor(graph)
 
   conetree.create_scenegraph_structure()
   CT_root = conetree.get_root()
 
-
-  CT_root.Transform.value = avango.gua.make_trans_mat(0,0.5,0) * avango.gua.make_scale_mat(1.0/110)
+  CT = avango.gua.nodes.TransformNode( Name = "CT")
+  CT.Children.value = [CT_root]
+  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0) * avango.gua.make_scale_mat(1.0 / 100)
   CubeProp = avango.gua.nodes.TransformNode( Name = "CubeProp")
   CubeTracker = TrackingReader()
   CubeTracker.set_target_name("tracking-cube")
   CubeProp.Transform.connect_from(CubeTracker.MatrixOut)
 
   graph.Root.value.Children.value.append(CubeProp)
-  CubeProp.Children.value.append(CT_root)
+  CubeProp.Children.value.append(CT)
 
 
   conetree_picker = PickController()

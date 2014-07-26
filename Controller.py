@@ -255,6 +255,8 @@ class PickController(avango.script.Script):
       node = self.Conetree_.get_scene_node(node)
 
       self.Conetree_.focus(node)
+      # self.Conetree_.scale()
+      # self.Conetree_.reposition()
 
       bbvisu = BBVisualization.BoundingBoxVisualization()
       bbvisu.my_constructor(node, self.TargetSceneGraph.value,"data/materials/Red.gmd")

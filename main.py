@@ -181,7 +181,11 @@ def start():
 
   conetree.create_scenegraph_structure()
   CT_root = conetree.get_root()
-  CT_graph.Root.value.Children.value.append(CT_root)
+
+  CT = avango.gua.nodes.TransformNode( Name = "CT")
+  CT.Children.value = [CT_root]
+  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0)
+  CT_graph.Root.value.Children.value.append(CT)
 
   conetree_controller = KeyController()
   conetree_controller.myConstructor(conetree)
