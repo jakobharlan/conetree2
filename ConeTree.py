@@ -33,7 +33,6 @@ class ConeTree(avango.script.Script):
     self.layout()
 
     #initialize camera pos
-    # self.scale()
 
     # #initialize label
     # self.ShowLabel_ = True
@@ -98,33 +97,30 @@ class ConeTree(avango.script.Script):
     self.FocusCone_.highlight(True)
 
   def scale(self):
-    if not self.FocusCone_.is_leaf():
-      self.RootNode_.Transform.value = avango.gua.make_identity_mat()
-      self.CT_graph_.update_cache()
-      bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
-      # nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
+    bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
+    # nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
 
-      bb_sides = (bb.Max.value.x - bb.Min.value.x
-                 ,bb.Max.value.y - bb.Min.value.y
-                 ,bb.Max.value.z - bb.Min.value.z)
+    bb_sides = (bb.Max.value.x - bb.Min.value.x
+               ,bb.Max.value.y - bb.Min.value.y
+               ,bb.Max.value.z - bb.Min.value.z)
 
-      scale = 1.0 / max(bb_sides)
+    scale = 1.0 / max(bb_sides)
 
-      print max(bb_sides)
-      print "Scale: " + str(scale)
+    print max(bb_sides)
+    print "Scale: " + str(scale)
 
-      self.RootNode_.Transform.value = avango.gua.make_scale_mat(scale)
+    self.RootNode_.Transform.value *= avango.gua.make_scale_mat(scale)
 
-      # focus_position = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
-      # root_position = self.RootNode_.WorldTransform.value.get_translate()
+    # focus_position = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
+    # root_position = self.RootNode_.WorldTransform.value.get_translate()
 
-      # print "Scale: " + str(scale)
-      # print "focus_position: " + str(focus_position)
-      # print "root_position: " + str(root_position)
+    # print "Scale: " + str(scale)
+    # print "focus_position: " + str(focus_position)
+    # print "root_position: " + str(root_position)
 
-      # offset = root_position - focus_position
+    # offset = root_position - focus_position
 
-      # self.RootNode_.Transform.value = avango.gua.make_trans_mat(offset) * avango.gua.make_scale_mat(scale)
+    # self.RootNode_.Transform.value = avango.gua.make_trans_mat(offset) * avango.gua.make_scale_mat(scale)
 
   def set_camera_on_Focus(self):
     if not self.FocusCone_.is_leaf():
