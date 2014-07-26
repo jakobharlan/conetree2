@@ -225,7 +225,8 @@ class KeyController(avango.script.Script):
 
 class PickController(avango.script.Script):
 
-  SceneGraph = avango.gua.SFSceneGraph()
+  PickedSceneGraph = avango.gua.SFSceneGraph()
+  TargetSceneGraph = avango.gua.SFSceneGraph()
   Ray        = avango.gua.SFRayNode()
   Options    = avango.SFInt()
   Mask       = avango.SFString()
@@ -236,7 +237,8 @@ class PickController(avango.script.Script):
     self.super(PickController).__init__()
     self.always_evaluate(True)
 
-    self.SceneGraph.value = avango.gua.nodes.SceneGraph()
+    self.PickedSceneGraph.value = avango.gua.nodes.SceneGraph()
+    self.TargetSceneGraph.value = avango.gua.nodes.SceneGraph()
     self.Ray.value  = avango.gua.nodes.RayNode()
     self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
                        | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
@@ -255,16 +257,16 @@ class PickController(avango.script.Script):
       self.Conetree_.focus(node)
 
       bbvisu = BBVisualization.BoundingBoxVisualization()
-      bbvisu.my_constructor(node, self.SceneGraph.value,"data/materials/White.gmd")
+      bbvisu.my_constructor(node, self.TargetSceneGraph.value,"data/materials/White.gmd")
 
-      self.SceneGraph.value.Root.value.Children.value.remove(self.BBNode.value)
+      self.TargetSceneGraph.value.Root.value.Children.value.remove(self.BBNode.value)
 
-      self.SceneGraph.value.Root.value.Children.value.append(bbvisu.edge_group)
+      self.TargetSceneGraph.value.Root.value.Children.value.append(bbvisu.edge_group)
       self.BBNode.value = bbvisu.edge_group
 
 
   def evaluate(self):
-    results = self.SceneGraph.value.ray_test(self.Ray.value,
+    results = self.PickedSceneGraph.value.ray_test(self.Ray.value,
                                              self.Options.value,
                                              self.Mask.value)
     self.Results.value = results.value

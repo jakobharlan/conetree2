@@ -247,7 +247,8 @@ def start():
   PointerProp.Children.value.append(pick_ray)
   graph.Root.value.Children.value.append(PointerProp)
 
-  conetree_picker.SceneGraph.value = graph
+  conetree_picker.PickedSceneGraph.value = graph
+  conetree_picker.TargetSceneGraph.value = graph
   conetree_picker.Ray.value = pick_ray
 
   guaVE = GuaVE()

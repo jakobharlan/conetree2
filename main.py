@@ -255,7 +255,8 @@ def start():
 
   screen2.Children.value.append(pick_ray)
 
-  conetree_picker.SceneGraph.value = CT_graph
+  conetree_picker.PickedSceneGraph.value = CT_graph
+  conetree_picker.TargetSceneGraph.value = graph
   conetree_picker.Ray.value = pick_ray
 
   conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
