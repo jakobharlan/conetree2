@@ -205,10 +205,10 @@ def start():
       avango.gua.LoaderFlags.DEFAULTS,
     ))
 
-  reference_cubes[0].Transform.value = avango.gua.make_trans_mat(-1.5,-1.5 ,0) * avango.gua.make_scale_mat(0.1)
-  reference_cubes[1].Transform.value = avango.gua.make_trans_mat( 1.5,-1.5 ,0) * avango.gua.make_scale_mat(0.1)
-  reference_cubes[2].Transform.value = avango.gua.make_trans_mat(-1.5, 1.5 ,0) * avango.gua.make_scale_mat(0.1)
-  reference_cubes[3].Transform.value = avango.gua.make_trans_mat( 1.5, 1.5 ,0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[0].Transform.value = avango.gua.make_trans_mat(-0.5,-0.5 ,0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[1].Transform.value = avango.gua.make_trans_mat( 0.5,-0.5 ,0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[2].Transform.value = avango.gua.make_trans_mat(-0.5, 0.5 ,0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[3].Transform.value = avango.gua.make_trans_mat( 0.5, 0.5 ,0) * avango.gua.make_scale_mat(0.1)
   CT_graph.Root.value.Children.value.append(reference_cubes[0])
   CT_graph.Root.value.Children.value.append(reference_cubes[1])
   CT_graph.Root.value.Children.value.append(reference_cubes[2])
@@ -251,7 +251,7 @@ def start():
   # PICKING
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
   pick_ray.Transform.value = avango.gua.make_trans_mat(0.0, -0.45, 0.0) * \
-                             avango.gua.make_scale_mat(1.0, 1.0, 500.0)
+                             avango.gua.make_scale_mat(0.1, 0.1, 0.7)
 
   screen2.Children.value.append(pick_ray)
 
@@ -262,7 +262,7 @@ def start():
   conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
 
   conetree_navigator.RotationSpeed.value = 0.09
-  conetree_navigator.MotionSpeed.value = 0.69
+  conetree_navigator.MotionSpeed.value = 0.01
 
   screen2.Transform.connect_from(conetree_navigator.OutTransform)
   conetree_navigator.InMatrix.connect_from(conetree.OutMatrix)
