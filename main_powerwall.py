@@ -19,16 +19,7 @@ size = avango.gua.Vec2ui(2560/2, 2560*9/16)
 
 def setup_scene(graph):
 
-  loader = avango.gua.nodes.TriMeshLoader()
-  oil_rig = loader.create_geometry_from_file(
-    "Oil_rig_root"
-    ,"/opt/3d_models/trees/lindenTree/lindenTree.obj"
-    ,"data/materials/Grey.gmd"
-    ,avango.gua.LoaderFlags.DEFAULTS
-  )
-  oil_rig.Transform.value = avango.gua.make_trans_mat(0, 1.1, -2)
-  graph.Root.value.Children.value.append(oil_rig)
-
+  pass
   # root_node = avango.gua.nodes.TransformNode(
   #   Name = "Root",
   #   Transform =  avango.gua.make_trans_mat(0, 1.1, -2) * avango.gua.make_scale_mat(0.2)
@@ -178,6 +169,7 @@ def calc_transform_connection(START_VEC, END_VEC):
 
 def start():
 
+
   ##initializing scene -------------------
   graph = avango.gua.nodes.SceneGraph(
     Name = "scenegraph"
@@ -185,6 +177,44 @@ def start():
 
   setup_scene(graph)
 
+  loader = avango.gua.nodes.TriMeshLoader()
+
+  Scene = loader.create_geometry_from_file(
+    "Scene_root"
+    ,"/opt/3d_models/OIL_RIG_GUACAMOLE/oilrig.obj"
+    ,"data/materials/Grey.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS or avango.gua.LoaderFlags.NORMALIZE_SCALE
+  )
+  Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.01)
+  graph.Root.value.Children.value.append(Scene)
+
+  # OLD FASHION CITY
+  # Scene = loader.create_geometry_from_file(
+  #   "Scene_root"
+  #   ,"/opt/3d_models/architecture/old fashion town/old town block.obj"
+  #   ,"data/materials/Grey.gmd"
+  #   ,avango.gua.LoaderFlags.LOAD_MATERIALS or avango.gua.LoaderFlags.NORMALIZE_SCALE
+  # )
+  # Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.015)
+  # graph.Root.value.Children.value.append(Scene)
+
+  # WEIMARER STADT MODELL
+  # Scene = loader.create_geometry_from_file(
+  #   "Scene_root"
+  #   ,"/opt/3d_models/architecture/weimar_geometry/weimar_stadtmodell_latest_version/weimar_stadtmodell_final.obj"
+  #   ,"data/materials/Grey.gmd"
+  #   ,avango.gua.LoaderFlags.LOAD_MATERIALS or avango.gua.LoaderFlags.NORMALIZE_SCALE
+  # )
+  # Scene.Transform.value = avango.gua.make_trans_mat(0, 0, -6) * avango.gua.make_scale_mat(0.02)
+  # graph.Root.value.Children.value.append(Scene)
+
+  sun = avango.gua.nodes.SunLightNode(
+    Name = "sun",
+    Color = avango.gua.Color(1, 1, 1),
+    Transform = avango.gua.make_rot_mat(-80, 1, 0, 0)
+  )
+
+  graph.Root.value.Children.value.append(sun)
 
   ##create Powerwall setup
   powerwall = LargePowerWall(graph.Root.value)

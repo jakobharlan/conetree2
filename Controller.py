@@ -257,7 +257,7 @@ class PickController(avango.script.Script):
       self.Conetree_.focus(node)
 
       bbvisu = BBVisualization.BoundingBoxVisualization()
-      bbvisu.my_constructor(node, self.TargetSceneGraph.value,"data/materials/White.gmd")
+      bbvisu.my_constructor(node, self.TargetSceneGraph.value,"data/materials/Red.gmd")
 
       self.TargetSceneGraph.value.Root.value.Children.value.remove(self.BBNode.value)
 
