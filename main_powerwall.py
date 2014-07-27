@@ -17,6 +17,15 @@ from examples_common.GuaVE import GuaVE
 ## Parameters:
 size = avango.gua.Vec2ui(2560/2, 2560*9/16)
 
+class TimedRotate(avango.script.Script):
+  TimeIn = avango.SFFloat()
+  MatrixOut = avango.gua.SFMatrix4()
+
+  @field_has_changed(TimeIn)
+  def update(self):
+    # self.MatrixOut.value = avango.gua.make_rot_mat(self.TimeIn.value*2.0, 0.0, 0.0, 1.0)
+    self.MatrixOut.value = avango.gua.make_rot_mat(90, 0.0, 0.0, 1.0)
+
 def setup_scene(graph):
 
   pass
@@ -178,25 +187,169 @@ def start():
   setup_scene(graph)
 
   loader = avango.gua.nodes.TriMeshLoader()
+  Scene = avango.gua.nodes.TransformNode( Name = "Scene" )
+  rotate_node = avango.gua.nodes.TransformNode( Name = "rotate_node" )
 
+  frame = loader.create_geometry_from_file(
+    "frame"
+    ,"/opt/3d_models/vehicle/cars/clio/frame.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(frame)
+
+  front = loader.create_geometry_from_file(
+    "front"
+    ,"/opt/3d_models/vehicle/cars/clio/front.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(front)
+
+  back = loader.create_geometry_from_file(
+    "back"
+    ,"/opt/3d_models/vehicle/cars/clio/back.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(back)
+
+  backdoor = loader.create_geometry_from_file(
+    "backdoor"
+    ,"/opt/3d_models/vehicle/cars/clio/backdoor.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(backdoor)
+
+  left_door = loader.create_geometry_from_file(
+    "left_door"
+    ,"/opt/3d_models/vehicle/cars/clio/left_door.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(left_door)
+
+  # right_door = loader.create_geometry_from_file(
+  #   "right_door"
+  #   ,"/opt/3d_models/vehicle/cars/clio/right_door.obj"
+  #   ,"data/materials/Hans.gmd"
+  #   ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  # )
+  # rotate_node.Children.value.append(right_door)
+
+  dashboard = loader.create_geometry_from_file(
+    "dashboard"
+    ,"/opt/3d_models/vehicle/cars/clio/dashboard.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(dashboard)
+
+  hood = loader.create_geometry_from_file(
+    "hood"
+    ,"/opt/3d_models/vehicle/cars/clio/hood.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(hood)
+
+  driver_seat = loader.create_geometry_from_file(
+    "driver_seat"
+    ,"/opt/3d_models/vehicle/cars/clio/driver_seat.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(driver_seat)
+
+  nondriver_seat = loader.create_geometry_from_file(
+    "nondriver_seat"
+    ,"/opt/3d_models/vehicle/cars/clio/nondriver_seat.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(nondriver_seat)
+
+  backseats = loader.create_geometry_from_file(
+    "backseats"
+    ,"/opt/3d_models/vehicle/cars/clio/backseats.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(backseats)
+
+  left_back_tire = loader.create_geometry_from_file(
+    "left_back_tire"
+    ,"/opt/3d_models/vehicle/cars/clio/left_back_tire.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(left_back_tire)
+
+  right_back_tire = loader.create_geometry_from_file(
+    "right_back_tire"
+    ,"/opt/3d_models/vehicle/cars/clio/right_back_tire.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(right_back_tire)
+
+  left_front_tire = loader.create_geometry_from_file(
+    "left_front_tire"
+    ,"/opt/3d_models/vehicle/cars/clio/left_front_tire.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(left_front_tire)
+
+  right_front_tire = loader.create_geometry_from_file(
+    "right_front_tire"
+    ,"/opt/3d_models/vehicle/cars/clio/right_front_tire.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(right_front_tire)
+
+  underbody = loader.create_geometry_from_file(
+    "underbody"
+    ,"/opt/3d_models/vehicle/cars/clio/underbody.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(underbody)
+
+  rest = loader.create_geometry_from_file(
+    "rest"
+    ,"/opt/3d_models/vehicle/cars/clio/rest.obj"
+    ,"data/materials/Hans.gmd"
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  )
+  rotate_node.Children.value.append(rest)
+
+
+  Scene.Transform.value = avango.gua.make_trans_mat(0, -6, -20) \
+                        * avango.gua.make_rot_mat(-90, 1, 0 ,0) \
+                        * avango.gua.make_scale_mat(0.15)
+                        # * avango.gua.make_rot_mat(-120, 0,0,1) \
+
+
+  rotator = TimedRotate()
+  timer = avango.nodes.TimeSensor()
+  rotator.TimeIn.connect_from(timer.Time)
+  rotate_node.Transform.connect_from(rotator.MatrixOut)
+
+  Scene.Children.value.append(rotate_node)
+  graph.Root.value.Children.value.append(Scene)
+
+  # # # OLD FASHION CITY
   # Scene = loader.create_geometry_from_file(
   #   "Scene_root"
-  #   ,"/opt/3d_models/vehicle/helicopter/1cced0f5e8d8ba6a79dc7b0fc833ea54/heli.obj"
+  #   ,"/opt/3d_models/architecture/old fashion town/old town block.obj"
   #   ,"data/materials/Grey.gmd"
   #   ,avango.gua.LoaderFlags.LOAD_MATERIALS or avango.gua.LoaderFlags.NORMALIZE_SCALE
   # )
-  # Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.01)
+  # Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.015)
   # graph.Root.value.Children.value.append(Scene)
-
-  # # OLD FASHION CITY
-  Scene = loader.create_geometry_from_file(
-    "Scene_root"
-    ,"/opt/3d_models/architecture/old fashion town/old town block.obj"
-    ,"data/materials/Grey.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS or avango.gua.LoaderFlags.NORMALIZE_SCALE
-  )
-  Scene.Transform.value = avango.gua.make_trans_mat(0, 0.0, -6) * avango.gua.make_scale_mat(0.015)
-  graph.Root.value.Children.value.append(Scene)
 
   # # WEIMARER STADT MODELL
   # Scene = loader.create_geometry_from_file(
@@ -225,6 +378,8 @@ def start():
     pipe.BackgroundTexture.value = "data/textures/skymap.jpg"
     pipe.BackgroundMode.value = avango.gua.BackgroundMode.SKYMAP_TEXTURE
 
+    pipe.EnableBackFaceCulling = True
+
     pipe.EnableRayDisplay.value = True
 
     headtracking = TrackingReader()
@@ -241,7 +396,7 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0) * avango.gua.make_scale_mat(1.0 / 100)
+  CT.Transform.value = avango.gua.make_trans_mat(0,0.25,0) * avango.gua.make_scale_mat(1.0 / 200)
   CubeProp = avango.gua.nodes.TransformNode( Name = "CubeProp")
   CubeTracker = TrackingReader()
   CubeTracker.set_target_name("tracking-cube")

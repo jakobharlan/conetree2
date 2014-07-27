@@ -43,7 +43,7 @@ class BoundingBoxVisualization(avango.script.Script):
 
     ## @var bb_thickness
     # Thickness of the bounding box lines in meters.
-    self.bb_thickness	= 0.01
+    self.bb_thickness	= 0.1
 
     # variables
     ## @var lf_node_mat
