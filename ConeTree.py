@@ -115,14 +115,15 @@ class ConeTree(avango.script.Script):
 
   def reposition(self):
     if not self.FocusCone_.is_leaf():
-      focus_position = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
-      root_position = self.RootNode_.WorldTransform.value.get_translate()
+      current = self.FocusCone_
+      parent  = current.Parent_
+      matrix  = current.outNode_.geometry_.Transform.value
+      while not parent == None:
+        current = parent
+        parent = current.Parent_
+        matrix *= current.outNode_.geometry_.Transform.value
 
-      print "focus_position: " + str(focus_position)
-      print "root_position: " + str(root_position)
-
-      offset = root_position - focus_position
-      self.RootNode_.Transform.value = avango.gua.make_trans_mat(offset)
+      self.RootCone_.outNode_.geometry_.Transform.value = avango.gua.make_inverse_mat(matrix)
 
   def set_camera_on_Focus(self):
     if not self.FocusCone_.is_leaf():
