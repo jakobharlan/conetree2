@@ -184,7 +184,7 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0)
+  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0) * avango.gua.make_scale_mat(0.5)
   CT_graph.Root.value.Children.value.append(CT)
 
   conetree_controller = KeyController()
@@ -213,10 +213,10 @@ def start():
   reference_cubes[1].Transform.value = avango.gua.make_trans_mat( 0.5,-0.5 ,0) * avango.gua.make_scale_mat(0.1)
   reference_cubes[2].Transform.value = avango.gua.make_trans_mat(-0.5, 0.5 ,0) * avango.gua.make_scale_mat(0.1)
   reference_cubes[3].Transform.value = avango.gua.make_trans_mat( 0.5, 0.5 ,0) * avango.gua.make_scale_mat(0.1)
-  CT_graph.Root.value.Children.value.append(reference_cubes[0])
-  CT_graph.Root.value.Children.value.append(reference_cubes[1])
-  CT_graph.Root.value.Children.value.append(reference_cubes[2])
-  CT_graph.Root.value.Children.value.append(reference_cubes[3])
+  CT.Children.value.append(reference_cubes[0])
+  CT.Children.value.append(reference_cubes[1])
+  CT.Children.value.append(reference_cubes[2])
+  CT.Children.value.append(reference_cubes[3])
 
   # Light for the Cone Tree
   sun = avango.gua.nodes.SunLightNode(

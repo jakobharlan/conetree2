@@ -378,7 +378,10 @@ def start():
     pipe.BackgroundTexture.value = "data/textures/skymap.jpg"
     pipe.BackgroundMode.value = avango.gua.BackgroundMode.SKYMAP_TEXTURE
 
-    pipe.EnableBackFaceCulling = True
+    pipe.EnableBackfaceCulling.value = True
+    pipe.EnableFXAA.value = False
+    pipe.EnableFPSDisplay.value = True
+
 
     pipe.EnableRayDisplay.value = True
 
@@ -396,11 +399,31 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0,0.25,0) * avango.gua.make_scale_mat(1.0 / 200)
+  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0)
   CubeProp = avango.gua.nodes.TransformNode( Name = "CubeProp")
   CubeTracker = TrackingReader()
   CubeTracker.set_target_name("tracking-cube")
   CubeProp.Transform.connect_from(CubeTracker.MatrixOut)
+
+  # reference--------------------------
+  reference_cubes = []
+  for i in range(4):
+    reference_cubes.append( loader.create_geometry_from_file(
+      "reference_cube",
+      "data/objects/cube.obj",
+      "data/materials/Red.gmd",
+      avango.gua.LoaderFlags.DEFAULTS,
+    ))
+
+  reference_cubes[0].Transform.value = avango.gua.make_trans_mat(-0.5, 0.0 ,0.0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[1].Transform.value = avango.gua.make_trans_mat( 0.5, 0.0 ,0.0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[2].Transform.value = avango.gua.make_trans_mat(-0.5, 1.0 ,0.0) * avango.gua.make_scale_mat(0.1)
+  reference_cubes[3].Transform.value = avango.gua.make_trans_mat( 0.5, 1.0 ,0.0) * avango.gua.make_scale_mat(0.1)
+  CubeProp.Children.value.append(reference_cubes[0])
+  CubeProp.Children.value.append(reference_cubes[1])
+  CubeProp.Children.value.append(reference_cubes[2])
+  CubeProp.Children.value.append(reference_cubes[3])
+  #-----------------------
 
   graph.Root.value.Children.value.append(CubeProp)
   CubeProp.Children.value.append(CT)
@@ -409,6 +432,17 @@ def start():
   conetree_picker = PickController()
   conetree_picker.myConstructor(conetree)
 
+  contree_pointer = PointerController()
+  contree_pointer.myConstructor(conetree)
+
+  BBUpdater = BoundingBoxController()
+  BBUpdater.FocusNode.connect_from(conetree_picker.FocusNode)
+  BBUpdater.TargetSceneGraph.value = graph
+
+  TextUpdater = TextController()
+  TextUpdater.FocusNode.connect_from(conetree_picker.FocusNode)
+  TextUpdater.TextNode.Transform.value = avango.gua.make_trans_mat(-1.8, 1.1, 0) * avango.gua.make_scale_mat(0.05)
+  powerwall.screen.Children.value.append(TextUpdater.TextNode)
 
   # Light for the Cone Tree
   sun = avango.gua.nodes.SunLightNode(
@@ -435,7 +469,6 @@ def start():
   graph.Root.value.Children.value.append(PointerProp)
 
   conetree_picker.PickedSceneGraph.value = graph
-  conetree_picker.TargetSceneGraph.value = graph
   conetree_picker.Ray.value = pick_ray
 
   guaVE = GuaVE()

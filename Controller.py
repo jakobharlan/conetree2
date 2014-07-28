@@ -8,6 +8,7 @@ import BBVisualization
 
 import device
 import time
+from Text import TextField
 
 class Navigator(avango.script.Script):
 
@@ -226,19 +227,17 @@ class KeyController(avango.script.Script):
 class PickController(avango.script.Script):
 
   PickedSceneGraph = avango.gua.SFSceneGraph()
-  TargetSceneGraph = avango.gua.SFSceneGraph()
   Ray        = avango.gua.SFRayNode()
   Options    = avango.SFInt()
   Mask       = avango.SFString()
   Results    = avango.gua.MFPickResult()
-  BBNode     = avango.gua.SFNode()
+  FocusNode  = avango.gua.SFNode()
 
   def __init__(self):
     self.super(PickController).__init__()
     self.always_evaluate(True)
 
     self.PickedSceneGraph.value = avango.gua.nodes.SceneGraph()
-    self.TargetSceneGraph.value = avango.gua.nodes.SceneGraph()
     self.Ray.value  = avango.gua.nodes.RayNode()
     self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
                        | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
@@ -252,14 +251,58 @@ class PickController(avango.script.Script):
   def update_pickresults(self):
     if len(self.Results.value) > 0:
       node = self.Results.value[0].Object.value
-      node = self.Conetree_.get_scene_node(node)
+      self.FocusNode.value = self.Conetree_.get_scene_node(node)
 
-      self.Conetree_.focus(node)
-      # self.Conetree_.scale()
-      # self.Conetree_.reposition()
+      self.Conetree_.focus(self.FocusNode.value)
 
+  def evaluate(self):
+    results = self.PickedSceneGraph.value.ray_test(self.Ray.value,
+                                             self.Options.value,
+                                             self.Mask.value)
+    self.Results.value = results.value
+
+class PointerController(avango.script.Script):
+
+  Pointer = device.PointerDevice()
+  Pointer.device_sensor.Station.value = "device-pointer1"
+
+  def __init__(self):
+    self.super(PointerController).__init__()
+    self.always_evaluate(True)
+    self.KeyUp = False
+    self.KeyDown = False
+
+  def myConstructor(self, conetree):
+    self.Conetree_ = conetree
+
+  def evaluate(self):
+
+    if self.Pointer.KeyUp.value and not self.KeyUp:
+      self.Conetree_.level_up()
+      self.Conetree_.scale()
+      self.Conetree_.reposition()
+    self.KeyUp = self.Pointer.KeyUp.value
+
+    if self.Pointer.KeyDown.value and not self.KeyDown:
+      self.Conetree_.scale()
+      self.Conetree_.reposition()
+    self.KeyDown = self.Pointer.KeyDown.value
+
+
+class BoundingBoxController(avango.script.Script):
+
+  FocusNode = avango.gua.SFNode()
+  TargetSceneGraph = avango.gua.SFSceneGraph()
+  BBNode     = avango.gua.SFNode()
+
+  def __init__(self):
+    self.super(BoundingBoxController).__init__()
+
+  @field_has_changed(FocusNode)
+  def focus_node_changed(self):
+    if not self.FocusNode.value == None:
       bbvisu = BBVisualization.BoundingBoxVisualization()
-      bbvisu.my_constructor(node, self.TargetSceneGraph.value,"data/materials/White.gmd")
+      bbvisu.my_constructor(self.FocusNode.value , self.TargetSceneGraph.value,"data/materials/White.gmd")
 
       self.TargetSceneGraph.value.Root.value.Children.value.remove(self.BBNode.value)
 
@@ -267,8 +310,18 @@ class PickController(avango.script.Script):
       self.BBNode.value = bbvisu.edge_group
 
 
-  def evaluate(self):
-    results = self.PickedSceneGraph.value.ray_test(self.Ray.value,
-                                             self.Options.value,
-                                             self.Mask.value)
-    self.Results.value = results.value
+class TextController(avango.script.Script):
+
+  FocusNode = avango.gua.SFNode()
+
+  def __init__(self):
+    self.super(TextController).__init__()
+    self.TextNode  = avango.gua.nodes.TransformNode(Name = "TextDisplay")
+    self.Label_ = TextField()
+    self.Label_.my_constructor(self.TextNode)
+
+  @field_has_changed(FocusNode)
+  def focus_node_changed(self):
+    if not self.FocusNode.value == None:
+      self.Label_.sf_text.value = self.FocusNode.value.Name.value
+

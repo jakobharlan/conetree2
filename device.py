@@ -186,23 +186,23 @@ class KeyboardDevice(avango.script.Script):
     self.KeyRight.value = self.device_sensor.Button31.value
 
 
-# class PointerDevice(avango.script.Script):
+class PointerDevice(avango.script.Script):
 
-#   KeyUp = avango.SFBool()
-#   KeyDown = avango.SFBool()
+  KeyUp = avango.SFBool()
+  KeyDown = avango.SFBool()
 
-#   def __init__(self):
-#     self.super(PointerDevice).__init__()
+  def __init__(self):
+    self.super(PointerDevice).__init__()
 
-#     self.device_sensor = avango.daemon.nodes.DeviceSensor(DeviceService = avango.daemon.DeviceService())
-#     self.device_sensor.Station.value = "gua-device-pointer"
+    self.device_sensor = avango.daemon.nodes.DeviceSensor(DeviceService = avango.daemon.DeviceService())
+    self.device_sensor.Station.value = "gua-device-pointer"
 
-#     self.always_evaluate(True)
+    self.always_evaluate(True)
 
-#   def evaluate(self):
+  def evaluate(self):
 
-#     self.KeyUp.value = self.device_sensor.Button0.value
-#     self.KeyDown.value = self.device_sensor.Button1.value
+    self.KeyUp.value = self.device_sensor.Button0.value
+    self.KeyDown.value = self.device_sensor.Button1.value
 
 class Spheron(avango.script.Script):
 
