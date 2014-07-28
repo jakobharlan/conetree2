@@ -238,13 +238,13 @@ def start():
   # )
   # rotate_node.Children.value.append(right_door)
 
-  dashboard = loader.create_geometry_from_file(
-    "dashboard"
-    ,"/opt/3d_models/vehicle/cars/clio/dashboard.obj"
-    ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
-  )
-  rotate_node.Children.value.append(dashboard)
+  # dashboard = loader.create_geometry_from_file(
+  #   "dashboard"
+  #   ,"/opt/3d_models/vehicle/cars/clio/dashboard.obj"
+  #   ,"data/materials/Hans.gmd"
+  #   ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  # )
+  # rotate_node.Children.value.append(dashboard)
 
   hood = loader.create_geometry_from_file(
     "hood"

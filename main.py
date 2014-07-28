@@ -196,6 +196,10 @@ def start():
   conetree_picker = PickController()
   conetree_picker.myConstructor(conetree)
 
+  BBUpdater = BoundingBoxController()
+  BBUpdater.FocusNode.connect_from(conetree_picker.FocusNode)
+  BBUpdater.TargetSceneGraph.value = graph
+
   CT_graph.Root.value.Children.value.append(screen2)
 
   # setup Reference
@@ -260,7 +264,6 @@ def start():
   screen2.Children.value.append(pick_ray)
 
   conetree_picker.PickedSceneGraph.value = CT_graph
-  conetree_picker.TargetSceneGraph.value = graph
   conetree_picker.Ray.value = pick_ray
 
   conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
