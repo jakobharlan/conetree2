@@ -290,7 +290,7 @@ class PointerController(avango.script.Script):
 
 
 class BoundingBoxController(avango.script.Script):
-
+  oldFocusNode = avango.gua.SFNode()
   FocusNode = avango.gua.SFNode()
   TargetSceneGraph = avango.gua.SFSceneGraph()
   BBNode     = avango.gua.SFNode()
@@ -300,7 +300,7 @@ class BoundingBoxController(avango.script.Script):
 
   @field_has_changed(FocusNode)
   def focus_node_changed(self):
-    if not self.FocusNode.value == None:
+    if not (self.FocusNode.value == None or self.FocusNode.value == self.oldFocusNode.value) :
       bbvisu = BBVisualization.BoundingBoxVisualization()
       bbvisu.my_constructor(self.FocusNode.value , self.TargetSceneGraph.value,"data/materials/White.gmd")
 
@@ -308,6 +308,7 @@ class BoundingBoxController(avango.script.Script):
 
       self.TargetSceneGraph.value.Root.value.Children.value.append(bbvisu.edge_group)
       self.BBNode.value = bbvisu.edge_group
+    self.oldFocusNode.value = self.FocusNode.value
 
 
 class TextController(avango.script.Script):
