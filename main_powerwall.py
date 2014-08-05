@@ -399,31 +399,31 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0)
+  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0) * avango.gua.make_scale_mat(0.5)
   CubeProp = avango.gua.nodes.TransformNode( Name = "CubeProp")
   CubeTracker = TrackingReader()
   CubeTracker.set_target_name("tracking-cube")
   CubeProp.Transform.connect_from(CubeTracker.MatrixOut)
 
-  # reference--------------------------
-  reference_cubes = []
-  for i in range(4):
-    reference_cubes.append( loader.create_geometry_from_file(
-      "reference_cube",
-      "data/objects/cube.obj",
-      "data/materials/Red.gmd",
-      avango.gua.LoaderFlags.DEFAULTS,
-    ))
+  # # reference--------------------------
+  # reference_cubes = []
+  # for i in range(4):
+  #   reference_cubes.append( loader.create_geometry_from_file(
+  #     "reference_cube",
+  #     "data/objects/cube.obj",
+  #     "data/materials/Red.gmd",
+  #     avango.gua.LoaderFlags.DEFAULTS,
+  #   ))
 
-  reference_cubes[0].Transform.value = avango.gua.make_trans_mat(-0.5, 0.0 ,0.0) * avango.gua.make_scale_mat(0.1)
-  reference_cubes[1].Transform.value = avango.gua.make_trans_mat( 0.5, 0.0 ,0.0) * avango.gua.make_scale_mat(0.1)
-  reference_cubes[2].Transform.value = avango.gua.make_trans_mat(-0.5, 1.0 ,0.0) * avango.gua.make_scale_mat(0.1)
-  reference_cubes[3].Transform.value = avango.gua.make_trans_mat( 0.5, 1.0 ,0.0) * avango.gua.make_scale_mat(0.1)
-  CubeProp.Children.value.append(reference_cubes[0])
-  CubeProp.Children.value.append(reference_cubes[1])
-  CubeProp.Children.value.append(reference_cubes[2])
-  CubeProp.Children.value.append(reference_cubes[3])
-  #-----------------------
+  # reference_cubes[0].Transform.value = avango.gua.make_trans_mat(-0.25, 0.0 ,0.0) * avango.gua.make_scale_mat(0.1)
+  # reference_cubes[1].Transform.value = avango.gua.make_trans_mat( 0.25, 0.0 ,0.0) * avango.gua.make_scale_mat(0.1)
+  # reference_cubes[2].Transform.value = avango.gua.make_trans_mat(-0.25, 0.5 ,0.0) * avango.gua.make_scale_mat(0.1)
+  # reference_cubes[3].Transform.value = avango.gua.make_trans_mat( 0.25, 0.5 ,0.0) * avango.gua.make_scale_mat(0.1)
+  # CubeProp.Children.value.append(reference_cubes[0])
+  # CubeProp.Children.value.append(reference_cubes[1])
+  # CubeProp.Children.value.append(reference_cubes[2])
+  # CubeProp.Children.value.append(reference_cubes[3])
+  # #-----------------------
 
   graph.Root.value.Children.value.append(CubeProp)
   CubeProp.Children.value.append(CT)
@@ -458,7 +458,7 @@ def start():
 
   # PICKING
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
-  pick_ray.Transform.value = avango.gua.make_scale_mat(0.3, 0.3, 0.1)
+  pick_ray.Transform.value = avango.gua.make_scale_mat(0.15, 0.15, 0.2)
 
   PointerProp = avango.gua.nodes.TransformNode( Name = "PointerProp")
   PointerTracker = TrackingReader()
