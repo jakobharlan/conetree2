@@ -51,8 +51,8 @@ class ConeTree(avango.script.Script):
     #                                   * avango.gua.make_scale_mat(self.Screen.Height.value*0.07) )
 
   def update_focus_nodes(self):
-    FocusCTNode.value = self.FocusCone_.outNode_.geometry_
-    FocusSceneNode.value = self.FocusCone_.Input_node_
+    self.FocusCTNode.value = self.FocusCone_.outNode_.geometry_
+    self.FocusSceneNode.value = self.FocusCone_.Input_node_
 
   def get_scene_node(self, CT_node):
     cones = []
