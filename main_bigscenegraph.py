@@ -131,10 +131,10 @@ def start():
 
   add_lights(graph, 20)
   setup_scene(graph, root_monkey, 3)
-  setup_scene(graph, root_monkey2, 3)
-  setup_scene(graph, root_monkey3, 3)
-  setup_scene(graph, root_monkey4, 3)
-  setup_scene(graph, root_monkey5, 3)
+  # setup_scene(graph, root_monkey2, 3)
+  # setup_scene(graph, root_monkey3, 3)
+  # setup_scene(graph, root_monkey4, 3)
+  # setup_scene(graph, root_monkey5, 3)
 
   ## Viewing Setup Scene ---------------------------------
   screen = avango.gua.nodes.ScreenNode(
@@ -163,7 +163,7 @@ def start():
 
 
   ## Window Setup Scene--------------------------------
-  size = avango.gua.Vec2ui(2560/2, 2560*9/16)
+  size = avango.gua.Vec2ui(2560, 2560*9/16)
   window = avango.gua.nodes.Window(
     Size = size,
     LeftResolution = size
@@ -189,9 +189,9 @@ def start():
   ## Viewing Cone Tree Visualization ----------------------
   screen2 = avango.gua.nodes.ScreenNode(
     Name = "screen",
-    Width = 1.6/2,
+    Width = 1.6,
     Height = 0.9,
-    Transform = avango.gua.make_trans_mat(0.0, -5, 300)
+    Transform = avango.gua.make_trans_mat(0.0, 0, 3)
   )
 
   eye2 = avango.gua.nodes.TransformNode(
@@ -205,10 +205,11 @@ def start():
 
   ## create Cone Tree -----------------------------------
   conetree = ConeTree()
-  conetree.myConstructor(graph, screen2, eye2)
+  conetree.myConstructor(graph)
   CT_graph = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
   )
+  conetree.create_scenegraph_structure()
   CT_root = conetree.get_root()
   CT_graph.Root.value.Children.value.append(CT_root)
 
@@ -218,8 +219,8 @@ def start():
   conetree_navigator = Navigator()
   conetree_navigator.myConstructor(conetree)
 
-  conetree_picker = PickController()
-  conetree_picker.myConstructor(conetree)
+  # conetree_picker = PickController()
+  # conetree_picker.myConstructor(conetree)
 
   CT_graph.Root.value.Children.value.append(screen2)
 
@@ -300,15 +301,15 @@ def start():
   # )
 
 
-  # PICKING
-  pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
-  pick_ray.Transform.value = avango.gua.make_trans_mat(0.0, -0.45, 0.0) * \
-                             avango.gua.make_scale_mat(1.0, 1.0, 500.0)
+  # # PICKING
+  # pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
+  # pick_ray.Transform.value = avango.gua.make_trans_mat(0.0, -0.45, 0.0) * \
+  #                            avango.gua.make_scale_mat(1.0, 1.0, 500.0)
 
-  screen2.Children.value.append(pick_ray)
+  # screen2.Children.value.append(pick_ray)
 
-  conetree_picker.SceneGraph.value = CT_graph
-  conetree_picker.Ray.value = pick_ray
+  # conetree_picker.SceneGraph.value = CT_graph
+  # conetree_picker.Ray.value = pick_ray
 
 
   conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
