@@ -15,6 +15,7 @@ class ConeTree(avango.script.Script):
   OutMatrix = avango.gua.SFMatrix4()
   EyeTransform = avango.gua.SFMatrix4()
 
+
   ## Initialized with the scenegraph that is visualized
   def __init__(self):
     self.super(ConeTree).__init__()
@@ -27,10 +28,13 @@ class ConeTree(avango.script.Script):
     self.ScaleNode_ = avango.gua.nodes.TransformNode(
       Name = "ConeTreeScale",
     )
+    self.TransformNode_ = avango.gua.nodes.TransformNode(
+      Name = "ConeTreeTransform",
+    )
     self.RootCone_ = Cone(graph.Root.value, None)
     self.FocusCone_ = self.RootCone_
     avango.gua.load_materials_from("data/materials")
-    avango.gua.load_materials_from("data/materials/font")
+
     self.FocusEdge_ = -1
 
     self.layout()
@@ -43,7 +47,7 @@ class ConeTree(avango.script.Script):
     # self.Label_.my_constructor(self.Screen)
     # self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.Screen.Width.value/2 , (-self.Screen.Height.value/2) + 0.07, 0)
     #                                   * avango.gua.make_scale_mat(self.Screen.Height.value*0.07) )
-    # self.update_label()
+
 
 
   def get_scene_node(self, CT_node):
@@ -73,7 +77,8 @@ class ConeTree(avango.script.Script):
   def create_scenegraph_structure(self):
     node = self.RootCone_.get_scenegraph()
     self.RootNode_.Children.value = [self.ScaleNode_]
-    self.ScaleNode_.Children.value = [node]
+    self.ScaleNode_.Children.value = [self.TransformNode_]
+    self.TransformNode_.Children.value = [node]
     return self.RootNode_
 
   def get_root(self):
@@ -103,66 +108,57 @@ class ConeTree(avango.script.Script):
   def scale(self):
     if not self.FocusCone_.is_leaf():
       bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
-      # nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
 
       bb_sides = (bb.Max.value.x - bb.Min.value.x
                  ,bb.Max.value.y - bb.Min.value.y
                  ,bb.Max.value.z - bb.Min.value.z)
 
-      scale = 1.0 / max(bb_sides)
+      scale = 0.5 / max(bb_sides)
+      # scale = 1.0 / max(bb_sides)
 
       self.ScaleNode_.Transform.value *= avango.gua.make_scale_mat(scale)
 
   def reposition(self):
-    if not self.FocusCone_.is_leaf():
+    print "Repositon"
+    if not (self.FocusCone_.is_leaf() or self.FocusCone_.Parent_ == None):
       current = self.FocusCone_
       parent  = current.Parent_
       matrix  = current.outNode_.geometry_.Transform.value
-      while not parent == None:
+      while not parent == self.RootCone_:
         current = parent
         parent = current.Parent_
         matrix *= current.outNode_.geometry_.Transform.value
 
-      self.RootCone_.outNode_.geometry_.Transform.value = avango.gua.make_inverse_mat(matrix)
+      # self.RootCone_.outNode_.geometry_.Transform.value = avango.gua.make_inverse_mat(matrix)
+      print matrix
+      print avango.gua.make_inverse_mat(matrix)
+      self.TransformNode_.Transform.value = avango.gua.make_inverse_mat(matrix)
 
   def set_camera_on_Focus(self):
-    if not self.FocusCone_.is_leaf():
-      bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
-      nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
+    return
+    # if not self.FocusCone_.is_leaf():
+    #   bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
+    #   nodePosition = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
 
-      diff_x_left = nodePosition.x - bb.Min.value.x
-      diff_x_right = bb.Max.value.x - nodePosition.x
+    #   diff_x_left = nodePosition.x - bb.Min.value.x
+    #   diff_x_right = bb.Max.value.x - nodePosition.x
 
-      diff_y_left = nodePosition.y - bb.Min.value.y
-      diff_y_right = bb.Max.value.y - nodePosition.y
+    #   diff_y_left = nodePosition.y - bb.Min.value.y
+    #   diff_y_right = bb.Max.value.y - nodePosition.y
 
-      size_x = max(diff_x_left,diff_x_right) * 2
-      size_y = bb.Max.value.y - bb.Min.value.y
-      size_z = bb.Max.value.z - bb.Min.value.z
+    #   size_x = max(diff_x_left,diff_x_right) * 2
+    #   size_y = bb.Max.value.y - bb.Min.value.y
+    #   size_z = bb.Max.value.z - bb.Min.value.z
 
-      eye_from_screen = self.EyeTransform.value.get_translate().length()
+    #   eye_from_screen = self.EyeTransform.value.get_translate().length()
 
-      distance_x = ((eye_from_screen*size_x)/self.Screen.Width.value) - eye_from_screen
-      distance_y = ((eye_from_screen*size_y)/self.Screen.Height.value) - eye_from_screen
+    #   distance_x = ((eye_from_screen*size_x)/self.Screen.Width.value) - eye_from_screen
+    #   distance_y = ((eye_from_screen*size_y)/self.Screen.Height.value) - eye_from_screen
 
-      distance = max(distance_x,distance_y) + 0.5 * size_z
+    #   distance = max(distance_x,distance_y) + 0.5 * size_z
 
-      depth = - size_y / 2
-      self.OutMatrix.value = avango.gua.make_trans_mat( nodePosition  + avango.gua.Vec3(0,depth,distance) )
-
-  # def flip_showlabel(self):
-  #   self.ShowLabel_ = not self.ShowLabel_
-  #   self.update_label()
-
-
-  # def update_label(self):
-  #   if self.ShowLabel_:
-  #     if self.FocusEdge_ == -1:
-  #       self.Label_.sf_text.value = self.FocusCone_.Input_node_.Name.value
-  #     else:
-  #       self.Label_.sf_text.value = self.FocusCone_.ChildrenCones_[self.FocusEdge_].Input_node_.Name.value
-  #   else:
-  #     self.Label_.sf_text.value = ""
+    #   depth = - size_y / 2
+    #   self.OutMatrix.value = avango.gua.make_trans_mat( nodePosition  + avango.gua.Vec3(0,depth,distance) )
 
   # rotate
   def rotate_by_id(self, id, angle):
@@ -254,7 +250,7 @@ class ConeTree(avango.script.Script):
   def focus(self, selector):
     # reset focusi
     self.FocusCone_.highlight_path(0)
-    # self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+
 
     cones = []
     cones.append(self.RootCone_)
@@ -267,7 +263,7 @@ class ConeTree(avango.script.Script):
         self.FocusCone_ = current
         self.FocusCone_.highlight_path(1)
         self.FocusEdge_ = -1
-        # self.update_label()
+
 
         return True
       for child in current.ChildrenCones_:
