@@ -231,7 +231,6 @@ class PickController(avango.script.Script):
   Options    = avango.SFInt()
   Mask       = avango.SFString()
   Results    = avango.gua.MFPickResult()
-  FocusNode  = avango.gua.SFNode()
 
   def __init__(self):
     self.super(PickController).__init__()
@@ -251,15 +250,14 @@ class PickController(avango.script.Script):
   def update_pickresults(self):
     if len(self.Results.value) > 0:
       node = self.Results.value[0].Object.value
-      self.FocusNode.value = self.Conetree_.get_scene_node(node)
-
-      self.Conetree_.focus(self.FocusNode.value)
+      self.Conetree_.focus(node)
 
   def evaluate(self):
     results = self.PickedSceneGraph.value.ray_test(self.Ray.value,
                                              self.Options.value,
                                              self.Mask.value)
     self.Results.value = results.value
+
 
 class PointerController(avango.script.Script):
 

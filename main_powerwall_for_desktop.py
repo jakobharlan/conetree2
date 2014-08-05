@@ -266,17 +266,17 @@ def start():
   conetree_picker.myConstructor(conetree)
 
   BBUpdater = BoundingBoxController()
-  BBUpdater.FocusNode.connect_from(conetree_picker.FocusNode)
+  BBUpdater.FocusNode.connect_from(conetree.FocusSceneNode)
   BBUpdater.TargetSceneGraph.value = graph
 
   TextUpdater = TextController()
-  TextUpdater.FocusNode.connect_from(conetree_picker.FocusNode)
+  TextUpdater.FocusNode.connect_from(conetree.FocusSceneNode)
   TextUpdater.TextNode.Transform.value = avango.gua.make_trans_mat(0, 0, 0) * avango.gua.make_scale_mat(0.05)
   screen.Children.value.append(TextUpdater.TextNode)
 
   # PICKING
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
-  pick_ray.Transform.value = avango.gua.make_trans_mat(0, -0.45, 0) * avango.gua.make_scale_mat(0.15, 0.15, 50)
+  pick_ray.Transform.value = avango.gua.make_trans_mat(0, -0.45, 0) * avango.gua.make_scale_mat(0.5, 0.5, 50)
   screen.Children.value.append(pick_ray)
 
 
