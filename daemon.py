@@ -212,7 +212,7 @@ def init_oculus():
 device_list = []
 
 # init_tuio_input()
-init_august_pointer(0,"bluetooth-dlp-pointer1")
+init_august_pointer(0,"tracking-dlp-pointer1")
 init_dlp_wall_tracking()
 init_mouse()
 init_keyboard()
