@@ -14,6 +14,8 @@ class ConeTree(avango.script.Script):
   COLORMODE = "NODETYPE"
   OutMatrix = avango.gua.SFMatrix4()
   EyeTransform = avango.gua.SFMatrix4()
+  FocusCTNode = avango.gua.SFNode()
+  FocusSceneNode = avango.gua.SFNode()
 
 
   ## Initialized with the scenegraph that is visualized
@@ -48,7 +50,9 @@ class ConeTree(avango.script.Script):
     # self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.Screen.Width.value/2 , (-self.Screen.Height.value/2) + 0.07, 0)
     #                                   * avango.gua.make_scale_mat(self.Screen.Height.value*0.07) )
 
-
+  def update_focus_nodes(self):
+    FocusCTNode.value = self.FocusCone_.outNode_.geometry_
+    FocusSceneNode.value = self.FocusCone_.Input_node_
 
   def get_scene_node(self, CT_node):
     cones = []
@@ -263,7 +267,7 @@ class ConeTree(avango.script.Script):
         self.FocusCone_ = current
         self.FocusCone_.highlight_path(1)
         self.FocusEdge_ = -1
-
+        self.update_focus_nodes()
 
         return True
       for child in current.ChildrenCones_:
@@ -301,6 +305,7 @@ class ConeTree(avango.script.Script):
       self.FocusCone_ = self.FocusCone_.ChildrenCones_[self.FocusEdge_]
       self.FocusCone_.highlight_path(1)
       self.FocusEdge_ = -1
+      self.update_focus_nodes()
       # self.update_label()
 
   def level_up(self):
@@ -311,6 +316,7 @@ class ConeTree(avango.script.Script):
       self.FocusEdge_ = -1
       self.FocusCone_ = self.FocusCone_.Parent_
       self.FocusCone_.highlight_path(1)
+      self.update_focus_nodes()
       # self.update_label()
 
 
