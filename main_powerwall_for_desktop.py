@@ -230,8 +230,8 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0)
-  graph.Root.value.Children.value.append(CT)
+  CT.Transform.value = avango.gua.make_trans_mat(0.3,-0.2,0)
+  screen.Children.value.append(CT)
 
   ## Navigation----------------------
   conetree_navigator = Navigator()
@@ -271,7 +271,7 @@ def start():
 
   TextUpdater = TextController()
   TextUpdater.FocusNode.connect_from(conetree.FocusSceneNode)
-  TextUpdater.TextNode.Transform.value = avango.gua.make_trans_mat(0, 0, 0) * avango.gua.make_scale_mat(0.05)
+  TextUpdater.TextNode.Transform.value = avango.gua.make_trans_mat(-0.8, -0.43 , 0) * avango.gua.make_scale_mat(0.02)
   screen.Children.value.append(TextUpdater.TextNode)
 
   # PICKING
