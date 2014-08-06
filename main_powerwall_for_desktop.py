@@ -241,6 +241,9 @@ def start():
   conetree_navigator.MotionSpeed.value = 0.69
   screen.Transform.connect_from(conetree_navigator.OutTransform)
 
+  ## ConeTreeControls
+  conetree_controller = KeyController()
+  conetree_controller.myConstructor(conetree)
 
   # # reference--------------------------
   # reference_cubes = []
