@@ -194,7 +194,7 @@ def start():
     "frame"
     ,"/opt/3d_models/vehicle/cars/clio/frame.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(frame)
 
@@ -202,7 +202,7 @@ def start():
     "front"
     ,"/opt/3d_models/vehicle/cars/clio/front.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(front)
 
@@ -210,7 +210,7 @@ def start():
     "back"
     ,"/opt/3d_models/vehicle/cars/clio/back.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(back)
 
@@ -218,7 +218,7 @@ def start():
     "backdoor"
     ,"/opt/3d_models/vehicle/cars/clio/backdoor.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(backdoor)
 
@@ -226,7 +226,7 @@ def start():
     "left_door"
     ,"/opt/3d_models/vehicle/cars/clio/left_door.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(left_door)
 
@@ -234,7 +234,7 @@ def start():
   #   "right_door"
   #   ,"/opt/3d_models/vehicle/cars/clio/right_door.obj"
   #   ,"data/materials/Hans.gmd"
-  #   ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  #   ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   # )
   # rotate_node.Children.value.append(right_door)
 
@@ -242,7 +242,7 @@ def start():
   #   "dashboard"
   #   ,"/opt/3d_models/vehicle/cars/clio/dashboard.obj"
   #   ,"data/materials/Hans.gmd"
-  #   ,avango.gua.LoaderFlags.LOAD_MATERIALS
+  #   ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   # )
   # rotate_node.Children.value.append(dashboard)
 
@@ -250,7 +250,7 @@ def start():
     "hood"
     ,"/opt/3d_models/vehicle/cars/clio/hood.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(hood)
 
@@ -258,7 +258,7 @@ def start():
     "driver_seat"
     ,"/opt/3d_models/vehicle/cars/clio/driver_seat.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(driver_seat)
 
@@ -266,7 +266,7 @@ def start():
     "nondriver_seat"
     ,"/opt/3d_models/vehicle/cars/clio/nondriver_seat.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(nondriver_seat)
 
@@ -274,7 +274,7 @@ def start():
     "backseats"
     ,"/opt/3d_models/vehicle/cars/clio/backseats.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(backseats)
 
@@ -282,7 +282,7 @@ def start():
     "left_back_tire"
     ,"/opt/3d_models/vehicle/cars/clio/left_back_tire.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(left_back_tire)
 
@@ -290,7 +290,7 @@ def start():
     "right_back_tire"
     ,"/opt/3d_models/vehicle/cars/clio/right_back_tire.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(right_back_tire)
 
@@ -298,7 +298,7 @@ def start():
     "left_front_tire"
     ,"/opt/3d_models/vehicle/cars/clio/left_front_tire.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(left_front_tire)
 
@@ -306,7 +306,7 @@ def start():
     "right_front_tire"
     ,"/opt/3d_models/vehicle/cars/clio/right_front_tire.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(right_front_tire)
 
@@ -314,7 +314,7 @@ def start():
     "underbody"
     ,"/opt/3d_models/vehicle/cars/clio/underbody.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(underbody)
 
@@ -322,7 +322,7 @@ def start():
     "rest"
     ,"/opt/3d_models/vehicle/cars/clio/rest.obj"
     ,"data/materials/Hans.gmd"
-    ,avango.gua.LoaderFlags.LOAD_MATERIALS
+    ,avango.gua.LoaderFlags.LOAD_MATERIALS | avango.gua.LoaderFlags.MAKE_PICKABLE
   )
   rotate_node.Children.value.append(rest)
 
@@ -436,11 +436,11 @@ def start():
   contree_pointer.myConstructor(conetree)
 
   BBUpdater = BoundingBoxController()
-  BBUpdater.FocusNode.connect_from(conetree_picker.FocusNode)
+  BBUpdater.FocusNode.connect_from(conetree.FocusSceneNode)
   BBUpdater.TargetSceneGraph.value = graph
 
   TextUpdater = TextController()
-  TextUpdater.FocusNode.connect_from(conetree_picker.FocusNode)
+  TextUpdater.FocusNode.connect_from(conetree.FocusSceneNode)
   TextUpdater.TextNode.Transform.value = avango.gua.make_trans_mat(-1.8, 1.1, 0) * avango.gua.make_scale_mat(0.05)
   powerwall.screen.Children.value.append(TextUpdater.TextNode)
 
@@ -458,7 +458,7 @@ def start():
 
   # PICKING
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
-  pick_ray.Transform.value = avango.gua.make_scale_mat(0.15, 0.15, 0.2)
+  pick_ray.Transform.connect_from(contree_pointer.RayTransformOut)
 
   PointerProp = avango.gua.nodes.TransformNode( Name = "PointerProp")
   PointerTracker = TrackingReader()

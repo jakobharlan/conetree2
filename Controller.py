@@ -208,6 +208,8 @@ class KeyController(avango.script.Script):
     # if needed, redo the camera position
     if reset_camera_focus and self.camera_mode == KeyController.CAMERAMODE_FOLLOW_SMOOTH:
       self.Conetree_.set_camera_on_Focus()
+      self.Conetree_.scale()
+      self.Conetree_.reposition()
 
   def evaluate(self):
 
@@ -263,12 +265,15 @@ class PointerController(avango.script.Script):
 
   Pointer = device.PointerDevice()
   Pointer.device_sensor.Station.value = "device-pointer1"
+  RayTransformOut = avango.gua.SFMatrix4()
+  RayTransformOut.value = avango.gua.make_scale_mat(0.15, 0.15, 0.2)
 
   def __init__(self):
     self.super(PointerController).__init__()
     self.always_evaluate(True)
     self.KeyUp = False
     self.KeyDown = False
+    self.KeyCenter = False
 
   def myConstructor(self, conetree):
     self.Conetree_ = conetree
@@ -277,13 +282,16 @@ class PointerController(avango.script.Script):
 
     if self.Pointer.KeyUp.value and not self.KeyUp:
       self.Conetree_.level_up()
-
     self.KeyUp = self.Pointer.KeyUp.value
 
     if self.Pointer.KeyDown.value and not self.KeyDown:
       self.Conetree_.scale()
       self.Conetree_.reposition()
     self.KeyDown = self.Pointer.KeyDown.value
+
+    if self.Pointer.KeyCenter.value and not self.KeyCenter:
+      self.RayTransformOut.value = avango.gua.make_scale_mat(0.15, 0.15, 30)
+    self.KeyCenter = self.Pointer.KeyCenter.value
 
 
 class BoundingBoxController(avango.script.Script):

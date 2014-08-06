@@ -190,6 +190,7 @@ class PointerDevice(avango.script.Script):
 
   KeyUp = avango.SFBool()
   KeyDown = avango.SFBool()
+  KeyCenter = avango.SFBool()
 
   def __init__(self):
     self.super(PointerDevice).__init__()
@@ -203,6 +204,7 @@ class PointerDevice(avango.script.Script):
 
     self.KeyUp.value = self.device_sensor.Button0.value
     self.KeyDown.value = self.device_sensor.Button1.value
+    self.KeyCenter.value = self.device_sensor.Button2.value
 
 class Spheron(avango.script.Script):
 
