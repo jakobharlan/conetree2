@@ -197,7 +197,7 @@ def start():
   conetree_picker.myConstructor(conetree)
 
   BBUpdater = BoundingBoxController()
-  BBUpdater.FocusNode.connect_from(conetree_picker.FocusNode)
+  BBUpdater.FocusNode.connect_from(conetree.FocusSceneNode)
   BBUpdater.TargetSceneGraph.value = graph
 
   CT_graph.Root.value.Children.value.append(screen2)
