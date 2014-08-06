@@ -195,7 +195,7 @@ class PointerDevice(avango.script.Script):
     self.super(PointerDevice).__init__()
 
     self.device_sensor = avango.daemon.nodes.DeviceSensor(DeviceService = avango.daemon.DeviceService())
-    self.device_sensor.Station.value = "gua-device-pointer"
+    self.device_sensor.Station.value = "device-pointer1"
 
     self.always_evaluate(True)
 

@@ -209,10 +209,11 @@ def init_oculus():
 	oculus.stations[2] = ovr_station_2
 	device_list.append(oculus)
 
+
 device_list = []
 
 # init_tuio_input()
-init_august_pointer(0,"tracking-dlp-pointer1")
+init_august_pointer(0,"device-pointer1")
 init_dlp_wall_tracking()
 init_mouse()
 init_keyboard()
