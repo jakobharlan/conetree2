@@ -123,7 +123,6 @@ class ConeTree(avango.script.Script):
       self.ScaleNode_.Transform.value *= avango.gua.make_scale_mat(scale)
 
   def reposition(self):
-    print "Repositon"
     if not (self.FocusCone_.is_leaf() or self.FocusCone_.Parent_ == None):
       current = self.FocusCone_
       parent  = current.Parent_
@@ -133,9 +132,6 @@ class ConeTree(avango.script.Script):
         parent = current.Parent_
         matrix *= current.outNode_.geometry_.Transform.value
 
-      # self.RootCone_.outNode_.geometry_.Transform.value = avango.gua.make_inverse_mat(matrix)
-      print matrix
-      print avango.gua.make_inverse_mat(matrix)
       self.TransformNode_.Transform.value = avango.gua.make_inverse_mat(matrix)
 
   def set_camera_on_Focus(self):

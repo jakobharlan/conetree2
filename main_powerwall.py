@@ -372,7 +372,8 @@ def start():
   ##create Powerwall setup
   powerwall = LargePowerWall(graph.Root.value)
   avango.gua.create_texture("data/textures/skymap.jpg")
-  for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
+  for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [4]]:
+  # for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
     head, pipe = powerwall.create_user(graph)
 
     pipe.BackgroundTexture.value = "data/textures/skymap.jpg"

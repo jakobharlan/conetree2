@@ -207,7 +207,7 @@ class KeyController(avango.script.Script):
 
     # if needed, redo the camera position
     if reset_camera_focus and self.camera_mode == KeyController.CAMERAMODE_FOLLOW_SMOOTH:
-      self.Conetree_.set_camera_on_Focus()
+      # self.Conetree_.set_camera_on_Focus()
       self.Conetree_.scale()
       self.Conetree_.reposition()
 
