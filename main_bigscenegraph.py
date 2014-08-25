@@ -163,7 +163,7 @@ def start():
 
 
   ## Window Setup Scene--------------------------------
-  size = avango.gua.Vec2ui(2560, 2560*9/16)
+  size = avango.gua.Vec2ui(2560 / 2, 2560*9/16)
   window = avango.gua.nodes.Window(
     Size = size,
     LeftResolution = size
@@ -189,7 +189,7 @@ def start():
   ## Viewing Cone Tree Visualization ----------------------
   screen2 = avango.gua.nodes.ScreenNode(
     Name = "screen",
-    Width = 1.6,
+    Width = 1.6 / 2,
     Height = 0.9,
     Transform = avango.gua.make_trans_mat(0.0, 0, 3)
   )

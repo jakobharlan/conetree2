@@ -330,5 +330,5 @@ class TextController(avango.script.Script):
   @field_has_changed(FocusNode)
   def focus_node_changed(self):
     if not self.FocusNode.value == None:
-      self.Label_.sf_text.value = self.FocusNode.value.Name.value
+      self.Label_.sf_text.value = self.FocusNode.value.Path.value
 
