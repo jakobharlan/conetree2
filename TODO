@@ -1,6 +1,6 @@
 scale und reposition auf leafs soll nicht nix machen sondern auf den Elternknoten anweden
 
-focus bug wo der contree auseinander genommen wird muss weg
-
 
 # Powerwall Navigation
+	- Nächste Edge zum PickRay wird markiert - nur vorne ?
+	- Geht der Strahl auserhalb von dem Cone, wird dieser gedereht
