@@ -210,6 +210,7 @@ class KeyController(avango.script.Script):
       # self.Conetree_.set_camera_on_Focus()
       self.Conetree_.scale()
       self.Conetree_.reposition()
+      self.Conetree_.layout()
 
   def evaluate(self):
 
