@@ -1,5 +1,6 @@
 scale und reposition auf leafs soll nicht nix machen sondern auf den Elternknoten anweden
 
+# ConeTree wird mit StartKnoten initialisiert. nicht mit Scenegraph
 
 # Powerwall Navigation
 	- Nächste Edge zum PickRay wird markiert - nur vorne ?
