@@ -22,8 +22,8 @@ class ConeTree(avango.script.Script):
   def __init__(self):
     self.super(ConeTree).__init__()
 
-  def myConstructor(self, graph):
-    self.Input_graph_ = graph
+  def myConstructor(self, start_node):
+    self.Start_node = start_node
     self.RootNode_ = avango.gua.nodes.TransformNode(
       Name = "ConeTreeRoot",
     )
@@ -33,7 +33,7 @@ class ConeTree(avango.script.Script):
     self.TransformNode_ = avango.gua.nodes.TransformNode(
       Name = "ConeTreeTransform",
     )
-    self.RootCone_ = Cone(graph.Root.value, None)
+    self.RootCone_ = Cone(self.Start_node, None)
     self.FocusCone_ = self.RootCone_
     avango.gua.load_materials_from("data/materials")
 
