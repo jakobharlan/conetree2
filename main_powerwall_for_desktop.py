@@ -12,6 +12,40 @@ from avango.script import field_has_changed
 
 from examples_common.GuaVE import GuaVE
 
+class MouseRayController(avango.script.Script):
+
+  OutTransform = avango.gua.SFMatrix4()
+  OutTransform.value = avango.gua.make_trans_mat(0, -0.45, 0) * avango.gua.make_scale_mat(0.5, 0.5, 50)
+
+  Mouse = device.MouseDevice()
+
+  RotationSpeed = avango.SFFloat()
+
+  __rel_rot_x = avango.SFFloat()
+  __rel_rot_y = avango.SFFloat()
+
+  def __init__(self):
+    self.super(MouseRayController).__init__()
+    self.always_evaluate(True)
+
+    self.__rot_x = 0.0
+    self.__rot_y = 0.0
+
+    self.RotationSpeed.value = 0.03
+
+    self.__rel_rot_x.connect_from(self.Mouse.RelY)
+    self.__rel_rot_y.connect_from(self.Mouse.RelX)
+
+  def evaluate(self):
+    self.__rot_x -= self.__rel_rot_x.value
+    self.__rot_y -= self.__rel_rot_y.value
+
+    rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
+               avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
+    self.OutTransform.value = avango.gua.make_trans_mat(0, -0.1, 0) * rotation * avango.gua.make_scale_mat(0.07 , 0.07 , 5)
+
+
+
 def setup_scene(graph):
   loader = avango.gua.nodes.TriMeshLoader()
   Scene = avango.gua.nodes.TransformNode( Name = "Scene" )
@@ -168,7 +202,7 @@ def setup_scene(graph):
     Transform = avango.gua.make_rot_mat(-80, 1, 0, 0)
   )
   graph.Root.value.Children.value.append(sun)
-
+  return Scene
 
 
 def start():
@@ -178,13 +212,13 @@ def start():
     Name = "scenegraph"
   )
 
-  setup_scene(graph)
+  scene_node = setup_scene(graph)
 
   screen = avango.gua.nodes.ScreenNode(
     Name = "screen",
     Width = 1.6,
     Height = 0.9,
-    Transform = avango.gua.make_trans_mat(0.0, 0.0, 5)
+    Transform = avango.gua.make_trans_mat(20.0, 0.0, 80)
   )
 
   eye = avango.gua.nodes.TransformNode(
@@ -223,23 +257,23 @@ def start():
 
   # create Cone Tree -----------------------------------
   conetree = ConeTree()
-  conetree.myConstructor(graph.Root.value)
+  conetree.myConstructor(scene_node)
 
   conetree.create_scenegraph_structure()
   CT_root = conetree.get_root()
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0.0,0.2,0)
+  CT.Transform.value = avango.gua.make_trans_mat(0.0,0.1,0)
   screen.Children.value.append(CT)
 
-  ## Navigation----------------------
-  conetree_navigator = Navigator()
-  conetree_navigator.myConstructor(conetree)
-  conetree_navigator.StartLocation.value = screen.Transform.value.get_translate()
-  conetree_navigator.RotationSpeed.value = 0.09
-  conetree_navigator.MotionSpeed.value = 0.69
-  screen.Transform.connect_from(conetree_navigator.OutTransform)
+  # ## Navigation----------------------
+  # conetree_navigator = Navigator()
+  # conetree_navigator.myConstructor(conetree)
+  # conetree_navigator.StartLocation.value = screen.Transform.value.get_translate()
+  # conetree_navigator.RotationSpeed.value = 0.09
+  # conetree_navigator.MotionSpeed.value = 0.69
+  # screen.Transform.connect_from(conetree_navigator.OutTransform)
 
   ## ConeTreeControls
   conetree_controller = KeyController()
@@ -274,13 +308,14 @@ def start():
 
   TextUpdater = TextController()
   TextUpdater.FocusNode.connect_from(conetree.FocusSceneNode)
-  TextUpdater.TextNode.Transform.value = avango.gua.make_trans_mat(-0.8, -0.43 , 0) * avango.gua.make_scale_mat(0.02)
+  TextUpdater.TextNode.Transform.value = avango.gua.make_trans_mat(-0.8, -0.43 , 0) * avango.gua.make_scale_mat(0.004)
   screen.Children.value.append(TextUpdater.TextNode)
 
   # PICKING
+  ray_controller = MouseRayController()
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
-  pick_ray.Transform.value = avango.gua.make_trans_mat(0, -0.45, 0) * avango.gua.make_scale_mat(0.5, 0.5, 50)
-  screen.Children.value.append(pick_ray)
+  pick_ray.Transform.connect_from(ray_controller.OutTransform)
+  eye.Children.value.append(pick_ray)
 
 
   ## Pickray append to Screen
