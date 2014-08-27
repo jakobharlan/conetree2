@@ -253,7 +253,7 @@ class PickController(avango.script.Script):
   def update_pickresults(self):
     if len(self.Results.value) > 0:
       node = self.Results.value[0].Object.value
-      self.Conetree_.focus(node)
+      self.Conetree_.focus_in_focuscone(node)
 
   def evaluate(self):
     results = self.PickedSceneGraph.value.ray_test(self.Ray.value,
