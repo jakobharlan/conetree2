@@ -31,7 +31,7 @@ class MouseRayController(avango.script.Script):
     self.__rot_x = 0.0
     self.__rot_y = 0.0
 
-    self.RotationSpeed.value = 0.03
+    self.RotationSpeed.value = 0.015
 
     self.__rel_rot_x.connect_from(self.Mouse.RelY)
     self.__rel_rot_y.connect_from(self.Mouse.RelX)

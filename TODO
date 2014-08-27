@@ -1,7 +1,7 @@
 scale und reposition auf leafs soll nicht nix machen sondern auf den Elternknoten anweden
 
-# ConeTree wird mit StartKnoten initialisiert. nicht mit Scenegraph
-
 # Powerwall Navigation
+
+	- Edgepicking geht, aber sollte wenn leaf markiert ist auch dadrüber funktionierne, oder immer überall drüber ?
 	- Nächste Edge zum PickRay wird markiert - nur vorne ?
 	- Geht der Strahl auserhalb von dem Cone, wird dieser gedereht

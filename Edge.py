@@ -13,7 +13,7 @@ class Edge:
       "cube",
       "data/objects/cube.obj",
       "data/materials/Grey.gmd",
-      avango.gua.LoaderFlags.DEFAULTS
+      avango.gua.LoaderFlags.DEFAULTS | avango.gua.LoaderFlags.MAKE_PICKABLE
     )
     self.refresh_position()
 

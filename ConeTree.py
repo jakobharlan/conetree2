@@ -251,26 +251,33 @@ class ConeTree(avango.script.Script):
 
   # deal with focus
   def focus(self, selector):
-    # reset focusi
-    self.FocusCone_.highlight_path(0)
 
+    # look for the selector in the edges of the Focus Cone
+    for i in range(len(self.FocusCone_.Edges_)):
+      if self.FocusCone_.Edges_[i].geometry_ == selector:
+        self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+        self.FocusEdge_ = i
+        self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+        return True
 
     cones = []
     cones.append(self.RootCone_)
-    # search for the selector
+    # search for the selector in whole COneTree
     while (not len(cones) == 0):
       current = cones.pop()
       # when found set highlighted
       if current.id_ == selector or current.Input_node_ == selector or current.outNode_.geometry_ == selector:
         # set new focus
+        self.FocusCone_.highlight_path(0)
         self.FocusCone_ = current
         self.FocusCone_.highlight_path(1)
         self.FocusEdge_ = -1
         self.update_focus_nodes()
-
         return True
+
       for child in current.ChildrenCones_:
         cones.append(child)
+
     return False
 
   def focus_next_edge(self):
