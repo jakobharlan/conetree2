@@ -287,6 +287,9 @@ class ConeTree(avango.script.Script):
       cones.append(self.FocusCone_)
     else:
       cones.append(self.FocusCone_.Parent_)
+    
+    for child in self.FocusCone_.ChildrenCones_:
+        cones.append(child)
 
     # search for the selector in whole FocusCone
     while (not len(cones) == 0):
@@ -302,8 +305,7 @@ class ConeTree(avango.script.Script):
         self.update_focus_nodes()
         return True
 
-      for child in current.ChildrenCones_:
-        cones.append(child)
+
 
     return False
 

@@ -24,6 +24,10 @@ class MouseRayController(avango.script.Script):
   __rel_rot_x = avango.SFFloat()
   __rel_rot_y = avango.SFFloat()
 
+  ButtonLeft = False
+  ButtonRight = False
+
+
   def __init__(self):
     self.super(MouseRayController).__init__()
     self.always_evaluate(True)
@@ -36,13 +40,31 @@ class MouseRayController(avango.script.Script):
     self.__rel_rot_x.connect_from(self.Mouse.RelY)
     self.__rel_rot_y.connect_from(self.Mouse.RelX)
 
+  def myConstructor(self, conetree):
+      self.Conetree_ = conetree
+
   def evaluate(self):
+
+    # Left Mouse Button for selecting Node and rescale /position
+    if self.Mouse.ButtonLeft.value and not self.ButtonLeft:
+      self.Conetree_.go_deep_at_focus()
+      self.Conetree_.scale()
+      self.Conetree_.reposition()
+    self.ButtonLeft = self.Mouse.ButtonLeft.value
+    
+    # Right Mouse Button for only rescale /position
+    if self.Mouse.ButtonRight.value and not self.ButtonRight:
+      self.Conetree_.level_up()
+      self.Conetree_.scale()
+      self.Conetree_.reposition()
+    self.ButtonRight = self.Mouse.ButtonRight.value
+
     self.__rot_x -= self.__rel_rot_x.value
     self.__rot_y -= self.__rel_rot_y.value
 
     rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
                avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
-    self.OutTransform.value = avango.gua.make_trans_mat(0, -0.1, 0) * rotation * avango.gua.make_scale_mat(0.07 , 0.07 , 5)
+    self.OutTransform.value = avango.gua.make_trans_mat(0, 0.0, 0) * rotation * avango.gua.make_scale_mat(0.07 , 0.07 , 5)
 
 
 
@@ -264,7 +286,7 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0.0,0.1,0)
+  CT.Transform.value = avango.gua.make_trans_mat(0.0,0.1,1)
   screen.Children.value.append(CT)
 
   # ## Navigation----------------------
@@ -313,6 +335,7 @@ def start():
 
   # PICKING
   ray_controller = MouseRayController()
+  ray_controller.myConstructor(conetree)
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
   pick_ray.Transform.connect_from(ray_controller.OutTransform)
   eye.Children.value.append(pick_ray)
