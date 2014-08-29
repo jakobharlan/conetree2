@@ -246,19 +246,21 @@ class PickController(avango.script.Script):
 
     self.Mask.value = ""
 
-  def myConstructor(self, conetree):
+  def myConstructor(self, conetree, ray_scale):
     self.Conetree_ = conetree
+    self.ray_scale = ray_scale
 
   @field_has_changed(Results)
   def update_pickresults(self):
     if len(self.Results.value) > 0:
       node = self.Results.value[0].Object.value
-      self.Conetree_.focus_in_focuscone(node)
+      # self.Conetree_.focus_in_focuscone(node)
 
   def evaluate(self):
     results = self.PickedSceneGraph.value.ray_test(self.Ray.value,
                                              self.Options.value,
                                              self.Mask.value)
+    self.Conetree_.highlight_closest_edge(self.Ray.value, self.ray_scale)
     self.Results.value = results.value
 
 

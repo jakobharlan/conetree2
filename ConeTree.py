@@ -272,7 +272,39 @@ class ConeTree(avango.script.Script):
 
     return False
 
-  def focus_in_focuscone(self, selector):
+  def highlight_closest_edge(self, ray, ray_scale):
+    ray_start = ray.WorldTransform.value.get_translate()
+
+    matrix = ray.WorldTransform.value * avango.gua.make_scale_mat(1.0/ray_scale.x , 1.0/ray_scale.y , 1.0/ray_scale.z)
+    ray_direction = avango.gua.make_rot_mat(matrix.get_rotate()) * avango.gua.Vec3(0,0,-1)
+    ray_direction = avango.gua.Vec3(ray_direction.x, ray_direction.y, ray_direction.z)
+
+    ray_direction_length = ray_direction.length()
+
+    # calculate distance to Focus Node
+    point = self.FocusCone_.outNode_.geometry_.WorldTransform.value.get_translate()
+    tmp = ray_direction.cross((point - ray_start))
+    closest_distance = tmp.length() / ray_direction_length
+    result = -1
+    # and calculate distance to all Children
+    for i in range(len(self.FocusCone_.ChildrenCones_)):
+      point = self.FocusCone_.ChildrenCones_[i].outNode_.geometry_.WorldTransform.value.get_translate()
+      tmp = ray_direction.cross((point - ray_start))
+      tmp_distance = tmp.length() / ray_direction_length
+      # closer ?
+      if tmp_distance < closest_distance:
+        closest_distance = tmp_distance
+        result = i
+
+    # the closest one ist highlighted
+    print result
+    if not result == -1:
+      self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+      self.FocusEdge_ = result
+      self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+
+
+def focus_in_focuscone(self, selector):
 
     # look for the selector in the edges of the Focus Cone
     for i in range(len(self.FocusCone_.Edges_)):
