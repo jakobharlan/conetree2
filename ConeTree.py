@@ -282,12 +282,12 @@ class ConeTree(avango.script.Script):
     ray_direction_length = ray_direction.length()
     if abs(ray_direction.x) > 0.5:
       if ray_direction.x > 0:
-        self.FocusCone_.rotate((ray_direction.x - 0.5) * 10)
+        self.FocusCone_.rotate((ray_direction.x - 0.5) / 10)
       else:
-        self.FocusCone_.rotate((ray_direction.x + 0.5) * 10)
+        self.FocusCone_.rotate((ray_direction.x + 0.5) / 10)
 
-      self.RootCone_.apply_layout(root = True)
-    # self.layout()
+      # self.RootCone_.apply_layout(root = True)
+      self.layout()
 
 
   def highlight_closest_edge(self, ray, ray_scale):

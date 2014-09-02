@@ -168,12 +168,12 @@ class Cone:
       self.Radius_ = _circumference / (2 * math.pi )
 
       # calculate the angle for the Childcones and the maximum Radius
-      _angle_sum = 0.0
+      _angle_sum = self.Rotation_
       _max_radius = 0.0
       for i in range(len(self.ChildrenCones_)):
         # first Child starts with a fixed Angle
         if i == 0:
-          self.ChildrenCones_[0].Angle_ = 0
+          self.ChildrenCones_[0].Angle_ = _angle_sum
         else:
           s = self.ChildrenCones_[i-1].Radius_ + self.ChildrenCones_[i].Radius_
           part_angle = s/(self.Radius_)
@@ -210,7 +210,7 @@ class Cone:
         -self.Depth_,
         math.sin(self.Angle_) * parent_radius))
 
-    self.outNode_.set_rotation(self.Rotation_)
+    # self.outNode_.set_rotation(self.Rotation_)
 
     for child in self.ChildrenCones_:
       child.apply_layout(parent_radius = self.Renderd_Radius_)
