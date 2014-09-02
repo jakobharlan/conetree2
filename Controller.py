@@ -261,6 +261,7 @@ class PickController(avango.script.Script):
                                              self.Options.value,
                                              self.Mask.value)
     self.Conetree_.highlight_closest_edge(self.Ray.value, self.ray_scale)
+    self.Conetree_.rotate_by_ray(self.Ray.value, self.ray_scale)
     self.Results.value = results.value
 
 

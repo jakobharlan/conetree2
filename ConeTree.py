@@ -272,6 +272,24 @@ class ConeTree(avango.script.Script):
 
     return False
 
+  def rotate_by_ray(self, ray, ray_scale):
+    ray_start = ray.WorldTransform.value.get_translate()
+
+    matrix = ray.WorldTransform.value * avango.gua.make_scale_mat(1.0/ray_scale.x , 1.0/ray_scale.y , 1.0/ray_scale.z)
+    ray_direction = avango.gua.make_rot_mat(matrix.get_rotate()) * avango.gua.Vec3(0,0,-1)
+    ray_direction = avango.gua.Vec3(ray_direction.x, ray_direction.y, ray_direction.z)
+
+    ray_direction_length = ray_direction.length()
+    if abs(ray_direction.x) > 0.5:
+      if ray_direction.x > 0:
+        self.FocusCone_.rotate((ray_direction.x - 0.5) * 10)
+      else:
+        self.FocusCone_.rotate((ray_direction.x + 0.5) * 10)
+
+      self.RootCone_.apply_layout(root = True)
+    # self.layout()
+
+
   def highlight_closest_edge(self, ray, ray_scale):
     ray_start = ray.WorldTransform.value.get_translate()
 
@@ -297,15 +315,13 @@ class ConeTree(avango.script.Script):
         result = i
 
     # the closest one ist highlighted
-    print result
     if not result == -1:
       self.FocusCone_.highlight_edge(self.FocusEdge_,0)
       self.FocusEdge_ = result
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
 
 
-def focus_in_focuscone(self, selector):
-
+  def focus_in_focuscone(self, selector):
     # look for the selector in the edges of the Focus Cone
     for i in range(len(self.FocusCone_.Edges_)):
       if self.FocusCone_.Edges_[i].geometry_ == selector:
@@ -336,8 +352,6 @@ def focus_in_focuscone(self, selector):
         self.FocusEdge_ = -1
         self.update_focus_nodes()
         return True
-
-
 
     return False
 
