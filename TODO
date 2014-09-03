@@ -1,7 +1,0 @@
-scale und reposition auf leafs soll nicht nix machen sondern auf den Elternknoten anweden
-
-# Powerwall Navigation
-
-	- Edges bleiben gehighlighted
-	- Nächste Edge zum PickRay wird markiert - nur vorne ?
-	- Geht der Strahl auserhalb von dem Cone, wird dieser gedereht

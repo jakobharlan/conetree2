@@ -279,7 +279,8 @@ class ConeTree(avango.script.Script):
     ray_direction = avango.gua.make_rot_mat(matrix.get_rotate()) * avango.gua.Vec3(0,0,-1)
     ray_direction = avango.gua.Vec3(ray_direction.x, ray_direction.y, ray_direction.z)
 
-    ray_direction_length = ray_direction.length()
+    ray_direction.normalize()
+    
     if abs(ray_direction.x) > 0.5:
       if ray_direction.x > 0:
         self.FocusCone_.rotate((ray_direction.x - 0.5) / 10)

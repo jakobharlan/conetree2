@@ -372,8 +372,8 @@ def start():
   ##create Powerwall setup
   powerwall = LargePowerWall(graph.Root.value)
   avango.gua.create_texture("data/textures/skymap.jpg")
-  for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [4]]:
-  # for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
+  # for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1]]:
+  for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
     head, pipe = powerwall.create_user(graph)
 
     pipe.BackgroundTexture.value = "data/textures/skymap.jpg"
@@ -393,17 +393,17 @@ def start():
 
   # create Cone Tree -----------------------------------
   conetree = ConeTree()
-  conetree.myConstructor(graph)
+  conetree.myConstructor(Scene)
 
   conetree.create_scenegraph_structure()
   CT_root = conetree.get_root()
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0,0.5,0) * avango.gua.make_scale_mat(0.5)
+  CT.Transform.value = avango.gua.make_trans_mat(0,0.55,0) * avango.gua.make_scale_mat(0.5)
   CubeProp = avango.gua.nodes.TransformNode( Name = "CubeProp")
   CubeTracker = TrackingReader()
-  CubeTracker.set_target_name("tracking-cube")
+  CubeTracker.set_target_name('tracking-new-spheron')
   CubeProp.Transform.connect_from(CubeTracker.MatrixOut)
 
   # # reference--------------------------
@@ -431,7 +431,7 @@ def start():
 
 
   conetree_picker = PickController()
-  conetree_picker.myConstructor(conetree)
+  conetree_picker.myConstructor(conetree, avango.gua.Vec3(0.15, 0.15, 0.25))
 
   contree_pointer = PointerController()
   contree_pointer.myConstructor(conetree)
