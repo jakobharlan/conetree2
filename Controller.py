@@ -286,18 +286,15 @@ class PointerController(avango.script.Script):
 
     if self.Pointer.KeyUp.value and not self.KeyUp:
       self.Conetree_.level_up()
-      self.Conetree_.scale()
-      self.Conetree_.reposition()
     self.KeyUp = self.Pointer.KeyUp.value
 
     if self.Pointer.KeyDown.value and not self.KeyDown:
       self.Conetree_.go_deep_at_focus()
-      self.Conetree_.scale()
-      self.Conetree_.reposition()
     self.KeyDown = self.Pointer.KeyDown.value
 
     if self.Pointer.KeyCenter.value and not self.KeyCenter:
-      self.RayTransformOut.value = avango.gua.make_scale_mat(0.15, 0.15, 30)
+      self.Conetree_.scale()
+      self.Conetree_.reposition()
     self.KeyCenter = self.Pointer.KeyCenter.value
 
 
