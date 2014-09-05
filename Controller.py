@@ -227,42 +227,55 @@ class KeyController(avango.script.Script):
       self.evaluate_CT_controll()
 
 
+
+
 class PickController(avango.script.Script):
 
-  PickedSceneGraph = avango.gua.SFSceneGraph()
-  Ray        = avango.gua.SFRayNode()
-  Options    = avango.SFInt()
-  Mask       = avango.SFString()
-  Results    = avango.gua.MFPickResult()
+  Ray = avango.gua.SFRayNode()
 
   def __init__(self):
     self.super(PickController).__init__()
     self.always_evaluate(True)
-
-    self.PickedSceneGraph.value = avango.gua.nodes.SceneGraph()
-    self.Ray.value  = avango.gua.nodes.RayNode()
-    self.Options.value = avango.gua.PickingOptions.PICK_ONLY_FIRST_OBJECT \
-                       | avango.gua.PickingOptions.PICK_ONLY_FIRST_FACE
-
-    self.Mask.value = ""
+    self.direction_y_too_big = False
 
   def myConstructor(self, conetree, ray_scale):
     self.Conetree_ = conetree
     self.ray_scale = ray_scale
 
-  @field_has_changed(Results)
-  def update_pickresults(self):
-    if len(self.Results.value) > 0:
-      node = self.Results.value[0].Object.value
-      # self.Conetree_.focus_in_focuscone(node)
-
   def evaluate(self):
-    results = self.PickedSceneGraph.value.ray_test(self.Ray.value,
-                                             self.Options.value,
-                                             self.Mask.value)
     self.Conetree_.highlight_closest_edge(self.Ray.value, self.ray_scale)
-    self.Conetree_.rotate_by_ray(self.Ray.value, self.ray_scale)
-    self.Results.value = results.value
+    # self.Conetree_.rotate_by_ray(self.Ray.value, self.ray_scale)
+    self.evaluate_ray_direction()
+
+  def evaluate_ray_direction(self):
+    # ray_start = self.ray.WorldTransform.value.get_translate()
+
+    matrix = self.Ray.value.WorldTransform.value * avango.gua.make_scale_mat(1.0/self.ray_scale.x , 1.0/self.ray_scale.y , 1.0/self.ray_scale.z)
+    ray_direction = avango.gua.make_rot_mat(matrix.get_rotate()) * avango.gua.Vec3(0,0,-1)
+    ray_direction = avango.gua.Vec3(ray_direction.x, ray_direction.y, ray_direction.z)
+
+    ray_direction_length = ray_direction.length()
+    ray_direction.normalize()
+
+    if abs(ray_direction.x) > 0.5:
+      if ray_direction.x > 0:
+        self.Conetree_.FocusCone_.rotate((ray_direction.x - 0.5) / 10)
+      else:
+        self.Conetree_.FocusCone_.rotate((ray_direction.x + 0.5) / 10)
+
+      self.Conetree_.layout()
+
+    if abs(ray_direction.y) > 0.5:
+      if not self.direction_y_too_big:
+        if ray_direction.y > 0:
+          self.Conetree_.level_up()
+          self.direction_y_too_big = True
+        else:
+          self.Conetree_.go_deep_at_focus()
+          self.direction_y_too_big = True
+    else:
+      self.direction_y_too_big = False
+
 
 
 class PointerController(avango.script.Script):

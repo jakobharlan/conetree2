@@ -48,14 +48,14 @@ class MouseRayController(avango.script.Script):
 
     # Left Mouse Button for selecting Node and rescale /position
     if self.Mouse.ButtonLeft.value and not self.ButtonLeft:
-      self.Conetree_.go_deep_at_focus()
+      # self.Conetree_.go_deep_at_focus()
       self.Conetree_.scale()
       self.Conetree_.reposition()
     self.ButtonLeft = self.Mouse.ButtonLeft.value
     
     # Right Mouse Button for only rescale /position
     if self.Mouse.ButtonRight.value and not self.ButtonRight:
-      self.Conetree_.level_up()
+      # self.Conetree_.level_up()
       self.Conetree_.scale()
       self.Conetree_.reposition()
     self.ButtonRight = self.Mouse.ButtonRight.value
@@ -346,10 +346,6 @@ def start():
   pick_ray.Transform.connect_from(ray_controller.OutTransform)
   eye.Children.value.append(pick_ray)
 
-
-  ## Pickray append to Screen
-
-  conetree_picker.PickedSceneGraph.value = graph
   conetree_picker.Ray.value = pick_ray
 
   guaVE = GuaVE()
