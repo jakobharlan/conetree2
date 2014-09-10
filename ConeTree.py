@@ -12,16 +12,13 @@ from Text import TextField
 # ConeTree Class
 class ConeTree(avango.script.Script):
   COLORMODE = "NODETYPE"
-  OutMatrix = avango.gua.SFMatrix4()
-  EyeTransform = avango.gua.SFMatrix4()
   FocusCTNode = avango.gua.SFNode()
   FocusSceneNode = avango.gua.SFNode()
 
-
-  ## Initialized with the scenegraph that is visualized
   def __init__(self):
     self.super(ConeTree).__init__()
 
+  # Constructor, start_node is the input node from wich one the ConeTree Representation starts
   def myConstructor(self, start_node):
     self.Start_node = start_node
     self.RootNode_ = avango.gua.nodes.TransformNode(
@@ -40,15 +37,6 @@ class ConeTree(avango.script.Script):
     self.FocusEdge_ = -1
 
     self.layout()
-
-    #initialize camera pos
-
-    # #initialize label
-    # self.ShowLabel_ = True
-    # self.Label_ = TextField()
-    # self.Label_.my_constructor(self.Screen)
-    # self.Label_.sf_transform.value = ( avango.gua.make_trans_mat(- self.Screen.Width.value/2 , (-self.Screen.Height.value/2) + 0.07, 0)
-    #                                   * avango.gua.make_scale_mat(self.Screen.Height.value*0.07) )
 
   def update_focus_nodes(self):
     self.FocusCTNode.value = self.FocusCone_.outNode_.geometry_
@@ -110,31 +98,39 @@ class ConeTree(avango.script.Script):
     self.FocusCone_.highlight(True)
 
   def scale(self):
-    if not self.FocusCone_.is_leaf():
-      bb = self.FocusCone_.outNode_.geometry_.BoundingBox.value
+    if self.FocusCone_.is_leaf():
+      used_Cone = self.FocusCone_.Parent_
+    else:
+      used_Cone = self.FocusCone_
+    
+    bb = used_Cone.outNode_.geometry_.BoundingBox.value
 
-      bb_sides = (bb.Max.value.x - bb.Min.value.x
-                 ,bb.Max.value.y - bb.Min.value.y
-                 ,bb.Max.value.z - bb.Min.value.z)
+    bb_sides = (bb.Max.value.x - bb.Min.value.x
+               ,bb.Max.value.y - bb.Min.value.y
+               ,bb.Max.value.z - bb.Min.value.z)
 
-      scale = 0.5 / max(bb_sides)
-      # scale = 1.0 / max(bb_sides)
+    scale = 0.5 / max(bb_sides)
+    # scale = 1.0 / max(bb_sides)
 
-      self.ScaleNode_.Transform.value *= avango.gua.make_scale_mat(scale)
+    self.ScaleNode_.Transform.value *= avango.gua.make_scale_mat(scale)
 
   def reposition(self):
-    if not self.FocusCone_.is_leaf():
-      if not self.FocusCone_.Parent_ == None:
-        current = self.FocusCone_
-        parent  = current.Parent_
-        matrix  = current.outNode_.geometry_.Transform.value
-        while not parent == self.RootCone_:
-          current = parent
-          parent = current.Parent_
-          matrix *= current.outNode_.geometry_.Transform.value
-        self.TransformNode_.Transform.value = avango.gua.make_inverse_mat(matrix)
-      else:
-        self.TransformNode_.Transform.value = avango.gua.make_identity_mat()
+    if self.FocusCone_.is_leaf():
+      used_Cone = self.FocusCone_.Parent_
+    else:
+      used_Cone = self.FocusCone_
+
+    if not used_Cone.Parent_ == None:
+      current = used_Cone
+      parent  = current.Parent_
+      matrix  = current.outNode_.geometry_.Transform.value
+      while not parent == self.RootCone_:
+        current = parent
+        parent = current.Parent_
+        matrix *= current.outNode_.geometry_.Transform.value
+      self.TransformNode_.Transform.value = avango.gua.make_inverse_mat(matrix)
+    else:
+      self.TransformNode_.Transform.value = avango.gua.make_identity_mat()
 
 
   def set_camera_on_Focus(self):
@@ -280,7 +276,7 @@ class ConeTree(avango.script.Script):
     ray_direction = avango.gua.Vec3(ray_direction.x, ray_direction.y, ray_direction.z)
 
     ray_direction.normalize()
-    
+
     if abs(ray_direction.x) > 0.5:
       if ray_direction.x > 0:
         self.FocusCone_.rotate((ray_direction.x - 0.5) / 10)
