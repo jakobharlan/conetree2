@@ -109,8 +109,9 @@ class ConeTree(avango.script.Script):
                ,bb.Max.value.y - bb.Min.value.y
                ,bb.Max.value.z - bb.Min.value.z)
 
-    scale = 0.5 / max(bb_sides)
-    # scale = 1.0 / max(bb_sides)
+    # scale = 0.5 / max(bb_sides)
+    scale = 1.0 / max(bb_sides)
+    # scale = 1.5 / max(bb_sides)
 
     self.ScaleNode_.Transform.value *= avango.gua.make_scale_mat(scale)
 

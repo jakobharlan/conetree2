@@ -226,8 +226,7 @@ def start():
     Transform = avango.gua.make_rot_mat(-80, 1, 0, 0)
   )
 
-  Scene.Children.value.append(sun)
-
+  graph.Root.value.Children.value.append(sun)
 
   ##create Powerwall setup
   powerwall = LargePowerWall(graph.Root.value)
@@ -261,14 +260,14 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0,0.55,0)
-  Spheron = avango.gua.nodes.TransformNode( Name = "Spheron")
-  CubeTracker = TrackingReader()
-  CubeTracker.set_target_name('tracking-new-spheron')
-  Spheron.Transform.connect_from(CubeTracker.MatrixOut)
+  CT.Transform.value = avango.gua.make_trans_mat(0,-0.4,0)
+  # Spheron = avango.gua.nodes.TransformNode( Name = "Spheron")
+  # CubeTracker = TrackingReader()
+  # CubeTracker.set_target_name('tracking-new-spheron')
+  # Spheron.Transform.connect_from(CubeTracker.MatrixOut)
 
-  graph.Root.value.Children.value.append(Spheron)
-  Spheron.Children.value.append(CT)
+  # graph.Root.value.Children.value.append(Spheron)
+  powerwall.screen.Children.value.append(CT)
 
   # pickray 
   pick_ray = avango.gua.nodes.RayNode(Name = "pick_ray")
@@ -283,8 +282,7 @@ def start():
 
   # initializing the Pick Controller, Pointer Controller, Bounding Box Updater and Test Updater -----
   conetree_picker = PickController()
-  conetree_picker.myConstructor(conetree, avango.gua.Vec3(0.15, 0.15, 0.25))
-  conetree_picker.PickedSceneGraph.value = graph
+  conetree_picker.myConstructor(conetree, avango.gua.Vec3(0.15, 0.15, 0.2))
   conetree_picker.Ray.value = pick_ray
 
   contree_pointer = PointerController()

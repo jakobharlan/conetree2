@@ -35,7 +35,7 @@ class MouseRayController(avango.script.Script):
     self.__rot_x = 0.0
     self.__rot_y = 0.0
 
-    self.RotationSpeed.value = 0.03
+    self.RotationSpeed.value = 0.1
 
     self.__rel_rot_x.connect_from(self.Mouse.RelY)
     self.__rel_rot_y.connect_from(self.Mouse.RelX)
@@ -49,7 +49,6 @@ class MouseRayController(avango.script.Script):
     # Left Mouse Button for selecting Node and rescale /position
     if self.Mouse.ButtonLeft.value and not self.ButtonLeft:
       # self.Conetree_.go_deep_at_focus()
-      self.Conetree_.scale()
       self.Conetree_.reposition()
     self.ButtonLeft = self.Mouse.ButtonLeft.value
     
@@ -57,7 +56,7 @@ class MouseRayController(avango.script.Script):
     if self.Mouse.ButtonRight.value and not self.ButtonRight:
       # self.Conetree_.level_up()
       self.Conetree_.scale()
-      self.Conetree_.reposition()
+      # self.Conetree_.reposition()
     self.ButtonRight = self.Mouse.ButtonRight.value
 
     self.__rot_x -= self.__rel_rot_x.value
@@ -290,7 +289,7 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0.0,0.0,0.0)
+  CT.Transform.value = avango.gua.make_trans_mat(0.0,0.0,0.0) * avango.gua.make_rot_mat(25, 1,0,0)
   screen.Children.value.append(CT)
 
   ## Navigation----------------------
