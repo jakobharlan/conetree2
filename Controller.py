@@ -6,6 +6,8 @@ from avango.script import field_has_changed
 import avango.gua
 import BBVisualization
 
+from math import asin, pi
+
 import device
 import time
 from Text import TextField
@@ -93,8 +95,10 @@ class Navigator(avango.script.Script):
         self.__rot_x -= self.__rel_rot_x.value
         self.__rot_y -= self.__rel_rot_y.value
 
-        rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
-                   avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
+        # rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
+                   # avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
+
+        rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) 
 
 
         if self.Keyboard.KeyW.value:
@@ -236,17 +240,17 @@ class PickController(avango.script.Script):
   def __init__(self):
     self.super(PickController).__init__()
     self.always_evaluate(True)
-    self.direction_y_too_big = False
+    self.change_level = True
+    self.last_y_angle = 0.0
+    self.last_time = time.time()
 
   def myConstructor(self, conetree, ray_scale):
     self.Conetree_ = conetree
     self.ray_scale = ray_scale
 
   def evaluate(self):
-    self.Conetree_.highlight_closest_edge(self.Ray.value, self.ray_scale)
-    # self.Conetree_.rotate_by_ray(self.Ray.value, self.ray_scale)
     self.evaluate_ray_direction()
-
+    
   def evaluate_ray_direction(self):
     # ray_start = self.ray.WorldTransform.value.get_translate()
 
@@ -254,29 +258,41 @@ class PickController(avango.script.Script):
     ray_direction = avango.gua.make_rot_mat(matrix.get_rotate()) * avango.gua.Vec3(0,0,-1)
     ray_direction = avango.gua.Vec3(ray_direction.x, ray_direction.y, ray_direction.z)
 
-    ray_direction_length = ray_direction.length()
     ray_direction.normalize()
 
-    if abs(ray_direction.x) > 0.5:
+    a = ray_direction.dot(avango.gua.Vec3(0.0, 1.0, 0.0)) 
+    b = abs(ray_direction.length()) 
+    y_angle = asin(a / b) * 360 / (2*pi)
+
+    angle_speed = y_angle - self.last_y_angle
+    current_time = time.time()
+
+    if current_time - self.last_time < 1.0:
+      self.change_level = False
+
+    if abs(angle_speed) < 0.1:
+      self.Conetree_.highlight_closest_edge(self.Ray.value, self.ray_scale)
+      self.change_level = True
+    elif angle_speed < -6.0 and self.change_level:
+      self.Conetree_.go_deep_at_focus()
+      self.last_time = current_time
+      self.change_level = False
+    elif angle_speed > 6.0 and self.change_level:
+      self.Conetree_.level_up()
+      self.last_time = current_time
+      self.change_level = False
+
+
+    if abs(ray_direction.x) > 0.7:
       if ray_direction.x > 0:
-        self.Conetree_.FocusCone_.rotate((ray_direction.x - 0.5) / 10)
+        self.Conetree_.FocusCone_.rotate((ray_direction.x - 0.7) / 10)
       else:
-        self.Conetree_.FocusCone_.rotate((ray_direction.x + 0.5) / 10)
+        self.Conetree_.FocusCone_.rotate((ray_direction.x + 0.7) / 10)
 
       self.Conetree_.layout()
 
-    if abs(ray_direction.y) > 0.5:
-      if not self.direction_y_too_big:
-        if ray_direction.y > 0:
-          self.Conetree_.level_up()
-          self.direction_y_too_big = True
-        else:
-          self.Conetree_.go_deep_at_focus()
-          self.direction_y_too_big = True
-    else:
-      self.direction_y_too_big = False
 
-
+    self.last_y_angle = y_angle
 
 class PointerController(avango.script.Script):
 
@@ -298,17 +314,16 @@ class PointerController(avango.script.Script):
   def evaluate(self):
 
     if self.Pointer.KeyUp.value and not self.KeyUp:
-      self.Conetree_.level_up()
+      self.Conetree_.reposition()
     self.KeyUp = self.Pointer.KeyUp.value
-
-    if self.Pointer.KeyDown.value and not self.KeyDown:
-      self.Conetree_.go_deep_at_focus()
-    self.KeyDown = self.Pointer.KeyDown.value
 
     if self.Pointer.KeyCenter.value and not self.KeyCenter:
       self.Conetree_.scale()
-      self.Conetree_.reposition()
     self.KeyCenter = self.Pointer.KeyCenter.value
+
+    if self.Pointer.KeyDown.value and not self.KeyDown:
+      pass
+    self.KeyDown = self.Pointer.KeyDown.value
 
 
 class BoundingBoxController(avango.script.Script):

@@ -39,8 +39,12 @@ class ConeTree(avango.script.Script):
     self.layout()
 
   def update_focus_nodes(self):
-    self.FocusCTNode.value = self.FocusCone_.outNode_.geometry_
-    self.FocusSceneNode.value = self.FocusCone_.Input_node_
+    if self.FocusEdge_ == -1:
+      self.FocusCTNode.value = self.FocusCone_.outNode_.geometry_
+      self.FocusSceneNode.value = self.FocusCone_.Input_node_
+    else:
+      self.FocusCTNode.value = self.FocusCone_.ChildrenCones_[self.FocusEdge_].outNode_.geometry_
+      self.FocusSceneNode.value = self.FocusCone_.ChildrenCones_[self.FocusEdge_].Input_node_
 
   def get_scene_node(self, CT_node):
     cones = []
@@ -317,6 +321,8 @@ class ConeTree(avango.script.Script):
       self.FocusCone_.highlight_edge(self.FocusEdge_,0)
       self.FocusEdge_ = result
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+
+    self.update_focus_nodes()
 
 
   def focus_in_focuscone(self, selector):

@@ -210,7 +210,7 @@ def setup_scene(graph):
   rotate_node.Children.value.append(rest)
 
 
-  Scene.Transform.value = avango.gua.make_trans_mat(0, -6, -20) \
+  Scene.Transform.value = avango.gua.make_trans_mat(3, -6, -60) \
                         * avango.gua.make_rot_mat(-90, 1, 0 ,0) \
                         * avango.gua.make_scale_mat(0.15)
                         # * avango.gua.make_rot_mat(-120, 0,0,1) \
