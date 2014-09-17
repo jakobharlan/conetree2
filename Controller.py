@@ -270,7 +270,7 @@ class PickController(avango.script.Script):
     if current_time - self.last_time < 1.0:
       self.change_level = False
 
-    if abs(angle_speed) < 0.1:
+    if abs(angle_speed) < 0.4:
       self.Conetree_.highlight_closest_edge(self.Ray.value, self.ray_scale)
       self.change_level = True
     elif angle_speed < -6.0 and self.change_level:
@@ -318,6 +318,7 @@ class PointerController(avango.script.Script):
     self.KeyUp = self.Pointer.KeyUp.value
 
     if self.Pointer.KeyCenter.value and not self.KeyCenter:
+      self.Conetree_.reposition()
       self.Conetree_.scale()
     self.KeyCenter = self.Pointer.KeyCenter.value
 
