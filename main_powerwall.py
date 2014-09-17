@@ -66,6 +66,78 @@ def viewing_setup_scene(graph):
 
   return pipe
 
+
+def setup_scene(graph):
+
+  loader = avango.gua.nodes.TriMeshLoader()
+
+  root_node = avango.gua.nodes.TransformNode(
+    Name = "Root",
+    Transform = avango.gua.make_trans_mat(0.0, 2.0, -20) * avango.gua.make_scale_mat(2)
+  )
+
+  group_monkey = avango.gua.nodes.TransformNode(
+    Name = "group_monkey",
+  )
+
+  group_light = avango.gua.nodes.TransformNode(
+    Name = "group_light",
+  )
+
+  group_light_spheres = avango.gua.nodes.TransformNode(
+    Name = "group_light_spheres",
+  )
+
+  graph.Root.value.Children.value.append(root_node)
+  root_node.Children.value.append(group_monkey)
+  root_node.Children.value.append(group_light)
+  root_node.Children.value.append(group_light_spheres)
+
+  # make a buitifull scene
+  monkeys = []
+  lights = []
+  lights_spheres = []
+  for i in range(16):
+    monkeys.append(
+                    loader.create_geometry_from_file(
+                    "ape" + str(i),
+                    "data/objects/monkey.obj",
+                    "data/materials/Stones.gmd",
+                    avango.gua.LoaderFlags.DEFAULTS)
+                  )
+
+    lights.append(
+                    avango.gua.nodes.PointLightNode(
+                    Name = "light" + str(i),
+                    Color = avango.gua.Color(1, 1, 1))
+                  )
+
+    lights_spheres.append(
+                          loader.create_geometry_from_file(
+                          "sphere" + str(i),
+                          "data/objects/light_sphere.obj",
+                          "data/materials/White.gmd",
+                          avango.gua.LoaderFlags.DEFAULTS)
+    )
+
+
+  x = (len(monkeys) / 2) - len(monkeys)
+  for i in range(len(monkeys)):
+    monkeys[i].Transform.value = avango.gua.make_trans_mat(x, 0, 0)
+    lights[i].Transform.value = avango.gua.make_trans_mat(x, 1, 1) * avango.gua.make_scale_mat(3)
+    lights_spheres[i].Transform.value = avango.gua.make_trans_mat(x, 1, 1) * avango.gua.make_scale_mat(0.04)
+    x += 1
+
+  for monkey in monkeys:
+    group_monkey.Children.value.append(monkey)
+
+  for light in lights:
+    group_light.Children.value.append(light)
+
+  for lights_sphere in lights_spheres:
+    group_light_spheres.Children.value.append(lights_sphere)
+
+
 def start():
 
   ##initializing scene -------------------
@@ -75,6 +147,8 @@ def start():
 
   loader = avango.gua.nodes.TriMeshLoader()
   Scene = avango.gua.nodes.TransformNode( Name = "Scene" )
+
+  setup_scene(graph)
 
   frame = loader.create_geometry_from_file(
     "frame"
@@ -213,10 +287,11 @@ def start():
   Scene.Children.value.append(rest)
 
 
-  Scene.Transform.value = avango.gua.make_trans_mat(0, -6, -20) \
+  Scene.Transform.value = avango.gua.make_trans_mat(0, -8, -20) \
                         * avango.gua.make_rot_mat(-90, 1, 0 ,0) \
+                        * avango.gua.make_rot_mat(-120, 0,0,1) \
                         * avango.gua.make_scale_mat(0.15) 
-                        # * avango.gua.make_rot_mat(-120, 0,0,1) \
+
 
   graph.Root.value.Children.value.append(Scene)
 
@@ -232,8 +307,8 @@ def start():
   powerwall = LargePowerWall(graph.Root.value)
   avango.gua.create_texture("data/textures/skymap.jpg")
 
-  for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1]]:
-  # for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
+  for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1, 4, 5, 6]]:
+  # for target_name in ["tracking-dlp-glasses-{0}".format(i) for i in [1]]:
     head, pipe = powerwall.create_user(graph)
 
     pipe.BackgroundTexture.value = "data/textures/skymap.jpg"
@@ -253,7 +328,7 @@ def start():
 
   # create Cone Tree and put it on top of the spheron ------------------------------
   conetree = ConeTree()
-  conetree.myConstructor(Scene)
+  conetree.myConstructor(graph.Root.value)
 
   conetree.create_scenegraph_structure()
   CT_root = conetree.get_root()
