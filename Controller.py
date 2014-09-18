@@ -323,7 +323,7 @@ class PointerController(avango.script.Script):
     self.KeyCenter = self.Pointer.KeyCenter.value
 
     if self.Pointer.KeyDown.value and not self.KeyDown:
-      pass
+      self.Conetree_.flip_collapse_at_focus()
     self.KeyDown = self.Pointer.KeyDown.value
 
 

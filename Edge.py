@@ -6,6 +6,7 @@ import math
 class Edge:
 
   def __init__(self, first, to):
+    self.thickness = 0.15
     self.From_ = first
     self.To_ = to
     loader = avango.gua.nodes.TriMeshLoader()
@@ -18,14 +19,16 @@ class Edge:
     self.refresh_position()
 
   def refresh_position(self):
-    self.geometry_.Transform.value = calc_transform_connection(avango.gua.Vec3(0,0,0) , self.To_.position_)
+    self.geometry_.Transform.value = calc_transform_connection(avango.gua.Vec3(0,0,0) , self.To_.position_, self.thickness)
 
   def highlight(self, highlight):
     if highlight:
       self.geometry_.Material.value = "data/materials/White.gmd"
+      self.thickness = 0.4
     else:
       self.geometry_.Material.value = "data/materials/Grey.gmd"
-
+      self.thickness = 0.15
+    self.refresh_position()
 
 def get_rotation_between_vectors(VEC1, VEC2):
 
@@ -37,7 +40,7 @@ def get_rotation_between_vectors(VEC1, VEC2):
 
   return avango.gua.make_rot_mat(_angle, _axis)
 
-def calc_transform_connection(START_VEC, END_VEC):
+def calc_transform_connection(START_VEC, END_VEC, thickness):
 
   # calc the vector in between the two points, the resulting center of the line segment and the scaling needed to connect both points
   _vec = avango.gua.Vec3( END_VEC.x - START_VEC.x, END_VEC.y - START_VEC.y, END_VEC.z - START_VEC.z)
@@ -48,4 +51,4 @@ def calc_transform_connection(START_VEC, END_VEC):
   _rotation_mat = get_rotation_between_vectors(avango.gua.Vec3(0, 0, -1), _vec)
 
   # build the complete matrix
-  return avango.gua.make_trans_mat(_center) * _rotation_mat * avango.gua.make_scale_mat(0.1, 0.1, _scale)
+  return avango.gua.make_trans_mat(_center) * _rotation_mat * avango.gua.make_scale_mat(thickness, thickness, _scale)

@@ -101,10 +101,7 @@ class Cone:
       self.Parent_.highlight_path(highlight)
 
   def highlight_edge(self, edge_number, highlight):
-    if highlight:
-      self.Edges_[edge_number].geometry_.Material.value = "data/materials/White.gmd"
-    else:
-      self.Edges_[edge_number].geometry_.Material.value = "data/materials/Grey.gmd"
+      self.Edges_[edge_number].highlight(highlight)
 
   def get_scenegraph(self):
     if self.is_leaf():
