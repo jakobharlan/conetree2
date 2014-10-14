@@ -95,10 +95,10 @@ class Navigator(avango.script.Script):
         self.__rot_x -= self.__rel_rot_x.value
         self.__rot_y -= self.__rel_rot_y.value
 
-        # rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
-                   # avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
+        rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) * \
+                   avango.gua.make_rot_mat(self.__rot_x * self.RotationSpeed.value, 1.0, 0.0, 0.0)
 
-        rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) 
+        # rotation = avango.gua.make_rot_mat(self.__rot_y * self.RotationSpeed.value, 0.0, 1.0, 0.0 ) 
 
 
         if self.Keyboard.KeyW.value:
@@ -270,14 +270,14 @@ class PickController(avango.script.Script):
     if current_time - self.last_time < 1.0:
       self.change_level = False
 
-    if abs(angle_speed) < 0.4:
+    if abs(angle_speed) < 0.1:
       self.Conetree_.highlight_closest_edge(self.Ray.value, self.ray_scale)
       self.change_level = True
-    elif angle_speed < -6.0 and self.change_level:
+    elif angle_speed < -6.0 and self.change_level and y_angle < -45:
       self.Conetree_.go_deep_at_focus()
       self.last_time = current_time
       self.change_level = False
-    elif angle_speed > 6.0 and self.change_level:
+    elif angle_speed > 6.0 and self.change_level and y_angle > 45:
       self.Conetree_.level_up()
       self.last_time = current_time
       self.change_level = False
