@@ -318,9 +318,9 @@ class ConeTree(avango.script.Script):
 
     # the closest one ist highlighted
     if not result == -1:
-      self.FocusCone_.highlight_edge(self.FocusEdge_,0)
+      self.FocusCone_.weak_highlight_edge(self.FocusEdge_,0)
       self.FocusEdge_ = result
-      self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+      self.FocusCone_.weak_highlight_edge(self.FocusEdge_,1)
 
     self.update_focus_nodes()
 

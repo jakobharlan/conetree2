@@ -30,6 +30,15 @@ class Edge:
       self.thickness = 0.15
     self.refresh_position()
 
+  def weak_highlight(self, highlight):
+    if highlight:
+      self.geometry_.Material.value = "data/materials/White.gmd"
+      self.thickness = 0.25
+    else:
+      self.geometry_.Material.value = "data/materials/Grey.gmd"
+      self.thickness = 0.15
+    self.refresh_position()
+
 def get_rotation_between_vectors(VEC1, VEC2):
 
   VEC1.normalize()

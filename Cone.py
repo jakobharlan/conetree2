@@ -102,6 +102,9 @@ class Cone:
 
   def highlight_edge(self, edge_number, highlight):
       self.Edges_[edge_number].highlight(highlight)
+      
+  def weak_highlight_edge(self, edge_number, highlight):
+      self.Edges_[edge_number].weak_highlight(highlight)
 
   def get_scenegraph(self):
     if self.is_leaf():
