@@ -90,6 +90,7 @@ def setup_scene(graph):
   for light in lights:
     group_light.Children.value.append(light)
     group_light_2.Children.value.append(light)
+    group_light_2.Children.value.append(light)
 
   for lights_sphere in lights_spheres:
     group_light_spheres.Children.value.append(lights_sphere)
@@ -174,7 +175,7 @@ def start():
 
   ## create Cone Tree -----------------------------------
   conetree = ConeTree()
-  conetree.myConstructor(graph)
+  conetree.myConstructor(graph.Root.value)
   CT_graph = avango.gua.nodes.SceneGraph(
       Name = "ConeTree_Graph"
   )
@@ -193,8 +194,13 @@ def start():
   conetree_navigator = Navigator()
   conetree_navigator.myConstructor(conetree)
 
+  ray_scale = avango.gua.Vec3(0.05, 0.05, 5)
   conetree_picker = PickController()
-  conetree_picker.myConstructor(conetree)
+  conetree_picker.myConstructor(conetree, ray_scale)
+
+  ## ConeTreeControls
+  conetree_controller = KeyController()
+  conetree_controller.myConstructor(conetree)
 
   BBUpdater = BoundingBoxController()
   BBUpdater.FocusNode.connect_from(conetree.FocusSceneNode)
@@ -263,7 +269,7 @@ def start():
 
   screen2.Children.value.append(pick_ray)
 
-  conetree_picker.PickedSceneGraph.value = CT_graph
+  # conetree_picker.PickedSceneGraph.value = CT_graph
   conetree_picker.Ray.value = pick_ray
 
   conetree_navigator.StartLocation.value = screen2.Transform.value.get_translate()
@@ -272,7 +278,6 @@ def start():
   conetree_navigator.MotionSpeed.value = 0.01
 
   screen2.Transform.connect_from(conetree_navigator.OutTransform)
-  conetree_navigator.InMatrix.connect_from(conetree.OutMatrix)
 
   guaVE = GuaVE()
   guaVE.start(locals(), globals())
