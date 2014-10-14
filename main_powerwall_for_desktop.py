@@ -289,7 +289,7 @@ def start():
 
   CT = avango.gua.nodes.TransformNode( Name = "CT")
   CT.Children.value = [CT_root]
-  CT.Transform.value = avango.gua.make_trans_mat(0.0,0.0,0.0) * avango.gua.make_rot_mat(25, 1,0,0)
+  CT.Transform.value = avango.gua.make_trans_mat(0.0,0.0,-1.0) * avango.gua.make_rot_mat(25, 1,0,0)
   screen.Children.value.append(CT)
 
   ## Navigation----------------------

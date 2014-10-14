@@ -199,7 +199,7 @@ class Cone:
   def apply_layout(self, parent_radius = 0, root = False):
     if root:
       self.outNode_.set_position(avango.gua.Vec3(0,0,0))
-    elif self.is_leaf():
+    elif self.Parent_.is_pre_leaf():
       self.outNode_.set_position(avango.gua.Vec3(
         math.cos(self.Angle_) * parent_radius * 0.75,
         -self.Depth_,
@@ -214,6 +214,8 @@ class Cone:
 
     for child in self.ChildrenCones_:
       child.apply_layout(parent_radius = self.Renderd_Radius_)
+      print self.id_
+      print self.Renderd_Radius_
     for edge in self.Edges_:
       edge.refresh_position()
 
