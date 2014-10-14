@@ -214,8 +214,6 @@ class Cone:
 
     for child in self.ChildrenCones_:
       child.apply_layout(parent_radius = self.Renderd_Radius_)
-      print self.id_
-      print self.Renderd_Radius_
     for edge in self.Edges_:
       edge.refresh_position()
 
