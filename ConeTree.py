@@ -367,6 +367,7 @@ class ConeTree(avango.script.Script):
       if self.FocusEdge_ == len(self.FocusCone_.Edges_):
         self.FocusEdge_ = 0
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+      self.update_focus_nodes()
       # self.update_label()
 
   def focus_prev_edge(self):
@@ -379,6 +380,7 @@ class ConeTree(avango.script.Script):
         if self.FocusEdge_ == -1:
           self.FocusEdge_ = len(self.FocusCone_.Edges_) - 1
       self.FocusCone_.highlight_edge(self.FocusEdge_,1)
+      self.update_focus_nodes()
       # self.update_label()
 
   def go_deep_at_focus(self):
