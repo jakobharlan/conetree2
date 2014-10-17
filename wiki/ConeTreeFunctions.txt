@@ -1,0 +1,91 @@
+The important ConeTree functions you might want to call
+
+* `CT.create_scenegraph_structure()`
+
+   Connects the scenegraphnodes for the ConeTree and returns the root
+
+
+* `CT.get_root()`
+
+   Return the root node that has to be inserted in a rendered scenegraph
+
+
+* `CT.layout()`
+
+   Starts the layout algorithm. 
+
+
+* `CT.scale()`
+
+   Rescales the whole ConeTree such that the subtree of the focusnode fits neatly in a 1m x 1m x 1m box.
+
+
+* `CT.reposition()`
+
+   Repositions the ConeTree in a way that the focusnode is in the origin of the ConeTrees local coordinate system
+
+
+* `CT.focus(selector)`
+
+   Focus the node specified by the selector. The selector can be a node in the scene, a geometry node of the ConeTree or a cone id. The focus node will also be highlighted
+
+
+* ` CT.focus_next_edge()`
+
+   `CT.focus_prev_edge()`
+
+   `CT.go_deep_at_focus()`
+
+   `CT.level_up()`
+
+
+   These functions switch the focus node or focus edge accordingly to their names.
+
+
+* `CT.highlight(selector, highlight = True, Path = True)`
+
+   Highlight the node specified by the selector. The selector can be a node in the scene, a geometry node of the ConeTree or a cone id. The highlight argument tells wether the Node should be highlighted or unhighlighted. If the path flag is True, not only the node but all parent node and edges up to the ConeTree root are highlighted.
+
+
+* `CT.highlight_by_level(selector, level = 1 , highlight = True)`
+
+   Highlights/ unhighlights all nodes of the given level
+
+* `CT.flip_collapse_at_focus()`
+
+   Collapses/ uncollapses the Focus Cone.
+
+
+* `CT.collapse_by_level(level = 1, collapse = True)`
+
+   Collapses/ uncollapses the all cones of the given level
+
+
+* `CT.collapse(selector, collapse = True)`
+
+   Collapses the cone specified by the selector. The selector can be a node in the scene, a geometry node of the ConeTree or a cone id. The collapse argument tells wether the Node should be collapsed or expanded.
+
+
+* `CT.set_colormode(colormode = "NODETYPE", flip = False)`
+
+   Sets the color selection mode for the ConeTree. It is passed the desired colormode. If the flip flag ist "True" it will switch the colormode between "NODETYPE" and "DEPTH" 
+
+
+* `CT.get_scene_node(CT_node)`
+
+   This function takes a geometry node of a node in the ConeTree and returns the represented node in the scene.
+
+
+* `CT.get_CT_node(scene_node)`
+
+   This function takes a node out of the visualized scenegraph and returns the representing geometry node in the ConeTree.
+
+
+----------------------
+there are some more functions. But they are primely used internaly
+
+
+
+
+
+

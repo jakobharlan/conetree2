@@ -1,0 +1,22 @@
+1. Import the ConeTree class
+2. Create a scenegraph you want to visualize
+3. Initialize a ConeTree instance and call myConstructor
+ 1. Argument is the the node you want to have as root of your visualization 
+4. Create and get the root node of the visualization
+ 1. call create_scenegraph_structure()
+ 2. call get_root()
+5. add this Node to your rendered scenegraph
+
+```
+import ConeTree.ConeTree
+
+# ... creating scene ...
+
+conetree = ConeTree()
+conetree.myConstructor(scene_node)
+
+conetree.create_scenegraph_structure()
+CT_root = conetree.get_root()
+
+graph.Root.value.Children.value.append(CT_root)
+```

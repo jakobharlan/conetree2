@@ -1,0 +1,55 @@
+The are multiple Controllers that provide interaction posibilities with the Conetree
+
+### Key Controller
+This Controller provides keyboard controls for the Conetree.
+
+**Keybindings**
+
++ Up - focus parent node
++ Left / KeyRight - select an edge/ node to continue exploring
++ Down - switch the focus to down the selected edge
+
++ C - collapse subtree of focus node
++ X - switch colormode (nodetype/ depth)
++ P - print the conetree structure for debugging
+
++ F1 - turn all controlls on/ off
+
+
+1. create a KeyController instance
+2. call myConstructor and pass a conetree instance as the argument
+
+```
+import Controller.KeyController
+
+conetree_keycontroller = KeyController()
+conetree_keycontroller.myConstructor(conetree)
+```
+
+
+
+
+### Pick Controller
+This Controller provides ray controls for the conetree
+
+Its was created to be used with a tracked pointer device that controls the ray.
+
+When this controller is used, the edge to the node closes to the ray is highlighted.  
+When the ray points quite far to the right or left, the Subtree of the focused node is rotated accordingly. 
+With a quick down/ up movement it is possible to switch the focus to the selected child or the parent node.
+
+
+1. create a PickController instance
+2. call myConstructor and pass a conetree instance
+3. set or connect the ray field of the Controller
+
+
+```
+import Controller.PickController
+
+conetree_pickcontroller = PickController()
+conetree_pickcontroller.myConstructor(conetree)
+conetree_pickcontroller.Ray.value = pick_ray
+
+```
+
